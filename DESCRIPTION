@@ -1,6 +1,45 @@
-Package: placeholder
-Type: Book
-Title: Does not matter.
-Version: 0.0.1
-Imports: bookdown
-Remotes: rstudio/bookdown
+Package: Stat406worksheets
+Title: Worksheets for use with UBC Stat 406
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Daniel", middle = "J."
+           family = "McDonald",
+           role = c("aut", "cre"),
+           email = "daniel@stat.ubc.ca")
+    person(given = "Matias", family = Salibán-Barrera,
+           role = "aut")
+Description: What the package does (one paragraph).
+License: CC BY 4.0
+Imports:
+    adabag,
+    bookdown,
+    class,
+    cluster,
+    countrycode,
+    desc,
+    ElemStatLearn,
+    flexclust,
+    ggcorrplot,
+    ggplot2,
+    glmnet,
+    ISLR,
+    KernSmooth,
+    knitr,
+    lars,
+    leaps,
+    MASS,
+    nnet,
+    randomForest,
+    rmarkdown,
+    rpart,
+    rworldmap,
+    scales,
+    sessioninfo,
+    splines,
+    tibble,
+    tidyverse,
+    tree
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
