@@ -306,7 +306,7 @@ along each of these 2 principal directions.
 
 ## Alternating regression to compute principal components
 
-For details see [this document](content/pca-alternating-regression.pdf).
+For details see Appendix \@ref(alt-pca).
 
 A function implementing this method to compute the first
 principal component is:
