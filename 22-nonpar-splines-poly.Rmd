@@ -164,11 +164,7 @@ There are better (numerically more stable) bases for the same linear
 space spanned by these spline functions. These bases have different 
 numerical properties and can become cumbersome to describe. Here we
 use the function `bs` (in package `splines`) to build a B-spline basis. 
-For an accessible discussion, see for example Section 4.1 of
-
-> Wood, S. (2006). *Generalized additive models : an introduction with R*.
-> Chapman & Hall/CRC, 
-> Boca Raton, FL. [Library link](http://resolve.library.ubc.ca/cgi-bin/catsearch?bid=8140311).
+For an accessible discussion, see for example [@wood2017generalized, Section 4.1].
 
 Given the chosen knots and the degree of the splines
 (linear, quadratic, cubic, etc.) the set (linear space) 
