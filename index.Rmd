@@ -6,7 +6,6 @@ site: bookdown::bookdown_site
 output: bookdown::bs4_book
 documentclass: book
 bibliography: [book.bib, packages.bib]
-csl: the-annals-of-statistics
 nocite: "@*"
 link-citations: yes
 links-as-notes: true
