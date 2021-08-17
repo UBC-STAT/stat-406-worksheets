@@ -3,6 +3,9 @@ bookdown::bs4_book:
     primary: "#654ea3"
     secondary: "#F9AC2F"
     base_font: "EB+Garamond"
+  repo:
+    base: https://github.com/ubc-stat/stat-406-worksheets
+    branch: main
 
 bookdown::pdf_book:
   includes:

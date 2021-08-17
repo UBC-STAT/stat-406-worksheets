@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.com/rstudio/bookdown-demo.svg?branch=master)](https://travis-ci.com/rstudio/bookdown-demo)
+![Build Status](https://github.com/UBC-STAT/stat-406-worksheets/actions/workflows/bookdown.yaml/badge.svg)
 
-This is a minimal example of a book based on R Markdown and **bookdown** (https://github.com/rstudio/bookdown). Please see the page "[Get Started](https://bookdown.org/yihui/bookdown/get-started.html)" at https://bookdown.org/yihui/bookdown/ for how to compile this example into HTML. You may generate a copy of the book in `bookdown::pdf_book` format by calling `bookdown::render_book('index.Rmd', 'bookdown::pdf_book')`. More detailed instructions are available here https://bookdown.org/yihui/bookdown/build-the-book.html.
+This worksheet collection was originally created by [Prof. Salibán-Barrera](https://www.stat.ubc.ca/users/matias-salibian-barrera) when he taught this course in 2019 and previous iterations. For the 2021 version, Prof. McDonald made some revisions and turned them into a book for use during labs and as a supplement to the course readings.
 
-You can find the preview of this example at https://bookdown.org/yihui/bookdown-demo/.
+These notes are served at http://ubc-stat.github.io/stat-406-worksheets

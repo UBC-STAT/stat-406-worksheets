@@ -1,0 +1,63 @@
+# Preface {-}
+
+This worksheet collection was originally created by [Prof. Salibán-Barrera](https://www.stat.ubc.ca/users/matias-salibian-barrera) when he taught this course in 2019 and previous iterations. For the 2021 version, Prof. McDonald made some revisions and turned them into a book for use during labs and as a supplement to the course readings.
+
+The expectation is that you will run through the worksheets on your own or during lab sections. This material is fair game for the final exam.
+
+```{r, echo = FALSE}
+n <- 250
+set.seed(20200610)
+x <- sort(runif(n, -2 * pi, 2 * pi))
+fx <- function(x) .75 * sin(x) + x / (2 * pi)
+y <- fx(x) + rnorm(n, sd = .35)
+blue <- "#00A7E1"
+red <- "#ff3100"
+orange <- "#ff8300"
+green <- "#00af64"
+purple <- "#654ea3"
+
+cols <- c("True function" = green, "Too smooth" = orange, "Too wiggly" = purple)
+library(ggplot2)
+
+ggplot(data.frame(x = x, y = y)) +
+  geom_point(aes(x, y), fill = "grey", alpha = .25, shape = 16) +
+  theme_bw(base_size = 14, base_family = "Times") +
+  labs(x = "", y = "", color = "") +
+  stat_function(fun = fx, mapping = aes(color = "True function"), size = 2) +
+  geom_smooth(aes(x, y, color = "Too wiggly"),
+    se = FALSE, span = .075
+  ) +
+  # geom_smooth(aes(x,y), se=FALSE, span=.15, color=orange) +
+  geom_smooth(aes(x, y, color = "Too smooth"), se = FALSE, span = .75) +
+  scale_color_manual(values = cols) +
+  theme(legend.position = "bottom")
+```
+
+To run these, you need the following packages:
+
+```{r, echo = FALSE, results="asis", cache=FALSE}
+deps <- desc::desc_get_deps()
+pkgs <- sort(deps$package[deps$type == "Imports"])
+pkgs <- sessioninfo::package_info(pkgs, dependencies = FALSE)
+df <- tibble::tibble(
+  package = pkgs$package,
+  version = pkgs$ondiskversion,
+  source = gsub("@", "\\\\@", pkgs$source)
+)
+knitr::kable(df, format = "markdown")
+```
+
+```{r include=FALSE}
+# automatically create a bib database for R packages and cite them.
+knitr::write_bib(
+  c(pkgs$package, "bookdown", "knitr", "rmarkdown", "tidyverse"),
+  "packages.bib"
+)
+```
+
+
+These notes are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+See the **human-readable version** [here](https://creativecommons.org/licenses/by-sa/4.0/)
+and the **real thing** [here](https://creativecommons.org/licenses/by-sa/4.0/legalcode). 
+
+<a style="text-align:center" rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a>
