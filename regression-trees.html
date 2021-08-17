@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>9 Regression trees | UBC Stat 406 Worksheets</title>
+<meta name="author" content="Daniel J. McDonald and Matías Salibán-Barrera">
+<meta name="description" content="Trees provide a non-parametric regression estimator that is able to overcome a serious limitation of “classical non-parametric” estimators (like those based on splines, or kernels) when several...">
+<meta name="generator" content="bookdown 0.23 with bs4_book()">
+<meta property="og:title" content="9 Regression trees | UBC Stat 406 Worksheets">
+<meta property="og:type" content="book">
+<meta property="og:description" content="Trees provide a non-parametric regression estimator that is able to overcome a serious limitation of “classical non-parametric” estimators (like those based on splines, or kernels) when several...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="9 Regression trees | UBC Stat 406 Worksheets">
+<meta name="twitter:description" content="Trees provide a non-parametric regression estimator that is able to overcome a serious limitation of “classical non-parametric” estimators (like those based on splines, or kernels) when several...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">UBC Stat 406 Worksheets</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">Preface</a></li>
+<li class="book-part">Module 0 – Review</li>
+<li><a class="" href="predictions-using-a-linear-model.html"><span class="header-section-number">1</span> Predictions using a linear model</a></li>
+<li class="book-part">Module 1 – Model Selection</li>
+<li><a class="" href="predictions-using-a-linear-model-continued.html"><span class="header-section-number">2</span> Predictions using a linear model (continued)</a></li>
+<li><a class="" href="cross-validation-concerns.html"><span class="header-section-number">3</span> Cross-validation concerns</a></li>
+<li><a class="" href="comparing-models.html"><span class="header-section-number">4</span> Comparing models</a></li>
+<li class="book-part">Module 2 – Regression</li>
+<li><a class="" href="ridge-regression.html"><span class="header-section-number">5</span> Ridge regression</a></li>
+<li><a class="" href="lasso.html"><span class="header-section-number">6</span> LASSO</a></li>
+<li><a class="" href="non-parametric-regression.html"><span class="header-section-number">7</span> Non-parametric regression</a></li>
+<li><a class="" href="kernel-regression-local-regression.html"><span class="header-section-number">8</span> Kernel regression / local regression</a></li>
+<li><a class="active" href="regression-trees.html"><span class="header-section-number">9</span> Regression trees</a></li>
+<li><a class="" href="pruning-regression-trees-with-rpart.html"><span class="header-section-number">10</span> Pruning regression trees with rpart</a></li>
+<li class="book-part">Module 3 – Classification</li>
+<li><a class="" href="parametric-classifiers.html"><span class="header-section-number">11</span> Parametric classifiers</a></li>
+<li><a class="" href="qda.html"><span class="header-section-number">12</span> QDA</a></li>
+<li><a class="" href="classification-trees.html"><span class="header-section-number">13</span> Classification Trees</a></li>
+<li><a class="" href="bagging-for-regression.html"><span class="header-section-number">14</span> Bagging for regression</a></li>
+<li><a class="" href="bagging-for-classification.html"><span class="header-section-number">15</span> Bagging for classification</a></li>
+<li><a class="" href="random-forests.html"><span class="header-section-number">16</span> Random Forests</a></li>
+<li><a class="" href="boosting-a-statistical-learning-perspective.html"><span class="header-section-number">17</span> Boosting (a Statistical Learning perspective)</a></li>
+<li><a class="" href="what-is-adaboost-doing-really.html"><span class="header-section-number">18</span> What is Adaboost doing, really?</a></li>
+<li><a class="" href="single-layer-neural-network.html"><span class="header-section-number">19</span> Single layer neural network</a></li>
+<li class="book-part">Module 5 – Unsupervised learning</li>
+<li><a class="" href="introduction.html"><span class="header-section-number">20</span> Introduction</a></li>
+<li><a class="" href="clustering.html"><span class="header-section-number">21</span> Clustering</a></li>
+<li><a class="" href="model-based-clustering.html"><span class="header-section-number">22</span> Model based clustering</a></li>
+<li><a class="" href="hierarchical-clustering.html"><span class="header-section-number">23</span> Hierarchical clustering</a></li>
+<li><a class="" href="references.html">References</a></li>
+<li class="book-part">Appendix</li>
+<li><a class="" href="alt-pca.html"><span class="header-section-number">A</span> PCA and alternating regression</a></li>
+</ul>
+
+        <div class="book-extra">
+          
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="regression-trees" class="section level1">
+<h1>
+<span class="header-section-number">9</span> Regression trees<a class="anchor" aria-label="anchor" href="#regression-trees"><i class="fas fa-link"></i></a>
+</h1>
+<p>Trees provide a non-parametric regression estimator that is
+able to overcome a serious limitation of “classical non-parametric”
+estimators (like those based on splines, or kernels)
+when several (more than 2 or 3) explanatory variables are
+available.</p>
+<p>Below we first describe the problem afflicting classical
+non-parametric methods (this is also known as the “curse of dimensionality”)
+and then describe how to compute regression trees in <code>R</code> using the
+<code>rpart</code> package (although other implementations exist).
+Details were discussed in class.</p>
+<div id="curse-of-dimensionality" class="section level2">
+<h2>
+<span class="header-section-number">9.1</span> Curse of dimensionality<a class="anchor" aria-label="anchor" href="#curse-of-dimensionality"><i class="fas fa-link"></i></a>
+</h2>
+<p>Suppose you have a random sample of <em>n = 100</em> observations,
+uniformly distributed on the [0, 1] interval. How many do you
+expect to find within 0.25 of the middle point of the
+interval (i.e. how many will be between 0.25 and 0.75)?
+A trivial calculation shows that the expected number of
+observations falling between 0.25 and 0.75 will be <em>n/2</em>,
+in this case <em>50</em>. This is easy verified with a simple
+numerical experiment:</p>
+<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># X ~ U(0,1)</span>
+<span class="co"># how many points do you expect within 0.25 of 1/2?</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span>
+<span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span>
+<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>
+<span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span> <span class="co"># half the width of the dist'n</span>
+<span class="co">#&gt; [1] 50</span></code></pre></div>
+<p>(wow! what are the chances?)</p>
+<p>Consider now a sample of 100 observations, each with
+5 variables (5-dimensional observations),
+uniformly distributed in the 5-dimensional unit cube
+(<em>[0,1]^5</em>). How many do you expect to see in the
+<em>central hypercube</em> with sides [0.25, 0.75] x [0.25, 0.75] …
+x [0.25, 0.75] = [0.25, 0.75]^5? A simple experiment shows
+that this number is probably rather small:</p>
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">5</span>
+<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">p</span><span class="op">)</span>, <span class="va">n</span>, <span class="va">p</span><span class="op">)</span>
+<span class="co"># how many points in the hypercube (0.25, 0.75)^p ?</span>
+<span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">a</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/all.html">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">a</span> <span class="op">-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span>
+<span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; [1] 4</span></code></pre></div>
+<p>In fact, the expected number of observations
+in that central hypercube is exactly <em>n / 2^5</em>,
+which is approximately <em>3</em> when <em>n = 100</em>.</p>
+<p>A relevant question for our local regression estimation
+problem is: “how large should our sample be if we want
+to still have about 50 observations in our central hypercube?”.
+Easy calculations show that this number is <em>50 / (1/2)^p</em>,
+which, for <em>p = 5</em> is <em>1600</em>. Again, we can verify
+this with a simple experiment:</p>
+<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># how many obs do we need to have 50 in the hypercube?</span>
+<span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">50</span> <span class="op">/</span> <span class="op">(</span><span class="fl">0.5</span><span class="op">^</span><span class="va">p</span><span class="op">)</span>
+<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">p</span><span class="op">)</span>, <span class="va">n</span>, <span class="va">p</span><span class="op">)</span>
+<span class="co"># how many points in the hypercube (0.25, 0.75)^p ?</span>
+<span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">a</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/all.html">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">a</span> <span class="op">-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span>
+<span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; [1] 57</span></code></pre></div>
+<p>So we see that if the dimension of our problem increases
+from <em>p = 1</em> to <em>p = 5</em>, the number of observations we
+need to maintain an expectation of having about 50 points
+in our central hypercube increases by a factor of 16 (not 5).
+However, if we double the dimension of the problem (to <em>p = 10</em>), in order to expect
+50 observations in the central [0.25, 0.75] hypercube
+we need a sample of size <em>n = 51,200</em>. In other words, we
+doubled the dimension, but need 32 times more data (!)
+to <em>fill</em> the central hypercube with the same number of points.
+Moreover, if we doubled the dimension again (to <em>p = 20</em>) we would need over
+52 million observations to have (just!) 50 in the central hypercube!
+Note that now we doubled the
+dimension again but need 1024 times more data! The number of
+observations needed to maintain a fixed number of observations
+in a region of the space grows exponentially with the
+dimension of the space.</p>
+<p>Another way to think about this problem is to
+ask: “given a sample size of <em>n = 1000</em>, say, how wide / large
+should the central hypercube be to expect
+about <em>50</em> observations in it?”. The answer is
+easily found to be <em>1 / (2 (n/50)^(1/p))</em>, which for
+<em>n = 1000</em> and <em>p = 5</em> equals 0.27, with
+<em>p = 10</em> is 0.37 and with <em>p = 20</em> is
+0.43, almost the full unit hypercube!</p>
+<p>In this sense it is fair to say that in moderate to high dimensions
+<em>local neighbourhoods</em> are either empty or not really <em>local</em>.</p>
+</div>
+<div id="regression-trees-as-constrained-non-parametric-regression" class="section level2">
+<h2>
+<span class="header-section-number">9.2</span> Regression trees as constrained non-parametric regression<a class="anchor" aria-label="anchor" href="#regression-trees-as-constrained-non-parametric-regression"><i class="fas fa-link"></i></a>
+</h2>
+<p>Regression trees provide an alternative non-regression
+estimator that works well, even with many available features.
+As discussed in class, the basic idea is to approximate the
+regression function by a linear combination of “simple”
+functions (i.e. functions <span class="math inline">\(h(x) = I( x \in A )\)</span> which equal
+1 if the argument <em>x</em> belongs to the set <em>A</em>, and 0 otherwise.
+Each function has its own support set <em>A</em>. Furthermore,
+this linear combination is not estimated at once, but
+iteratively, and only considering a specific class of
+sets <em>A</em> (which ones?) As a result, the regression tree
+is not the <em>global</em> optimal approximation by simple functions,
+but a good <em>suboptimal</em> one, that can be computed very rapidly.
+Details were discussed in class, refer to your notes and
+the corresponding slides.</p>
+<p>There are several packages in <code>R</code> implementing trees,
+in this course we will use <code>rpart</code>. To illustrate their
+use we will consider the <code>Boston</code> data set, that contains
+information on housing in the US city of Boston. The
+corresponding help page contains more information.</p>
+<p><strong>Here, to simplify the comparison</strong> of the predictions obtained
+by trees and other regression estimators, instead of using
+K-fold CV, we start by randomly splitting the
+available data into a training and a test set:</p>
+<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bethatkinson/rpart">rpart</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">Boston</span>, package <span class="op">=</span> <span class="st">"MASS"</span><span class="op">)</span>
+<span class="co"># split data into a training and</span>
+<span class="co"># a test set</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span>
+<span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span>
+<span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span>
+<span class="va">dat.te</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>
+<span class="va">dat.tr</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="op">-</span><span class="va">ii</span>, <span class="op">]</span></code></pre></div>
+<p>We now build a regression tree using the function <code>rpart</code> and leave most of
+its arguments to their
+default values. We specify the response and explanatory variables using
+a <code>formula</code>, as usual, and set <code>method='anova'</code> to indicate we
+want to train a regression tree (as opposed to a classification one, for example).
+Finally, we use the corresponding <code>plot</code> method to display the tree
+structure:</p>
+<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
+<span class="va">bos.t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span>, method <span class="op">=</span> <span class="st">"anova"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">bos.t</span>, uniform <span class="op">=</span> <span class="cn">FALSE</span>, margin <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="va">bos.t</span>, pretty <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="24-trees_files/figure-html/tree3-1.png" width="90%" style="display: block; margin: auto;"></div>
+<p>A few questions for you:</p>
+<ul>
+<li>Why did we set the pseudo-random generation seed (<code><a href="https://rdrr.io/r/base/Random.html">set.seed(123)</a></code>)
+before calling <code>rpart</code>? Is there anything random about building these trees?</li>
+<li>What does the <code>uniform</code> argument for <code>plot.rpart</code> do? What does <code>text</code> do here?</li>
+</ul>
+</div>
+<div id="compare-predictions" class="section level2">
+<h2>
+<span class="header-section-number">9.3</span> Compare predictions<a class="anchor" aria-label="anchor" href="#compare-predictions"><i class="fas fa-link"></i></a>
+</h2>
+<p>We now compare the predictions we obtain on the test with the
+above regression tree, the usual linear model using all
+explanatory variables, another one constructed using stepwise
+variable selections methods, and the “optimal” LASSO.</p>
+<p>First, we estimate the MSPE of the regression tree using the test set:</p>
+<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># predictions on the test set</span>
+<span class="va">pr.t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">bos.t</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.t</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; [1] 16.07227</span></code></pre></div>
+<p>For a full linear model, the estimated MSPE using the test set is:</p>
+<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># full linear model</span>
+<span class="va">bos.lm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">)</span>
+<span class="va">pr.lm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">bos.lm</span>, newdata <span class="op">=</span> <span class="va">dat.te</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.lm</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; [1] 23.25844</span></code></pre></div>
+<p>The estimated MSPE of a linear model constructed via stepwise is:</p>
+<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span>
+<span class="va">null</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">)</span>
+<span class="va">full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">)</span>
+<span class="va">bos.aic</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html">stepAIC</a></span><span class="op">(</span><span class="va">null</span>, scope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="va">null</span>, upper <span class="op">=</span> <span class="va">full</span><span class="op">)</span>, trace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="va">pr.aic</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">bos.aic</span>, newdata <span class="op">=</span> <span class="va">dat.te</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.aic</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; [1] 22.99864</span></code></pre></div>
+<p>Finally, the estimated MSPE of the “optimal” LASSO fit is:</p>
+<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># LASSO?</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://glmnet.stanford.edu">glmnet</a></span><span class="op">)</span>
+<span class="va">x.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">[</span>, <span class="op">-</span><span class="fl">14</span><span class="op">]</span><span class="op">)</span>
+<span class="va">y.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">$</span><span class="va">medv</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
+<span class="va">bos.la</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x.tr</span>, y <span class="op">=</span> <span class="va">y.tr</span>, alpha <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+<span class="va">x.te</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">dat.te</span><span class="op">[</span>, <span class="op">-</span><span class="fl">14</span><span class="op">]</span><span class="op">)</span>
+<span class="va">pr.la</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">bos.la</span>, s <span class="op">=</span> <span class="st">"lambda.1se"</span>, newx <span class="op">=</span> <span class="va">x.te</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.la</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; [1] 26.58914</span></code></pre></div>
+<p>Note that the regression tree appears to have the best MSPE, although
+we cannot really assess whether the observed differences are beyond
+the uncertainty associated with our MSPE estimators. In other words,
+would these differences still be so if we used a different
+training / test data split? In fact, a very good exercise for you
+would be to repeat the above comparison using <strong>many</strong>
+different training/test splits, or even better: using all the data for
+training and K-fold CV to estimate the different MSPEs.</p>
+
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="kernel-regression-local-regression.html"><span class="header-section-number">8</span> Kernel regression / local regression</a></div>
+<div class="next"><a href="pruning-regression-trees-with-rpart.html"><span class="header-section-number">10</span> Pruning regression trees with rpart</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#regression-trees"><span class="header-section-number">9</span> Regression trees</a></li>
+<li><a class="nav-link" href="#curse-of-dimensionality"><span class="header-section-number">9.1</span> Curse of dimensionality</a></li>
+<li><a class="nav-link" href="#regression-trees-as-constrained-non-parametric-regression"><span class="header-section-number">9.2</span> Regression trees as constrained non-parametric regression</a></li>
+<li><a class="nav-link" href="#compare-predictions"><span class="header-section-number">9.3</span> Compare predictions</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+          
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-08-17.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

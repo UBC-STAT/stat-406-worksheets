@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>5 Ridge regression | UBC Stat 406 Worksheets</title>
+<meta name="author" content="Daniel J. McDonald and Matías Salibán-Barrera">
+<meta name="description" content="Variable selection methods like stepwise can be highly variable. To illustrate this issue consider the following simple experiment. As before, we apply stepwise on 5 randomly selected folds of the...">
+<meta name="generator" content="bookdown 0.23 with bs4_book()">
+<meta property="og:title" content="5 Ridge regression | UBC Stat 406 Worksheets">
+<meta property="og:type" content="book">
+<meta property="og:description" content="Variable selection methods like stepwise can be highly variable. To illustrate this issue consider the following simple experiment. As before, we apply stepwise on 5 randomly selected folds of the...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="5 Ridge regression | UBC Stat 406 Worksheets">
+<meta name="twitter:description" content="Variable selection methods like stepwise can be highly variable. To illustrate this issue consider the following simple experiment. As before, we apply stepwise on 5 randomly selected folds of the...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">UBC Stat 406 Worksheets</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">Preface</a></li>
+<li class="book-part">Module 0 – Review</li>
+<li><a class="" href="predictions-using-a-linear-model.html"><span class="header-section-number">1</span> Predictions using a linear model</a></li>
+<li class="book-part">Module 1 – Model Selection</li>
+<li><a class="" href="predictions-using-a-linear-model-continued.html"><span class="header-section-number">2</span> Predictions using a linear model (continued)</a></li>
+<li><a class="" href="cross-validation-concerns.html"><span class="header-section-number">3</span> Cross-validation concerns</a></li>
+<li><a class="" href="comparing-models.html"><span class="header-section-number">4</span> Comparing models</a></li>
+<li class="book-part">Module 2 – Regression</li>
+<li><a class="active" href="ridge-regression.html"><span class="header-section-number">5</span> Ridge regression</a></li>
+<li><a class="" href="lasso.html"><span class="header-section-number">6</span> LASSO</a></li>
+<li><a class="" href="non-parametric-regression.html"><span class="header-section-number">7</span> Non-parametric regression</a></li>
+<li><a class="" href="kernel-regression-local-regression.html"><span class="header-section-number">8</span> Kernel regression / local regression</a></li>
+<li><a class="" href="regression-trees.html"><span class="header-section-number">9</span> Regression trees</a></li>
+<li><a class="" href="pruning-regression-trees-with-rpart.html"><span class="header-section-number">10</span> Pruning regression trees with rpart</a></li>
+<li class="book-part">Module 3 – Classification</li>
+<li><a class="" href="parametric-classifiers.html"><span class="header-section-number">11</span> Parametric classifiers</a></li>
+<li><a class="" href="qda.html"><span class="header-section-number">12</span> QDA</a></li>
+<li><a class="" href="classification-trees.html"><span class="header-section-number">13</span> Classification Trees</a></li>
+<li><a class="" href="bagging-for-regression.html"><span class="header-section-number">14</span> Bagging for regression</a></li>
+<li><a class="" href="bagging-for-classification.html"><span class="header-section-number">15</span> Bagging for classification</a></li>
+<li><a class="" href="random-forests.html"><span class="header-section-number">16</span> Random Forests</a></li>
+<li><a class="" href="boosting-a-statistical-learning-perspective.html"><span class="header-section-number">17</span> Boosting (a Statistical Learning perspective)</a></li>
+<li><a class="" href="what-is-adaboost-doing-really.html"><span class="header-section-number">18</span> What is Adaboost doing, really?</a></li>
+<li><a class="" href="single-layer-neural-network.html"><span class="header-section-number">19</span> Single layer neural network</a></li>
+<li class="book-part">Module 5 – Unsupervised learning</li>
+<li><a class="" href="introduction.html"><span class="header-section-number">20</span> Introduction</a></li>
+<li><a class="" href="clustering.html"><span class="header-section-number">21</span> Clustering</a></li>
+<li><a class="" href="model-based-clustering.html"><span class="header-section-number">22</span> Model based clustering</a></li>
+<li><a class="" href="hierarchical-clustering.html"><span class="header-section-number">23</span> Hierarchical clustering</a></li>
+<li><a class="" href="references.html">References</a></li>
+<li class="book-part">Appendix</li>
+<li><a class="" href="alt-pca.html"><span class="header-section-number">A</span> PCA and alternating regression</a></li>
+</ul>
+
+        <div class="book-extra">
+          
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="ridge-regression" class="section level1">
+<h1>
+<span class="header-section-number">5</span> Ridge regression<a class="anchor" aria-label="anchor" href="#ridge-regression"><i class="fas fa-link"></i></a>
+</h1>
+<p>Variable selection methods like stepwise can be highly variable. To illustrate this
+issue consider the following simple experiment. As before,
+we apply stepwise on 5 randomly selected folds of the data, and look at the
+models selected in each of them.</p>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">airp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/rutgers-lib-30861_CSV-1.csv"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span>
+<span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">5</span>
+<span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">airp</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span>
+<span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op">%%</span> <span class="va">k</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>
+<span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">k</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">x0</span> <span class="op">&lt;-</span> <span class="va">airp</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span>
+  <span class="va">null0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">MORT</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">x0</span><span class="op">)</span>
+  <span class="va">full0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">MORT</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">x0</span><span class="op">)</span> <span class="co"># needed for stepwise</span>
+  <span class="va">step.lm0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html">stepAIC</a></span><span class="op">(</span><span class="va">null0</span>,
+    scope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="va">null0</span>, upper <span class="op">=</span> <span class="va">full0</span><span class="op">)</span>,
+    trace <span class="op">=</span> <span class="cn">FALSE</span>
+  <span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/formula.html">formula</a></span><span class="op">(</span><span class="va">step.lm0</span><span class="op">)</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
+<span class="op">}</span>
+<span class="co">#&gt; NONW + EDUC + JANT + OVR65 + SO.</span>
+<span class="co">#&gt; NONW + EDUC + PREC + SO. + JULT</span>
+<span class="co">#&gt; NONW + EDUC + JANT + SO. + PREC</span>
+<span class="co">#&gt; NONW + SO. + JANT + PREC + DENS</span>
+<span class="co">#&gt; NONW + JANT + EDUC + DENS + POPN + JULT + PREC + OVR65</span></code></pre></div>
+<p>Although many variables appear in more than one model, only <code>NONW</code> and <code>SO.</code>
+are in all of them, and <code>JANT</code> and <code>PREC</code> in 4 out of the 5.
+There are also several that appear in only one model (<code>HOUS</code>, <code>WWDRK</code> and <code>POPN</code>).
+This variability may in turn impact (negatively) the accuracy of the
+resulting predictions.</p>
+<p>A different approach to dealing with potentially correlated explanatory
+variables (with the goal of obtaining less variable / more accurate
+predictions) is to “regularize” the parameter estimates. In other words
+we modify the optimization problem that defines the parameter
+estimators (in the case of linear regression fits we tweak
+the least squares problem) to limit their size (in fact restricting
+them to be in a bounded and possibly small subset of the parameter
+space).</p>
+<p>The first proposal for a regularized / penalized estimator for
+linear regression models is Ridge Regression.
+We will use the function <code>glmnet</code> in package <code>glmnet</code> to
+compute the Ridge Regression estimator. Note that this
+function implements a larger family of regularized estimators,
+and in order to obtain a Ridge Regression estimator
+we need to set the argument <code>alpha = 0</code> of <code><a href="https://glmnet.stanford.edu/reference/glmnet.html">glmnet()</a></code>.
+<!-- We use Ridge Regression with the air pollution data to obtain a -->
+<!-- more stable predictor. -->
+We also specify a range of possible values of the penalty
+coefficient (below we use a grid of 50 values between
+exp(-3) and exp(10)).</p>
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://glmnet.stanford.edu">glmnet</a></span><span class="op">)</span>
+<span class="co"># alpha = 0 - Ridge</span>
+<span class="co"># alpha = 1 - LASSO</span>
+<span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="va">airp</span><span class="op">$</span><span class="va">MORT</span><span class="op">)</span>
+<span class="va">xm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">airp</span><span class="op">[</span>, <span class="op">-</span><span class="fl">16</span><span class="op">]</span><span class="op">)</span>
+<span class="va">lambdas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">10</span>, length <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span>
+<span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/glmnet.html">glmnet</a></span><span class="op">(</span>
+  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html">rev</a></span><span class="op">(</span><span class="va">lambdas</span><span class="op">)</span>,
+  family <span class="op">=</span> <span class="st">"gaussian"</span>, alpha <span class="op">=</span> <span class="fl">0</span>
+<span class="op">)</span></code></pre></div>
+<p>The returned object contains the estimated regression coefficients for
+each possible value of the regularization parameter. We can look at
+them using the <code>plot</code> method for objects of class <code>glmnet</code> as
+follows:</p>
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">a</span>, xvar <span class="op">=</span> <span class="st">"lambda"</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, lwd <span class="op">=</span> <span class="fl">6</span>, cex.axis <span class="op">=</span> <span class="fl">1.5</span>, cex.lab <span class="op">=</span> <span class="fl">1.2</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">20</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="20-ridge-regression_files/figure-html/ridge.plot-1.png" width="90%" style="display: block; margin: auto;"></div>
+<div id="selecting-the-level-of-regularization" class="section level2">
+<h2>
+<span class="header-section-number">5.1</span> Selecting the level of regularization<a class="anchor" aria-label="anchor" href="#selecting-the-level-of-regularization"><i class="fas fa-link"></i></a>
+</h2>
+<p>Different values of the penalization parameter will typically yield estimators with
+varying predictive accuracies. To select a good level of regularization we estimate
+the MSPE of the estimator resulting from each value of the penalization parameter.
+One way to do this is to run K-fold cross validation for each value of
+the penalty. The <code>glmnet</code> package provides a built-in function to do this,
+and a <code>plot</code> method to display the results:</p>
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># run 5-fold CV</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
+<span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0</span>, family <span class="op">=</span> <span class="st">"gaussian"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">tmp</span>, lwd <span class="op">=</span> <span class="fl">6</span>, cex.axis <span class="op">=</span> <span class="fl">1.5</span>, cex.lab <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="20-ridge-regression_files/figure-html/ridge.cv-1.png" width="90%" style="display: block; margin: auto;"></div>
+<p>In the above plot the red dots are the estimated MSPE’s for each value of the
+penalty, and the vertical lines mark plus/minus one (estimated) standard deviations (for each
+of those estimated MSPE’s). The <code>plot</code> method will also mark the optimal value of
+the regularization parameter, and also the largest one for which the estimated MSPE
+is within 1-SD of the optimal. The latter is meant to provide a more regularized
+estimator with estimated MSPE within the error-margin of our estimated minimum.</p>
+<p>Note, however, that the above “analysis” is random (because of the intrinsic randomness of
+K-fold CV). If we run it again, we will most likely get different results. In many cases,
+however, the results will be qualitatively similar. If we run 5-fold CV again for this
+data get the following plot:</p>
+<div class="inline-figure"><img src="20-ridge-regression_files/figure-html/ridge.cv2-1.png" width="90%" style="display: block; margin: auto;"></div>
+<p>Note that both plots are similar, but not equal. It would be a good idea to repeat this
+a few times and explore how much variability is involved. If one were interested
+in selecting one value of the penalization parameter that was more stable than
+that obtained from a single 5-fold CV run, one could run it several times and
+take the average of the estimated optimal values. For example:</p>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
+<span class="va">op.la</span> <span class="op">&lt;-</span> <span class="fl">0</span>
+<span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0</span>, family <span class="op">=</span> <span class="st">"gaussian"</span><span class="op">)</span>
+  <span class="va">op.la</span> <span class="op">&lt;-</span> <span class="va">op.la</span> <span class="op">+</span> <span class="va">tmp</span><span class="op">$</span><span class="va">lambda.min</span> <span class="co"># tmp$lambda.1se</span>
+<span class="op">}</span>
+<span class="op">(</span><span class="va">op.la</span> <span class="op">&lt;-</span> <span class="va">op.la</span> <span class="op">/</span> <span class="fl">20</span><span class="op">)</span>
+<span class="co">#&gt; [1] 11.44547</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">op.la</span><span class="op">)</span>
+<span class="co">#&gt; [1] 2.437594</span></code></pre></div>
+<p>This value is reasonably close to the ones we saw in the plots above.</p>
+</div>
+<div id="comparing-predictions" class="section level2">
+<h2>
+<span class="header-section-number">5.2</span> Comparing predictions<a class="anchor" aria-label="anchor" href="#comparing-predictions"><i class="fas fa-link"></i></a>
+</h2>
+<p>We now run a cross-validation experiment to compare the
+MSPE of 3 models: the <strong>full</strong> model, the one
+selected by <strong>stepwise</strong> and the <strong>ridge regression</strong>
+one.</p>
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">xm</span><span class="op">)</span>
+<span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">5</span>
+<span class="va">ii</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op">%%</span> <span class="va">k</span> <span class="op">+</span> <span class="fl">1</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
+<span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100</span>
+<span class="va">mspe.st</span> <span class="op">&lt;-</span> <span class="va">mspe.ri</span> <span class="op">&lt;-</span> <span class="va">mspe.f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">N</span><span class="op">)</span>
+<span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">ii</span><span class="op">)</span>
+  <span class="va">pr.f</span> <span class="op">&lt;-</span> <span class="va">pr.ri</span> <span class="op">&lt;-</span> <span class="va">pr.st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n</span><span class="op">)</span>
+  <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">k</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">tmp.ri</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>
+      x <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span><span class="op">]</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>,
+      nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0</span>, family <span class="op">=</span> <span class="st">"gaussian"</span>
+    <span class="op">)</span>
+    <span class="va">null</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">MORT</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">airp</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
+    <span class="va">full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">MORT</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">airp</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
+    <span class="va">tmp.st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html">stepAIC</a></span><span class="op">(</span><span class="va">null</span>, scope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="va">null</span>, upper <span class="op">=</span> <span class="va">full</span><span class="op">)</span>, trace <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
+    <span class="va">pr.ri</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp.ri</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span>, newx <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
+    <span class="va">pr.st</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp.st</span>, newdata <span class="op">=</span> <span class="va">airp</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
+    <span class="va">pr.f</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">full</span>, newdata <span class="op">=</span> <span class="va">airp</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
+  <span class="op">}</span>
+  <span class="va">mspe.ri</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">airp</span><span class="op">$</span><span class="va">MORT</span> <span class="op">-</span> <span class="va">pr.ri</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
+  <span class="va">mspe.st</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">airp</span><span class="op">$</span><span class="va">MORT</span> <span class="op">-</span> <span class="va">pr.st</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
+  <span class="va">mspe.f</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">airp</span><span class="op">$</span><span class="va">MORT</span> <span class="op">-</span> <span class="va">pr.f</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
+<span class="op">}</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="va">mspe.ri</span>, <span class="va">mspe.st</span>, <span class="va">mspe.f</span>,
+  names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Ridge"</span>, <span class="st">"Stepwise"</span>, <span class="st">"Full"</span><span class="op">)</span>,
+  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"gray80"</span>, <span class="st">"tomato"</span>, <span class="st">"springgreen"</span><span class="op">)</span>, cex.axis <span class="op">=</span> <span class="fl">1.5</span>, cex.lab <span class="op">=</span> <span class="fl">1.5</span>,
+  cex.main <span class="op">=</span> <span class="fl">2</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1300</span>, <span class="fl">3000</span><span class="op">)</span>
+<span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/plotmath.html">hat</a></span><span class="op">(</span><span class="va">MSPE</span><span class="op">)</span><span class="op">)</span>, side <span class="op">=</span> <span class="fl">2</span>, line <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="20-ridge-regression_files/figure-html/ridge.mspe-1.png" width="90%" style="display: block; margin: auto;"></div>
+</div>
+<div id="a-more-stable-ridge-regression" class="section level2">
+<h2>
+<span class="header-section-number">5.3</span> A more stable Ridge Regression?<a class="anchor" aria-label="anchor" href="#a-more-stable-ridge-regression"><i class="fas fa-link"></i></a>
+</h2>
+<p>Here we try to obtain a ridge regression estimator
+with more stable predictions by using the
+average optimal penalty value using 20 runs.
+The improvement does not appear to be
+substantial.</p>
+<div class="inline-figure"><img src="20-ridge-regression_files/figure-html/stableridge.mspe-1.png" width="90%" style="display: block; margin: auto;"></div>
+</div>
+<div id="an-example-where-one-may-not-need-to-select-variables-1" class="section level2">
+<h2>
+<span class="header-section-number">5.4</span> An example where one may not need to select variables<a class="anchor" aria-label="anchor" href="#an-example-where-one-may-not-need-to-select-variables-1"><i class="fas fa-link"></i></a>
+</h2>
+<p>In some cases one may not need to select a subset of explanatory
+variables, and in fact, doing so may affect negatively the accuracy of
+the resulting predictions. In what follows we discuss such an example.
+Consider the credit card data set that contains information
+on credit card users. The interest is in predicting the
+balance carried by a client. We first load the data, and to
+simplify the presentation here we consider only the numerical
+explanatory variables:</p>
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/Credit.csv"</span>, sep <span class="op">=</span> <span class="st">","</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+<span class="va">x</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">11</span><span class="op">)</span><span class="op">]</span></code></pre></div>
+<p>There are 6 available covariates, and a stepwise search selects
+a model with 5 of them (discarding <code>Education</code>):</p>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span>
+<span class="va">null</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Balance</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">x</span><span class="op">)</span>
+<span class="va">full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Balance</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">x</span><span class="op">)</span>
+<span class="op">(</span><span class="va">tmp.st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html">stepAIC</a></span><span class="op">(</span><span class="va">null</span>, scope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="va">null</span>, upper <span class="op">=</span> <span class="va">full</span><span class="op">)</span>, trace <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Call:</span>
+<span class="co">#&gt; lm(formula = Balance ~ Rating + Income + Limit + Age + Cards, </span>
+<span class="co">#&gt;     data = x)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Coefficients:</span>
+<span class="co">#&gt; (Intercept)       Rating       Income        Limit          Age        Cards  </span>
+<span class="co">#&gt;   -449.3610       2.0224      -7.5621       0.1286      -0.8883      11.5527</span></code></pre></div>
+<p>It is an easy exercise to check that the MSPE of this
+smaller model is in fact worse than the one for the <strong>full</strong> one:</p>
+<div class="inline-figure"><img src="20-ridge-regression_files/figure-html/credit3-1.png" width="90%" style="display: block; margin: auto;"></div>
+<p>Using ridge regression instead of stepwise to prevent
+the negative effect of possible correlations among the
+covariates yields a slight improvement (over the <strong>full</strong> model),
+but it is not clear the gain is worth the effort.</p>
+<div class="inline-figure"><img src="20-ridge-regression_files/figure-html/credit4-1.png" width="90%" style="display: block; margin: auto;"></div>
+</div>
+<div id="an-important-limitation-of-ridge-regression" class="section level2">
+<h2>
+<span class="header-section-number">5.5</span> An important limitation of Ridge Regression<a class="anchor" aria-label="anchor" href="#an-important-limitation-of-ridge-regression"><i class="fas fa-link"></i></a>
+</h2>
+<p>Ridge Regression typically yields estimators with more accurate (less variable)
+predictions, specially when there is noticeable correlation among covariates.
+However, it is important to note that Ridge Regression does not select
+variables, and in that sense it does not “replace” methods like stepwise when
+the interest is in using a smaller number of explanatory variables. Furthermore,
+the interpretation of the Ridge Regression coefficient estimates is
+generally difficult. LASSO regression estimates were proposed to
+address these two issues (more stable predictions when correlated
+covariates are present <strong>and</strong> variable selection) simultaneously.</p>
+</div>
+<div id="effective-degrees-of-freedom" class="section level2">
+<h2>
+<span class="header-section-number">5.6</span> Effective degrees of freedom<a class="anchor" aria-label="anchor" href="#effective-degrees-of-freedom"><i class="fas fa-link"></i></a>
+</h2>
+<p>Intuitively, if we interpret “degrees of freedom” as the number of
+“free” parameters that are available to us for tuning when
+we fit / train
+a model or predictor, then we would expect a Ridge Regression estimator
+to have less
+“degrees of freedom” than a regular least squares regression
+estimator, given that it is the solution of a constrained
+optimization problem. This is, of course, an informal
+argument, particularly since there is no proper definition
+of “degrees of freedom”.</p>
+<p>The more general definition discussed in class, called “effective
+degrees of freedom” (EDF), reduces to the trace of the “hat” matrix for
+any linear predictor (including, but not limited to, linear
+regression models), and is due to Efron <span class="citation">(Efron <a href="references.html#ref-Efron1986" role="doc-biblioref">1986</a>)</span>.
+You may also want to look at some of the more recent papers that
+cite the one above.</p>
+<p>It is easy (but worth your time doing it) to see that for a Ridge
+Regression estimator computed with a penalty / regularization
+parameter equal to <strong>b</strong>, the corresponding EDF are the sum of the
+ratio of each eigenvalue of <strong>X’X</strong> with respect to itself plus <strong>b</strong>
+(see the formula on the lecture slides). We compute the EDF
+of the Ridge Regression fit to the air pollution data when the
+penalty parameter is considered to be fixed at the average optimal value
+over 20 runs of 5-fold CV:</p>
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">airp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/rutgers-lib-30861_CSV-1.csv"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span>
+<span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="va">airp</span><span class="op">$</span><span class="va">MORT</span><span class="op">)</span>
+<span class="va">xm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">airp</span><span class="op">[</span>, <span class="op">-</span><span class="fl">16</span><span class="op">]</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://glmnet.stanford.edu">glmnet</a></span><span class="op">)</span>
+<span class="va">lambdas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">10</span>, length <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
+<span class="va">op.la</span> <span class="op">&lt;-</span> <span class="fl">0</span>
+<span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0</span>, family <span class="op">=</span> <span class="st">"gaussian"</span><span class="op">)</span>
+  <span class="va">op.la</span> <span class="op">&lt;-</span> <span class="va">op.la</span> <span class="op">+</span> <span class="va">tmp</span><span class="op">$</span><span class="va">lambda.min</span> <span class="co"># tmp$lambda.1se</span>
+<span class="op">}</span>
+<span class="va">op.la</span> <span class="op">&lt;-</span> <span class="va">op.la</span> <span class="op">/</span> <span class="fl">20</span>
+<span class="va">xm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">airp</span><span class="op">[</span>, <span class="op">-</span><span class="fl">16</span><span class="op">]</span><span class="op">)</span>, scale <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="va">xm.svd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/svd.html">svd</a></span><span class="op">(</span><span class="va">xm</span><span class="op">)</span>
+<span class="op">(</span><span class="va">est.edf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">xm.svd</span><span class="op">$</span><span class="va">d</span><span class="op">^</span><span class="fl">2</span> <span class="op">/</span> <span class="op">(</span><span class="va">xm.svd</span><span class="op">$</span><span class="va">d</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="va">op.la</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; [1] 12.99595</span></code></pre></div>
+</div>
+<div id="important-caveat" class="section level2">
+<h2>
+<span class="header-section-number">5.7</span> Important caveat!<a class="anchor" aria-label="anchor" href="#important-caveat"><i class="fas fa-link"></i></a>
+</h2>
+<p>Note that in the above discussion of EDF we have assumed that
+the matrix defining the linear predictor does not depend on the
+values of the response variable (that it only depends on the matrix <strong>X</strong>),
+as it is the case in linear regression. This is fine for
+Ridge Regression estimators <strong>as long as the penalty parameter
+was not chosen using the data</strong>. This is typically not the case
+in practice. Although the general definition of EDF still holds,
+it is not longer true that Ridge Regression yields a linear
+predictor, and thus the corresponding EDF may not be
+equal to the trace of the corresponding
+matrix.</p>
+
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="comparing-models.html"><span class="header-section-number">4</span> Comparing models</a></div>
+<div class="next"><a href="lasso.html"><span class="header-section-number">6</span> LASSO</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#ridge-regression"><span class="header-section-number">5</span> Ridge regression</a></li>
+<li><a class="nav-link" href="#selecting-the-level-of-regularization"><span class="header-section-number">5.1</span> Selecting the level of regularization</a></li>
+<li><a class="nav-link" href="#comparing-predictions"><span class="header-section-number">5.2</span> Comparing predictions</a></li>
+<li><a class="nav-link" href="#a-more-stable-ridge-regression"><span class="header-section-number">5.3</span> A more stable Ridge Regression?</a></li>
+<li><a class="nav-link" href="#an-example-where-one-may-not-need-to-select-variables-1"><span class="header-section-number">5.4</span> An example where one may not need to select variables</a></li>
+<li><a class="nav-link" href="#an-important-limitation-of-ridge-regression"><span class="header-section-number">5.5</span> An important limitation of Ridge Regression</a></li>
+<li><a class="nav-link" href="#effective-degrees-of-freedom"><span class="header-section-number">5.6</span> Effective degrees of freedom</a></li>
+<li><a class="nav-link" href="#important-caveat"><span class="header-section-number">5.7</span> Important caveat!</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+          
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-08-17.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

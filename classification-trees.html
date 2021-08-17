@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>13 Classification Trees | UBC Stat 406 Worksheets</title>
+<meta name="author" content="Daniel J. McDonald and Matías Salibán-Barrera">
+<meta name="description" content="Just as in the continuous regression case, when the number of available explanatory variables is moderate or large, methods like nearest neighbours quickly become unfeasible, or their performance...">
+<meta name="generator" content="bookdown 0.23 with bs4_book()">
+<meta property="og:title" content="13 Classification Trees | UBC Stat 406 Worksheets">
+<meta property="og:type" content="book">
+<meta property="og:description" content="Just as in the continuous regression case, when the number of available explanatory variables is moderate or large, methods like nearest neighbours quickly become unfeasible, or their performance...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="13 Classification Trees | UBC Stat 406 Worksheets">
+<meta name="twitter:description" content="Just as in the continuous regression case, when the number of available explanatory variables is moderate or large, methods like nearest neighbours quickly become unfeasible, or their performance...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">UBC Stat 406 Worksheets</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">Preface</a></li>
+<li class="book-part">Module 0 – Review</li>
+<li><a class="" href="predictions-using-a-linear-model.html"><span class="header-section-number">1</span> Predictions using a linear model</a></li>
+<li class="book-part">Module 1 – Model Selection</li>
+<li><a class="" href="predictions-using-a-linear-model-continued.html"><span class="header-section-number">2</span> Predictions using a linear model (continued)</a></li>
+<li><a class="" href="cross-validation-concerns.html"><span class="header-section-number">3</span> Cross-validation concerns</a></li>
+<li><a class="" href="comparing-models.html"><span class="header-section-number">4</span> Comparing models</a></li>
+<li class="book-part">Module 2 – Regression</li>
+<li><a class="" href="ridge-regression.html"><span class="header-section-number">5</span> Ridge regression</a></li>
+<li><a class="" href="lasso.html"><span class="header-section-number">6</span> LASSO</a></li>
+<li><a class="" href="non-parametric-regression.html"><span class="header-section-number">7</span> Non-parametric regression</a></li>
+<li><a class="" href="kernel-regression-local-regression.html"><span class="header-section-number">8</span> Kernel regression / local regression</a></li>
+<li><a class="" href="regression-trees.html"><span class="header-section-number">9</span> Regression trees</a></li>
+<li><a class="" href="pruning-regression-trees-with-rpart.html"><span class="header-section-number">10</span> Pruning regression trees with rpart</a></li>
+<li class="book-part">Module 3 – Classification</li>
+<li><a class="" href="parametric-classifiers.html"><span class="header-section-number">11</span> Parametric classifiers</a></li>
+<li><a class="" href="qda.html"><span class="header-section-number">12</span> QDA</a></li>
+<li><a class="active" href="classification-trees.html"><span class="header-section-number">13</span> Classification Trees</a></li>
+<li><a class="" href="bagging-for-regression.html"><span class="header-section-number">14</span> Bagging for regression</a></li>
+<li><a class="" href="bagging-for-classification.html"><span class="header-section-number">15</span> Bagging for classification</a></li>
+<li><a class="" href="random-forests.html"><span class="header-section-number">16</span> Random Forests</a></li>
+<li><a class="" href="boosting-a-statistical-learning-perspective.html"><span class="header-section-number">17</span> Boosting (a Statistical Learning perspective)</a></li>
+<li><a class="" href="what-is-adaboost-doing-really.html"><span class="header-section-number">18</span> What is Adaboost doing, really?</a></li>
+<li><a class="" href="single-layer-neural-network.html"><span class="header-section-number">19</span> Single layer neural network</a></li>
+<li class="book-part">Module 5 – Unsupervised learning</li>
+<li><a class="" href="introduction.html"><span class="header-section-number">20</span> Introduction</a></li>
+<li><a class="" href="clustering.html"><span class="header-section-number">21</span> Clustering</a></li>
+<li><a class="" href="model-based-clustering.html"><span class="header-section-number">22</span> Model based clustering</a></li>
+<li><a class="" href="hierarchical-clustering.html"><span class="header-section-number">23</span> Hierarchical clustering</a></li>
+<li><a class="" href="references.html">References</a></li>
+<li class="book-part">Appendix</li>
+<li><a class="" href="alt-pca.html"><span class="header-section-number">A</span> PCA and alternating regression</a></li>
+</ul>
+
+        <div class="book-extra">
+          
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="classification-trees" class="section level1">
+<h1>
+<span class="header-section-number">13</span> Classification Trees<a class="anchor" aria-label="anchor" href="#classification-trees"><i class="fas fa-link"></i></a>
+</h1>
+<p>Just as in the continuous regression case, when the number of available
+explanatory variables is moderate or large, methods like nearest neighbours
+quickly become unfeasible, or their performance is not satisfactory. Classification
+trees provide a good alternative: they are still model-free (we do not need to
+assume anything about the true conditional probabilities of each class for a given
+vector of features <strong>X</strong>), but they are constrained to have a fairly specifc
+form. Intuitively (and informally) we could say (if nobody was listening) that
+this restriction provides some form of regularization or penalization.</p>
+<p>Classification trees are constructed in much the same was as regression trees.
+We will construct a partition of the feature space (in “rectangular” areas),
+and within each region we will predict the class to be the most common class
+among the training points that are in that region. It is reasonable then
+to try to find a partition of the feature space so that in each area there is
+only one class (or at least, such that one class clearly dominates the others
+in that region). Hence, to build a classification tree we need a quantitative measure of
+the homogeneity of the classes present in a node. Given such a
+numerical measure, we can build the tree
+by selecting, at each step, the optimal split in the sense of yielding the most
+homogeneous child leaves possible (i.e. by maximizing at each step the
+chosen homogeneity measure). The two most common homogeneity measures
+are the Gini Index and the deviance (refer to the discussion in class).
+Although the resulting trees are generally different depending on which
+loss function is used, we will later see that this difference is not
+critical in practice.</p>
+<p>As usual, in order to be able to visualize what is going on, we will
+illustrate the training and use of classification trees on a simple toy example.
+This example contains data on admissions to graduate school. There are
+2 explanatory variables (GPA and GMAT scores), and the response has 3
+levels: Admitted, No decision, Not admitted. The purpose here is to
+build a classifier to decide if a student will be admitted to
+graduate school based on her/his GMAT and GPA scores.</p>
+<p>We first read the data, convert the response into a proper <code>factor</code>
+variable, and visualize the training set:</p>
+<div class="sourceCode" id="cb157"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/T11-6.DAT"</span>, header <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="va">mm</span><span class="op">$</span><span class="va">V3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">mm</span><span class="op">$</span><span class="va">V3</span><span class="op">)</span>
+<span class="co"># re-scale one feature, for better plots</span>
+<span class="va">mm</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">mm</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span> <span class="op">/</span> <span class="fl">150</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">mm</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>,
+  pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"green"</span><span class="op">)</span><span class="op">[</span><span class="va">mm</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span>,
+  xlab <span class="op">=</span> <span class="st">"GPA"</span>, <span class="st">"GMAT"</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span>
+<span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="32-class-trees_files/figure-html/trees1-1.png" width="90%" style="display: block; margin: auto;"></div>
+<p>Next we build a classification tree using the Gini index as splitting
+criterion.</p>
+<div class="sourceCode" id="cb158"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bethatkinson/rpart">rpart</a></span><span class="op">)</span>
+<span class="va">a.t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">V3</span> <span class="op">~</span> <span class="va">V1</span> <span class="op">+</span> <span class="va">V2</span>, data <span class="op">=</span> <span class="va">mm</span>, method <span class="op">=</span> <span class="st">"class"</span>, parms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>split <span class="op">=</span> <span class="st">"gini"</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">a.t</span>, margin <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="va">a.t</span>, use.n <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="32-class-trees_files/figure-html/trees2-1.png" width="90%" style="display: block; margin: auto;"></div>
+<p>If we use the deviance as splitting criterion instead, we obtain the following
+classification tree (also using the default stopping criteria):</p>
+<div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">a.t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">V3</span> <span class="op">~</span> <span class="va">V1</span> <span class="op">+</span> <span class="va">V2</span>, data <span class="op">=</span> <span class="va">mm</span>, method <span class="op">=</span> <span class="st">"class"</span>, parms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>split <span class="op">=</span> <span class="st">"information"</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">a.t</span>, margin <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="va">a.t</span>, use.n <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="32-class-trees_files/figure-html/trees3-1.png" width="90%" style="display: block; margin: auto;"></div>
+<p>The predicted conditional probabilities for each class on the range of values
+of the explanatory variables present on the training set can be visualized
+exactly as before:</p>
+<div class="sourceCode" id="cb160"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">aa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span>, length <span class="op">=</span> <span class="fl">200</span><span class="op">)</span>
+<span class="va">bb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span>, length <span class="op">=</span> <span class="fl">200</span><span class="op">)</span>
+<span class="va">dd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html">expand.grid</a></span><span class="op">(</span><span class="va">aa</span>, <span class="va">bb</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">dd</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">mm</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>
+<span class="va">p.t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a.t</span>, newdata <span class="op">=</span> <span class="va">dd</span>, type <span class="op">=</span> <span class="st">"prob"</span><span class="op">)</span></code></pre></div>
+<p>We display the estimated conditional probabilities for each class:</p>
+<div class="sourceCode" id="cb161"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/filled.contour.html">filled.contour</a></span><span class="op">(</span><span class="va">aa</span>, <span class="va">bb</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">p.t</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, <span class="fl">200</span>, <span class="fl">200</span><span class="op">)</span>,
+  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">terrain.colors</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>, xlab <span class="op">=</span> <span class="st">"GPA"</span>, ylab <span class="op">=</span> <span class="st">"GMAT"</span>,
+  panel.last <span class="op">=</span> <span class="op">{</span>
+    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">mm</span><span class="op">[</span>, <span class="op">-</span><span class="fl">3</span><span class="op">]</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"green"</span><span class="op">)</span><span class="op">[</span><span class="va">mm</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
+  <span class="op">}</span>
+<span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="32-class-trees_files/figure-html/trees5-1.png" width="90%" style="display: block; margin: auto;"></div>
+<div class="sourceCode" id="cb162"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/filled.contour.html">filled.contour</a></span><span class="op">(</span><span class="va">aa</span>, <span class="va">bb</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">p.t</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>, <span class="fl">200</span>, <span class="fl">200</span><span class="op">)</span>,
+  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">terrain.colors</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>, xlab <span class="op">=</span> <span class="st">"GPA"</span>, ylab <span class="op">=</span> <span class="st">"GMAT"</span>,
+  panel.last <span class="op">=</span> <span class="op">{</span>
+    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">mm</span><span class="op">[</span>, <span class="op">-</span><span class="fl">3</span><span class="op">]</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"green"</span><span class="op">)</span><span class="op">[</span><span class="va">mm</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
+  <span class="op">}</span>
+<span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="32-class-trees_files/figure-html/trees5-2.png" width="90%" style="display: block; margin: auto;"></div>
+<div class="sourceCode" id="cb163"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/filled.contour.html">filled.contour</a></span><span class="op">(</span><span class="va">aa</span>, <span class="va">bb</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">p.t</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span>, <span class="fl">200</span>, <span class="fl">200</span><span class="op">)</span>,
+  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">terrain.colors</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>, xlab <span class="op">=</span> <span class="st">"GPA"</span>, ylab <span class="op">=</span> <span class="st">"GMAT"</span>,
+  panel.last <span class="op">=</span> <span class="op">{</span>
+    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">mm</span><span class="op">[</span>, <span class="op">-</span><span class="fl">3</span><span class="op">]</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"green"</span><span class="op">)</span><span class="op">[</span><span class="va">mm</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
+  <span class="op">}</span>
+<span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="32-class-trees_files/figure-html/trees5-3.png" width="90%" style="display: block; margin: auto;"></div>
+<div id="pruning" class="section level2">
+<h2>
+<span class="header-section-number">13.1</span> Pruning<a class="anchor" aria-label="anchor" href="#pruning"><i class="fas fa-link"></i></a>
+</h2>
+<p>Just like regression trees, classification trees generally perform better if they are built
+by pruning an overfitting one. This is done in the same way as it is done for classification
+trees. When we do it on the graduate school admissions data we indeed obtain estimated
+conditional probabilities that appear to be more sensible (less “simple”):</p>
+<div class="sourceCode" id="cb164"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
+<span class="va">a.t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">V3</span> <span class="op">~</span> <span class="va">V1</span> <span class="op">+</span> <span class="va">V2</span>,
+  data <span class="op">=</span> <span class="va">mm</span>, method <span class="op">=</span> <span class="st">"class"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.control.html">rpart.control</a></span><span class="op">(</span>minsplit <span class="op">=</span> <span class="fl">3</span>, cp <span class="op">=</span> <span class="fl">1e-8</span>, xval <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,
+  parms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>split <span class="op">=</span> <span class="st">"information"</span><span class="op">)</span>
+<span class="op">)</span>
+<span class="va">b</span> <span class="op">&lt;-</span> <span class="va">a.t</span><span class="op">$</span><span class="va">cptable</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">a.t</span><span class="op">$</span><span class="va">cptable</span><span class="op">[</span>, <span class="st">"xerror"</span><span class="op">]</span><span class="op">)</span>, <span class="st">"CP"</span><span class="op">]</span>
+<span class="va">a.t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/prune.rpart.html">prune</a></span><span class="op">(</span><span class="va">a.t</span>, cp <span class="op">=</span> <span class="va">b</span><span class="op">)</span>
+<span class="va">p.t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a.t</span>, newdata <span class="op">=</span> <span class="va">dd</span>, type <span class="op">=</span> <span class="st">"prob"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/filled.contour.html">filled.contour</a></span><span class="op">(</span><span class="va">aa</span>, <span class="va">bb</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">p.t</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, <span class="fl">200</span>, <span class="fl">200</span><span class="op">)</span>,
+  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">terrain.colors</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>, xlab <span class="op">=</span> <span class="st">"GPA"</span>, ylab <span class="op">=</span> <span class="st">"GMAT"</span>,
+  panel.last <span class="op">=</span> <span class="op">{</span>
+    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">mm</span><span class="op">[</span>, <span class="op">-</span><span class="fl">3</span><span class="op">]</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"green"</span><span class="op">)</span><span class="op">[</span><span class="va">mm</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
+  <span class="op">}</span>
+<span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="32-class-trees_files/figure-html/trees7-1.png" width="90%" style="display: block; margin: auto;"></div>
+<div class="sourceCode" id="cb165"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/filled.contour.html">filled.contour</a></span><span class="op">(</span><span class="va">aa</span>, <span class="va">bb</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">p.t</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>, <span class="fl">200</span>, <span class="fl">200</span><span class="op">)</span>,
+  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">terrain.colors</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>, xlab <span class="op">=</span> <span class="st">"GPA"</span>, ylab <span class="op">=</span> <span class="st">"GMAT"</span>,
+  panel.last <span class="op">=</span> <span class="op">{</span>
+    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">mm</span><span class="op">[</span>, <span class="op">-</span><span class="fl">3</span><span class="op">]</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"green"</span><span class="op">)</span><span class="op">[</span><span class="va">mm</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
+  <span class="op">}</span>
+<span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="32-class-trees_files/figure-html/trees7-2.png" width="90%" style="display: block; margin: auto;"></div>
+<div class="sourceCode" id="cb166"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/filled.contour.html">filled.contour</a></span><span class="op">(</span><span class="va">aa</span>, <span class="va">bb</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">p.t</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span>, <span class="fl">200</span>, <span class="fl">200</span><span class="op">)</span>,
+  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">terrain.colors</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>, xlab <span class="op">=</span> <span class="st">"GPA"</span>, ylab <span class="op">=</span> <span class="st">"GMAT"</span>,
+  panel.last <span class="op">=</span> <span class="op">{</span>
+    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">mm</span><span class="op">[</span>, <span class="op">-</span><span class="fl">3</span><span class="op">]</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"green"</span><span class="op">)</span><span class="op">[</span><span class="va">mm</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
+  <span class="op">}</span>
+<span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="32-class-trees_files/figure-html/trees7-3.png" width="90%" style="display: block; margin: auto;"></div>
+
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="qda.html"><span class="header-section-number">12</span> QDA</a></div>
+<div class="next"><a href="bagging-for-regression.html"><span class="header-section-number">14</span> Bagging for regression</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#classification-trees"><span class="header-section-number">13</span> Classification Trees</a></li>
+<li><a class="nav-link" href="#pruning"><span class="header-section-number">13.1</span> Pruning</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+          
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-08-17.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>3 Cross-validation concerns | UBC Stat 406 Worksheets</title>
+<meta name="author" content="Daniel J. McDonald and Matías Salibán-Barrera">
+<meta name="description" content="In this document we study how to perform cross-validation when the model was selected or determined using the training data. Consider the following synthetic data set dat &lt;-...">
+<meta name="generator" content="bookdown 0.23 with bs4_book()">
+<meta property="og:title" content="3 Cross-validation concerns | UBC Stat 406 Worksheets">
+<meta property="og:type" content="book">
+<meta property="og:description" content="In this document we study how to perform cross-validation when the model was selected or determined using the training data. Consider the following synthetic data set dat &lt;-...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="3 Cross-validation concerns | UBC Stat 406 Worksheets">
+<meta name="twitter:description" content="In this document we study how to perform cross-validation when the model was selected or determined using the training data. Consider the following synthetic data set dat &lt;-...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">UBC Stat 406 Worksheets</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">Preface</a></li>
+<li class="book-part">Module 0 – Review</li>
+<li><a class="" href="predictions-using-a-linear-model.html"><span class="header-section-number">1</span> Predictions using a linear model</a></li>
+<li class="book-part">Module 1 – Model Selection</li>
+<li><a class="" href="predictions-using-a-linear-model-continued.html"><span class="header-section-number">2</span> Predictions using a linear model (continued)</a></li>
+<li><a class="active" href="cross-validation-concerns.html"><span class="header-section-number">3</span> Cross-validation concerns</a></li>
+<li><a class="" href="comparing-models.html"><span class="header-section-number">4</span> Comparing models</a></li>
+<li class="book-part">Module 2 – Regression</li>
+<li><a class="" href="ridge-regression.html"><span class="header-section-number">5</span> Ridge regression</a></li>
+<li><a class="" href="lasso.html"><span class="header-section-number">6</span> LASSO</a></li>
+<li><a class="" href="non-parametric-regression.html"><span class="header-section-number">7</span> Non-parametric regression</a></li>
+<li><a class="" href="kernel-regression-local-regression.html"><span class="header-section-number">8</span> Kernel regression / local regression</a></li>
+<li><a class="" href="regression-trees.html"><span class="header-section-number">9</span> Regression trees</a></li>
+<li><a class="" href="pruning-regression-trees-with-rpart.html"><span class="header-section-number">10</span> Pruning regression trees with rpart</a></li>
+<li class="book-part">Module 3 – Classification</li>
+<li><a class="" href="parametric-classifiers.html"><span class="header-section-number">11</span> Parametric classifiers</a></li>
+<li><a class="" href="qda.html"><span class="header-section-number">12</span> QDA</a></li>
+<li><a class="" href="classification-trees.html"><span class="header-section-number">13</span> Classification Trees</a></li>
+<li><a class="" href="bagging-for-regression.html"><span class="header-section-number">14</span> Bagging for regression</a></li>
+<li><a class="" href="bagging-for-classification.html"><span class="header-section-number">15</span> Bagging for classification</a></li>
+<li><a class="" href="random-forests.html"><span class="header-section-number">16</span> Random Forests</a></li>
+<li><a class="" href="boosting-a-statistical-learning-perspective.html"><span class="header-section-number">17</span> Boosting (a Statistical Learning perspective)</a></li>
+<li><a class="" href="what-is-adaboost-doing-really.html"><span class="header-section-number">18</span> What is Adaboost doing, really?</a></li>
+<li><a class="" href="single-layer-neural-network.html"><span class="header-section-number">19</span> Single layer neural network</a></li>
+<li class="book-part">Module 5 – Unsupervised learning</li>
+<li><a class="" href="introduction.html"><span class="header-section-number">20</span> Introduction</a></li>
+<li><a class="" href="clustering.html"><span class="header-section-number">21</span> Clustering</a></li>
+<li><a class="" href="model-based-clustering.html"><span class="header-section-number">22</span> Model based clustering</a></li>
+<li><a class="" href="hierarchical-clustering.html"><span class="header-section-number">23</span> Hierarchical clustering</a></li>
+<li><a class="" href="references.html">References</a></li>
+<li class="book-part">Appendix</li>
+<li><a class="" href="alt-pca.html"><span class="header-section-number">A</span> PCA and alternating regression</a></li>
+</ul>
+
+        <div class="book-extra">
+          
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="cross-validation-concerns" class="section level1">
+<h1>
+<span class="header-section-number">3</span> Cross-validation concerns<a class="anchor" aria-label="anchor" href="#cross-validation-concerns"><i class="fas fa-link"></i></a>
+</h1>
+<p>In this document we study how to perform cross-validation
+when the model was selected or determined using the
+training data. Consider the following synthetic data
+set</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/fallacy.dat"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span></code></pre></div>
+<p>This is the same data used in class. In this example
+we know what the “true” model is, and thus we also know
+what the “optimal” predictor is.
+However, let us ignore this knowledge, and build a
+linear model instead.
+Given how many variables are available, we use
+forward stepwise (AIC-based) to select a good subset of
+them to include in our linear model:</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span>
+<span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span>
+<span class="va">null</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span>
+<span class="va">full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span> <span class="co"># needed for stepwise</span>
+<span class="va">step.lm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html">stepAIC</a></span><span class="op">(</span><span class="va">null</span>, scope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="va">null</span>, upper <span class="op">=</span> <span class="va">full</span><span class="op">)</span>, trace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<p>Without thinking too much, we use 50 runs of 5-fold CV (ten runs)
+to compare the MSPE of the
+<strong>null</strong> model (which we know is “true”) and the
+one we obtained using forward stepwise:</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span>
+<span class="va">ii</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op">%%</span> <span class="fl">5</span> <span class="op">+</span> <span class="fl">1</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">17</span><span class="op">)</span>
+<span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">50</span>
+<span class="va">mspe.n</span> <span class="op">&lt;-</span> <span class="va">mspe.st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">N</span><span class="op">)</span>
+<span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">ii</span><span class="op">)</span>
+  <span class="va">pr.n</span> <span class="op">&lt;-</span> <span class="va">pr.st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n</span><span class="op">)</span>
+  <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">tmp.st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span><span class="op">(</span><span class="va">step.lm</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
+    <span class="va">pr.st</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp.st</span>, newdata <span class="op">=</span> <span class="va">dat</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
+    <span class="va">pr.n</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span><span class="op">)</span>
+  <span class="op">}</span>
+  <span class="va">mspe.st</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">Y</span> <span class="op">-</span> <span class="va">pr.st</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">mspe.n</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">Y</span> <span class="op">-</span> <span class="va">pr.n</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+<span class="op">}</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="va">mspe.st</span>, <span class="va">mspe.n</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Stepwise"</span>, <span class="st">"NULL"</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"gray60"</span>, <span class="st">"hotpink"</span><span class="op">)</span>, main <span class="op">=</span> <span class="st">"Wrong"</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="11-cv-concerns_files/figure-html/wrong-1.png" width="90%" style="display: block; margin: auto;"></div>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">mspe.st</span><span class="op">)</span>
+<span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span>
+<span class="co">#&gt;  0.5931  0.6392  0.6658  0.6663  0.6945  0.7517</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">mspe.n</span><span class="op">)</span>
+<span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span>
+<span class="co">#&gt;   1.044   1.050   1.057   1.057   1.062   1.084</span></code></pre></div>
+<ul>
+<li>
+<strong>Something is wrong!</strong> What? Why?</li>
+<li>What would you change above to obtain reliable estimates for the MSPE of the
+model selected with the stepwise approach?</li>
+</ul>
+<!-- ## Correlated covariates --><!-- Technological advances in recent decades have resulted in data  --><!-- being collected in a fundamentally different way from the way  --><!-- it was when "classical" statistical methods were proposed.  --><!-- Specifically, it is not at all uncommon to have data sets with --><!-- an abundance of potentially useful explanatory variables.  --><!-- Sometimes the investigators are not sure which of them can be  --><!-- expected to be useful or meaningful. In many applications one --><!-- finds data with many more variables than cases.  --><!-- A consequence of this "wide net" data collection strategy is  --><!-- that many of the explanatory variables may be correlated with --><!-- each other. In what follows we will illustrate some of the --><!-- problems that this can cause both when training and interpreting --><!-- models, and also with the resulting predictions. --><!-- ### Significant variables "dissappear" --><!-- Consider the air pollution data set, and the fit to the  --><!-- **reduced** linear regression model used previously in class: --><!-- ```{r signif} --><!-- # Correlated covariates --><!-- x <- read.table('../Lecture1/rutgers-lib-30861_CSV-1.csv', header=TRUE, sep=',') --><!-- reduced <- lm(MORT ~ POOR + HC + NOX + HOUS + NONW, data=x) --><!-- round( summary(reduced)$coef, 3) --><!-- ``` --><!-- Note that all coefficients seem to be significant based on --><!-- the individual tests of hypothesis (with `POOR` and  --><!-- `HOUS` maybe only marginally so). In this sense all 5 --><!-- explanatory varibles in this model appear to be relevant. --><!-- Now, we fit the **full** model, that is, we include --><!-- all available explanatory variables in the data set: --><!-- ```{r signif2} --><!-- full <- lm(MORT ~ ., data=x) --><!-- round( summary(full)$coef, 3) --><!-- ``` --><!-- Now we have many more parameters to estimate, and while two of --><!-- them appear to be significantly different from zero (`NONW` --><!-- and `PREC`), all the others seem to be redundant.  --><!-- In particular, note that the p-values for the individual --><!-- test of hypotheses for 4 out of the 5   --><!-- regression coefficients for the variables of the **reduced** --><!-- model have now become not significant. --><!-- ```{r signif3} --><!-- round( summary(full)$coef[ names(coef(reduced)), ], 3) --><!-- ``` --><!-- ### Why does this happen?  --><!-- Recall that the covariance matrix of the least squares estimator involves the --><!-- inverse of (X'X), where X' denotes the transpose of the n x p matrix X (that --><!-- contains each vector of explanatory variables as a row). It is easy to see  --><!-- that if two columns of X are linearly dependent, then X'X will be rank deficient.  --><!-- When two columns of X are "close" to being linearly dependent (e.g. their --><!-- linear corrleation is high), then the matrix X'X will be ill-conditioned, and --><!-- its inverse will have very large entries. This means that the estimated  --><!-- standard errors of the least squares estimator will be unduly large, resulting --><!-- in non-significant test of hypotheses for each parameter separately, even if --><!-- the global test for all of them simultaneously is highly significant. --><!-- ### Why is this a problem if we are interested in prediction? --><!-- Although in many applications one is interested in interpreting the parameters --><!-- of the model, even if one is only trying to fit / train a model to do --><!-- predictions, highly variable parameter estimators will typically result in --><!-- a noticeable loss of prediction accuracy. This can be easily seen from the  --><!-- bias / variance factorization of the mean squared prediction error (MSPE)  --><!-- mentioned in class. Hence, better predictions can be obtained if one --><!-- uses less-variable parameter estimators.  --><!-- ### What can we do? --><!-- A commonly used strategy is to remove some explanatory variables from the --><!-- model, leaving only non-redundant covariates. However, this is easier said than --><!-- done. You have seen some strategies in other courses (stepwise variable selection, etc.) --><!-- In coming weeks we will investigate other methods to deal with this problem. --><div id="estimating-mspe-with-cv-when-the-model-was-built-using-the-data" class="section level2">
+<h2>
+<span class="header-section-number">3.1</span> Estimating MSPE with CV when the model was built using the data<a class="anchor" aria-label="anchor" href="#estimating-mspe-with-cv-when-the-model-was-built-using-the-data"><i class="fas fa-link"></i></a>
+</h2>
+<!--Last week we learned that one needs to be careful when using cross-validation (in any of its flavours--leave one out, K-fold, etc.) -->
+<p>Misuse of cross-validation is, unfortunately,
+not unusual. For <a href="https://doi.org/10.1073/pnas.102102699">one example</a> see <span class="citation">(Ambroise and McLachlan <a href="references.html#ref-Ambroise6562" role="doc-biblioref">2002</a>)</span>.</p>
+<p>In particular, for every fold one needs to repeat <strong>everything</strong> that was done with the training set (selecting variables, looking at pairwise correlations, AIC values, etc.)</p>
+</div>
+<div id="correlated-covariates" class="section level2">
+<h2>
+<span class="header-section-number">3.2</span> Correlated covariates<a class="anchor" aria-label="anchor" href="#correlated-covariates"><i class="fas fa-link"></i></a>
+</h2>
+<p>Technological advances in recent decades have resulted in data
+being collected in a fundamentally different manner from the way
+it was done when most “classical” statistical methods were developed
+(early to mid 1900’s).
+Specifically, it is now not at all uncommon to have data sets with
+an abundance of potentially useful explanatory variables
+(for example with more variables than observations).
+Sometimes the investigators are not sure which of the collected variables
+can be
+expected to be useful or meaningful.</p>
+<p>A consequence of this “wide net” data collection strategy is
+that many of the explanatory variables may be correlated with
+each other. In what follows we will illustrate some of the
+problems that this can cause both when training and interpreting
+models, and also with the resulting predictions.</p>
+<div id="variables-that-were-important-may-suddenly-dissappear" class="section level3">
+<h3>
+<span class="header-section-number">3.2.1</span> Variables that were important may suddenly “dissappear”<a class="anchor" aria-label="anchor" href="#variables-that-were-important-may-suddenly-dissappear"><i class="fas fa-link"></i></a>
+</h3>
+<p>Consider the air pollution data set we used
+earlier, and the
+<strong>reduced</strong> linear regression model discussed in class:</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/rutgers-lib-30861_CSV-1.csv"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span>
+<span class="va">reduced</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">MORT</span> <span class="op">~</span> <span class="va">POOR</span> <span class="op">+</span> <span class="va">HC</span> <span class="op">+</span> <span class="va">NOX</span> <span class="op">+</span> <span class="va">HOUS</span> <span class="op">+</span> <span class="va">NONW</span>, data <span class="op">=</span> <span class="va">x</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">reduced</span><span class="op">)</span><span class="op">$</span><span class="va">coef</span>, <span class="fl">3</span><span class="op">)</span>
+<span class="co">#&gt;             Estimate Std. Error t value Pr(&gt;|t|)</span>
+<span class="co">#&gt; (Intercept) 1172.831    143.241   8.188    0.000</span>
+<span class="co">#&gt; POOR          -4.065      2.238  -1.817    0.075</span>
+<span class="co">#&gt; HC            -1.480      0.333  -4.447    0.000</span>
+<span class="co">#&gt; NOX            2.846      0.652   4.369    0.000</span>
+<span class="co">#&gt; HOUS          -2.911      1.533  -1.899    0.063</span>
+<span class="co">#&gt; NONW           4.470      0.846   5.283    0.000</span></code></pre></div>
+<p>Note that all coefficients seem to be significant based on
+the individual tests of hypothesis (with <code>POOR</code> and
+<code>HOUS</code> maybe only marginally so). In this sense all 5
+explanatory varibles in this model appear to be relevant.</p>
+<p>Now, we fit the <strong>full</strong> model, that is, we include
+all available explanatory variables in the data set:</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">MORT</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">x</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">full</span><span class="op">)</span><span class="op">$</span><span class="va">coef</span>, <span class="fl">3</span><span class="op">)</span>
+<span class="co">#&gt;             Estimate Std. Error t value Pr(&gt;|t|)</span>
+<span class="co">#&gt; (Intercept) 1763.981    437.327   4.034    0.000</span>
+<span class="co">#&gt; PREC           1.905      0.924   2.063    0.045</span>
+<span class="co">#&gt; JANT          -1.938      1.108  -1.748    0.087</span>
+<span class="co">#&gt; JULT          -3.100      1.902  -1.630    0.110</span>
+<span class="co">#&gt; OVR65         -9.065      8.486  -1.068    0.291</span>
+<span class="co">#&gt; POPN        -106.826     69.780  -1.531    0.133</span>
+<span class="co">#&gt; EDUC         -17.157     11.860  -1.447    0.155</span>
+<span class="co">#&gt; HOUS          -0.651      1.768  -0.368    0.714</span>
+<span class="co">#&gt; DENS           0.004      0.004   0.894    0.376</span>
+<span class="co">#&gt; NONW           4.460      1.327   3.360    0.002</span>
+<span class="co">#&gt; WWDRK         -0.187      1.662  -0.113    0.911</span>
+<span class="co">#&gt; POOR          -0.168      3.227  -0.052    0.959</span>
+<span class="co">#&gt; HC            -0.672      0.491  -1.369    0.178</span>
+<span class="co">#&gt; NOX            1.340      1.006   1.333    0.190</span>
+<span class="co">#&gt; SO.            0.086      0.148   0.585    0.562</span>
+<span class="co">#&gt; HUMID          0.107      1.169   0.091    0.928</span></code></pre></div>
+<p>In the <strong>full</strong> model there
+are many more parameters that need to be estimated, and while two of
+them appear to be significantly different from zero (<code>NONW</code>
+and <code>PREC</code>), all the others appear to be redundant.
+In particular, note that the p-values for the individual
+test of hypotheses for 4 out of the 5
+regression coefficients for the variables of the <strong>reduced</strong>
+model have now become not significant.</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">full</span><span class="op">)</span><span class="op">$</span><span class="va">coef</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">reduced</span><span class="op">)</span><span class="op">)</span>, <span class="op">]</span>, <span class="fl">3</span><span class="op">)</span>
+<span class="co">#&gt;             Estimate Std. Error t value Pr(&gt;|t|)</span>
+<span class="co">#&gt; (Intercept) 1763.981    437.327   4.034    0.000</span>
+<span class="co">#&gt; POOR          -0.168      3.227  -0.052    0.959</span>
+<span class="co">#&gt; HC            -0.672      0.491  -1.369    0.178</span>
+<span class="co">#&gt; NOX            1.340      1.006   1.333    0.190</span>
+<span class="co">#&gt; HOUS          -0.651      1.768  -0.368    0.714</span>
+<span class="co">#&gt; NONW           4.460      1.327   3.360    0.002</span></code></pre></div>
+<p>In other words, the coeffficients of
+explanatory variables that appeared to
+be relevant in one model may turn
+to be “not significant” when other variables
+are included. This could pose some challenges
+for interpreting the estimated parameters of the
+models.</p>
+</div>
+<div id="why-does-this-happen" class="section level3">
+<h3>
+<span class="header-section-number">3.2.2</span> Why does this happen?<a class="anchor" aria-label="anchor" href="#why-does-this-happen"><i class="fas fa-link"></i></a>
+</h3>
+<p>Recall that the covariance matrix of the least squares estimator involves the
+inverse of (X’X), where X’ denotes the transpose of the n x p matrix X (that
+contains each vector of explanatory variables as a row). It is easy to see
+that if two columns of X are linearly dependent, then X’X will be rank deficient.
+When two columns of X are “close” to being linearly dependent (e.g. their
+linear corrleation is high), then the matrix X’X will be ill-conditioned, and
+its inverse will have very large entries. This means that the estimated
+standard errors of the least squares estimator will be unduly large, resulting
+in non-significant test of hypotheses for each parameter separately, even if
+the global test for all of them simultaneously is highly significant.</p>
+</div>
+<div id="why-is-this-a-problem-if-we-are-interested-in-prediction" class="section level3">
+<h3>
+<span class="header-section-number">3.2.3</span> Why is this a problem if we are interested in prediction?<a class="anchor" aria-label="anchor" href="#why-is-this-a-problem-if-we-are-interested-in-prediction"><i class="fas fa-link"></i></a>
+</h3>
+<p>Although in many applications one is interested in interpreting the parameters
+of the model, even if one is only trying to fit / train a model to do
+predictions, highly variable parameter estimators will typically result in
+a noticeable loss of prediction accuracy. This can be easily seen from the
+bias / variance factorization of the mean squared prediction error (MSPE)
+mentioned in class. Hence, better predictions can be obtained if one
+uses less-variable parameter (or regression function) estimators.</p>
+</div>
+<div id="what-can-we-do" class="section level3">
+<h3>
+<span class="header-section-number">3.2.4</span> What can we do?<a class="anchor" aria-label="anchor" href="#what-can-we-do"><i class="fas fa-link"></i></a>
+</h3>
+<p>A commonly used strategy is to remove some explanatory variables from the
+model, leaving only non-redundant covariates. However, this is easier said than
+done. You will have seen some strategies in previous Statistics
+courses (e.g. stepwise variable selection).
+In coming weeks we will investigate other methods to deal with this problem.</p>
+
+</div>
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="predictions-using-a-linear-model-continued.html"><span class="header-section-number">2</span> Predictions using a linear model (continued)</a></div>
+<div class="next"><a href="comparing-models.html"><span class="header-section-number">4</span> Comparing models</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#cross-validation-concerns"><span class="header-section-number">3</span> Cross-validation concerns</a></li>
+<li><a class="nav-link" href="#estimating-mspe-with-cv-when-the-model-was-built-using-the-data"><span class="header-section-number">3.1</span> Estimating MSPE with CV when the model was built using the data</a></li>
+<li>
+<a class="nav-link" href="#correlated-covariates"><span class="header-section-number">3.2</span> Correlated covariates</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#variables-that-were-important-may-suddenly-dissappear"><span class="header-section-number">3.2.1</span> Variables that were important may suddenly “dissappear”</a></li>
+<li><a class="nav-link" href="#why-does-this-happen"><span class="header-section-number">3.2.2</span> Why does this happen?</a></li>
+<li><a class="nav-link" href="#why-is-this-a-problem-if-we-are-interested-in-prediction"><span class="header-section-number">3.2.3</span> Why is this a problem if we are interested in prediction?</a></li>
+<li><a class="nav-link" href="#what-can-we-do"><span class="header-section-number">3.2.4</span> What can we do?</a></li>
+</ul>
+</li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+          
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-08-17.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>
