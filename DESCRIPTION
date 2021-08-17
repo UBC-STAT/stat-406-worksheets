@@ -31,6 +31,8 @@ Imports:
     lars,
     leaps,
     MASS,
+    mclust,
+    mvtnorm,
     nnet,
     randomForest,
     rmarkdown,
