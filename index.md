@@ -18,7 +18,7 @@ description: "These notes accompany the lectures for UBC's Stat 406."
 
 # Stat 406 Worksheets {-}
 
-<img src="cover.png" width="350" height="300" align="right" alt="" class="cover" /> **Authors:**<br>[Daniel J. McDonald](https://dajmcdon.github.io/)<br>[Matiás Salibán-Barrera](https://www.stat.ubc.ca/users/matias-salibian-barrera)<br><br>**Last updated:** 18 August 2021
+<img src="cover.png" width="350" height="300" align="right" alt="" class="cover" /> **Authors:**<br>[Daniel J. McDonald](https://dajmcdon.github.io/)<br>[Matías Salibán-Barrera](https://www.stat.ubc.ca/users/matias-salibian-barrera)<br><br>**Last updated:** <br>18 August 2021
 
 <br>
 <br>
