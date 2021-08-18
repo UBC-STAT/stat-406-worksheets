@@ -63,13 +63,13 @@ full <- lm(MORT ~ ., data = x.tr)
 plot(full, which = 1)
 ```
 
-<img src="01-lm-diagnostics-review_files/figure-html/full-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="02-lm-diagnostics-review_files/figure-html/full-1.png" width="90%" style="display: block; margin: auto;" />
 
 ```r
 plot(full, which = 2)
 ```
 
-<img src="01-lm-diagnostics-review_files/figure-html/full-2.png" width="90%" style="display: block; margin: auto;" />
+<img src="02-lm-diagnostics-review_files/figure-html/full-2.png" width="90%" style="display: block; margin: auto;" />
 
 We also take a look at the estimated coeficients: 
 
@@ -152,13 +152,13 @@ summary(reduced)
 plot(reduced, which = 1)
 ```
 
-<img src="01-lm-diagnostics-review_files/figure-html/reduced-1.png" width="90%" style="display: block; margin: auto;" />
+<img src="02-lm-diagnostics-review_files/figure-html/reduced-1.png" width="90%" style="display: block; margin: auto;" />
 
 ```r
 plot(reduced, which = 2)
 ```
 
-<img src="01-lm-diagnostics-review_files/figure-html/reduced-2.png" width="90%" style="display: block; margin: auto;" />
+<img src="02-lm-diagnostics-review_files/figure-html/reduced-2.png" width="90%" style="display: block; margin: auto;" />
 
 Although the reduced linear model (with 5 predictors) does not seem to provide a fit
 as good as the one we get with full model, it is still acceptable. 
