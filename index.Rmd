@@ -16,17 +16,20 @@ description: "These notes accompany the lectures for UBC's Stat 406."
 ---
 
 
-# Welcome {-}
+# Stat 406 Worksheets {-}
 
-<img src="images/cover.png" width="250" height="328" align="right" alt="" class="cover" /> 
+<img src="cover.png" width="350" height="300" align="right" alt="" class="cover" /> **Authors:**<br>[Daniel J. McDonald](https://dajmcdon.github.io/)<br>[Matiás Salibán-Barrera](https://www.stat.ubc.ca/users/matias-salibian-barrera)<br><br>**Last updated:** `r format(Sys.Date(), "%d %B %Y")`
 
-## Stat 406 Worksheets {-}
-
-### Authors: {-}
-
-* [Matiás Salibán-Barrera](https://www.stat.ubc.ca/users/matias-salibian-barrera) 
-* [Daniel J. McDonald](https://dajmcdon.github.io/)
-
-### Last updated: {-}
-`r format(Sys.Date(), "%d %B %Y")`
-
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<hr>
