@@ -1,3 +1,5 @@
+# (PART) Module 4 -- Modern techniques {-}
+
 # Bagging for regression
 
 One strategy to obtain more stable predictors is called

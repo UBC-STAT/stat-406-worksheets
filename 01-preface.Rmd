@@ -33,7 +33,21 @@ ggplot(data.frame(x = x, y = y)) +
   theme(legend.position = "bottom")
 ```
 
-To run these, you need the following packages:
+To run these, you need a number packages. To attempt to install them all at once, try:
+
+```{r, echo=TRUE, eval=FALSE}
+if (!suppressWarnings(require(remotes, quietly = TRUE)))
+  install.packages("remotes")
+tmp <- tempdir()
+dp <- file.path(tmp, "DESCRIPTION")
+download.file(
+  "https://raw.githubusercontent.com/UBC-STAT/stat-406-worksheets/main/DESCRIPTION",
+  dp
+)
+remotes::install_deps(tmp)
+unlink(tmp)
+rm(tmp, dp)
+```
 
 ```{r, echo = FALSE, results="asis", cache=FALSE}
 deps <- desc::desc_get_deps()

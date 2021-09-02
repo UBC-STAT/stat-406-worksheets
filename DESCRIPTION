@@ -25,7 +25,7 @@ Imports:
     ggcorrplot,
     ggplot2,
     glmnet,
-    ISLR,
+    ISLR2,
     KernSmooth,
     knitr,
     lars,
