@@ -6,16 +6,31 @@ The expectation is that you will run through the worksheets on your own or durin
 
 <img src="01-preface_files/figure-html/unnamed-chunk-1-1.png" width="90%" style="display: block; margin: auto;" />
 
-To run these, you need the following packages:
+To run these, you need a number packages. To attempt to install them all at once, try:
+
+
+```r
+if (!suppressWarnings(require(remotes, quietly = TRUE)))
+  install.packages("remotes")
+tmp <- tempdir()
+dp <- file.path(tmp, "DESCRIPTION")
+download.file(
+  "https://raw.githubusercontent.com/UBC-STAT/stat-406-worksheets/main/DESCRIPTION",
+  dp
+)
+remotes::install_deps(tmp)
+unlink(tmp)
+rm(tmp, dp)
+```
 
 
 |package       |version     |source                               |
 |:-------------|:-----------|:------------------------------------|
 |adabag        |4.2         |CRAN (R 4.1.0)                       |
-|bookdown      |0.23        |CRAN (R 4.1.0)                       |
+|bookdown      |0.23        |CRAN (R 4.1.1)                       |
 |bslib         |0.2.5.1     |CRAN (R 4.1.0)                       |
-|class         |7.3-19      |CRAN (R 4.1.0)                       |
-|cluster       |2.1.2       |CRAN (R 4.1.0)                       |
+|class         |7.3-19      |CRAN (R 4.1.1)                       |
+|cluster       |2.1.2       |CRAN (R 4.1.1)                       |
 |countrycode   |1.3.0       |CRAN (R 4.1.0)                       |
 |desc          |1.3.0       |CRAN (R 4.1.0)                       |
 |downlit       |0.2.1       |CRAN (R 4.1.0)                       |
@@ -25,24 +40,24 @@ To run these, you need the following packages:
 |ggcorrplot    |0.1.3       |CRAN (R 4.1.0)                       |
 |ggplot2       |3.3.5       |CRAN (R 4.1.0)                       |
 |glmnet        |4.1-2       |CRAN (R 4.1.0)                       |
-|ISLR          |1.2         |CRAN (R 4.1.0)                       |
-|KernSmooth    |2.23-20     |CRAN (R 4.1.0)                       |
+|ISLR2         |1.0         |CRAN (R 4.1.0)                       |
+|KernSmooth    |2.23-20     |CRAN (R 4.1.1)                       |
 |knitr         |1.33        |CRAN (R 4.1.0)                       |
 |lars          |1.2         |CRAN (R 4.1.0)                       |
 |leaps         |3.1         |CRAN (R 4.1.0)                       |
-|MASS          |7.3-54      |CRAN (R 4.1.0)                       |
+|MASS          |7.3-54      |CRAN (R 4.1.1)                       |
 |mclust        |5.4.7       |CRAN (R 4.1.0)                       |
 |mvtnorm       |1.1-2       |CRAN (R 4.1.0)                       |
-|nnet          |7.3-16      |CRAN (R 4.1.0)                       |
+|nnet          |7.3-16      |CRAN (R 4.1.1)                       |
 |randomForest  |4.6-14      |CRAN (R 4.1.0)                       |
 |rmarkdown     |2.10        |CRAN (R 4.1.0)                       |
 |robustbase    |0.93-8      |CRAN (R 4.1.0)                       |
-|rpart         |4.1-15      |CRAN (R 4.1.0)                       |
+|rpart         |4.1-15      |CRAN (R 4.1.1)                       |
 |rworldmap     |1.3-6       |CRAN (R 4.1.0)                       |
 |scales        |1.1.1       |CRAN (R 4.1.0)                       |
 |SemiPar       |1.0-4.2     |CRAN (R 4.1.0)                       |
 |sessioninfo   |1.1.1       |CRAN (R 4.1.0)                       |
-|tibble        |3.1.3       |CRAN (R 4.1.0)                       |
+|tibble        |3.1.4       |CRAN (R 4.1.0)                       |
 |tidyverse     |1.3.1       |CRAN (R 4.1.0)                       |
 |tree          |1.0-41      |CRAN (R 4.1.0)                       |
 

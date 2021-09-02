@@ -341,7 +341,7 @@ first principal component (we also time it):
 ```r
 system.time(tmp <- alter.pca.k1(ac)$a)
 #>    user  system elapsed 
-#>   0.088   0.017   0.105
+#>   0.090   0.017   0.107
 ```
 and compare it with the one given by `svd`,
  which we also time. Note that the
@@ -352,7 +352,7 @@ same sign.
 ```r
 system.time(tmp2 <- svd(ac)$v[, 1])
 #>    user  system elapsed 
-#>   0.158   0.001   0.160
+#>   0.157   0.002   0.159
 tmp <- tmp * sign(tmp2[1] * tmp[1])
 summary(abs(tmp - tmp2))
 #>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
@@ -391,7 +391,7 @@ time it:
 ```r
 system.time(e1 <- svd(cov(x))$u[, 1])
 #>    user  system elapsed 
-#>   4.439   0.046   4.486
+#>   4.475   0.020   4.515
 ```
 Asking `svd` to only compute one component does not
 seem to make the algorithm faster (the results are
@@ -400,7 +400,7 @@ identical):
 ```r
 system.time(e1.1 <- svd(cov(x), nu = 1, nv = 1)$u[, 1])
 #>    user  system elapsed 
-#>   4.455   0.023   4.481
+#>   4.475   0.017   4.620
 summary(abs(e1 - e1.1))
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #>       0       0       0       0       0       0

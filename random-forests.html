@@ -59,6 +59,7 @@
 <li><a class="" href="parametric-classifiers.html"><span class="header-section-number">11</span> Parametric classifiers</a></li>
 <li><a class="" href="qda.html"><span class="header-section-number">12</span> QDA</a></li>
 <li><a class="" href="classification-trees.html"><span class="header-section-number">13</span> Classification Trees</a></li>
+<li class="book-part">Module 4 – Modern techniques</li>
 <li><a class="" href="bagging-for-regression.html"><span class="header-section-number">14</span> Bagging for regression</a></li>
 <li><a class="" href="bagging-for-classification.html"><span class="header-section-number">15</span> Bagging for classification</a></li>
 <li><a class="active" href="random-forests.html"><span class="header-section-number">16</span> Random Forests</a></li>
@@ -99,12 +100,12 @@ The syntax is the same as that of <code>rpart</code>, but the tuning parameters
 for each of the <em>trees</em> in the <em>forest</em> are different from <code>rpart</code>.
 Refer to the help page if you need to modify them.</p>
 <p>We load and prepare the admissions data as before:</p>
-<div class="sourceCode" id="cb212"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb213"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/T11-6.DAT"</span>, header <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">mm</span><span class="op">$</span><span class="va">V3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">mm</span><span class="op">$</span><span class="va">V3</span><span class="op">)</span>
 <span class="va">mm</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">mm</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span> <span class="op">/</span> <span class="fl">150</span></code></pre></div>
 <p>and train a Random Forest with 500 trees and using all the default tuning parameters:</p>
-<div class="sourceCode" id="cb213"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb214"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.stat.berkeley.edu/~breiman/RandomForests/">randomForest</a></span><span class="op">)</span>
 <span class="va">a.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html">randomForest</a></span><span class="op">(</span><span class="va">V3</span> <span class="op">~</span> <span class="va">V1</span> <span class="op">+</span> <span class="va">V2</span>, data <span class="op">=</span> <span class="va">mm</span>, ntree <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></code></pre></div>
 <p>Predictions can be obtained using the <code>predict</code> method, as usual, when
@@ -116,7 +117,7 @@ either present or missing.</p>
 on our example data, we compute the corresponding
 predicted conditional class probabilities on the
 same grid used before:</p>
-<div class="sourceCode" id="cb214"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb215"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">aa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span>, length <span class="op">=</span> <span class="fl">200</span><span class="op">)</span>
 <span class="va">bb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span>, length <span class="op">=</span> <span class="fl">200</span><span class="op">)</span>
 <span class="va">dd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html">expand.grid</a></span><span class="op">(</span><span class="va">aa</span>, <span class="va">bb</span><span class="op">)</span>
@@ -124,7 +125,7 @@ same grid used before:</p>
 <p>The estimated conditional probabilities for class <em>red</em>
 are shown in the plot below
 (how are these estimated conditional probabilities computed exactly?)</p>
-<div class="sourceCode" id="cb215"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb216"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pp.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a.rf</span>, newdata <span class="op">=</span> <span class="va">dd</span>, type <span class="op">=</span> <span class="st">"prob"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/filled.contour.html">filled.contour</a></span><span class="op">(</span><span class="va">aa</span>, <span class="va">bb</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">pp.rf</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, <span class="fl">200</span>, <span class="fl">200</span><span class="op">)</span>,
   col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">terrain.colors</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>,
@@ -162,7 +163,7 @@ corresponding to the observations for the letters <strong>C</strong> and <strong
 variable to be categorical, so that the <code>R</code> implementations of the
 different predictors we will use below will build
 classifiers and not their regression counterparts:</p>
-<div class="sourceCode" id="cb216"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb217"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">xtr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/isolet-train-c-z.data"</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span>
 <span class="va">xte</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/isolet-test-c-z.data"</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span>
 <span class="va">xtr</span><span class="op">$</span><span class="va">V618</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">xtr</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span>
@@ -170,7 +171,7 @@ classifiers and not their regression counterparts:</p>
 <p>To train a Random Forest we use the function <code>randomForest</code> in the
 package of the same name. The code underlying this package was originally
 written by Leo Breiman. We first train a Random Forest, using all the default parameters</p>
-<div class="sourceCode" id="cb217"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb218"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.stat.berkeley.edu/~breiman/RandomForests/">randomForest</a></span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
 <span class="op">(</span><span class="va">a.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html">randomForest</a></span><span class="op">(</span><span class="va">V618</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">xtr</span>, ntree <span class="op">=</span> <span class="fl">500</span><span class="op">)</span><span class="op">)</span>
@@ -187,7 +188,7 @@ written by Leo Breiman. We first train a Random Forest, using all the default pa
 <span class="co">#&gt; 3  234   6  0.02500000</span>
 <span class="co">#&gt; 26   5 235  0.02083333</span></code></pre></div>
 <p>We now check its performance on the test set:</p>
-<div class="sourceCode" id="cb218"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb219"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a.rf</span>, newdata <span class="op">=</span> <span class="va">xte</span>, type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">p.rf</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span>
 <span class="co">#&gt;     </span>
@@ -199,7 +200,7 @@ in the test set. However, the OOB error rate estimate is slightly over 2%.
 The next plot shows the evolution of the OOB error rate estimate as a function of the
 number of classifiers in the ensemble (trees in the forest). Note that 500 trees
 appears to be a reasonable forest size, in the sense thate the OOB error rate estimate is stable.</p>
-<div class="sourceCode" id="cb219"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb220"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">a.rf</span>, lwd <span class="op">=</span> <span class="fl">3</span>, lty <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="42-random-forests_files/figure-html/rf0.oob-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Consider again the ISOLET data, available
@@ -211,7 +212,7 @@ corresponding to the observations for the letters <strong>C</strong> and <strong
 variable to be categorical, so that the <code>R</code> implementations of the
 different predictors we will use below will build
 classifiers and not their regression counterparts:</p>
-<div class="sourceCode" id="cb220"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb221"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">xtr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/isolet-train-c-z.data"</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span>
 <span class="va">xte</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/isolet-test-c-z.data"</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span>
 <span class="va">xtr</span><span class="op">$</span><span class="va">V618</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">xtr</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span>
@@ -221,7 +222,7 @@ package of the same name. The code underlying this package was originally
 written by Leo Breiman. We train a RF leaving all
 paramaters at their default values, and check
 its performance on the test set:</p>
-<div class="sourceCode" id="cb221"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb222"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.stat.berkeley.edu/~breiman/RandomForests/">randomForest</a></span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
 <span class="va">a.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html">randomForest</a></span><span class="op">(</span><span class="va">V618</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">xtr</span>, ntree <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>
@@ -234,10 +235,10 @@ its performance on the test set:</p>
 <p>Note that the Random Forest only makes one mistake out of 120 observations
 in the test set. The OOB error rate estimate is slightly over 2%,
 and we see that 500 trees is a reasonable forest size:</p>
-<div class="sourceCode" id="cb222"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb223"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">a.rf</span>, lwd <span class="op">=</span> <span class="fl">3</span>, lty <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="42-random-forests_files/figure-html/rf.oob-1.png" width="90%" style="display: block; margin: auto;"></div>
-<div class="sourceCode" id="cb223"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb224"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">a.rf</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
@@ -258,7 +259,7 @@ and we see that 500 trees is a reasonable forest size:</p>
 </h2>
 <p>Given that in this case we do have a test set, we can use it
 to monitor the error rate (instead of using the OOB error estimates):</p>
-<div class="sourceCode" id="cb224"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb225"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x.train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix</a></span><span class="op">(</span><span class="va">V618</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">xtr</span><span class="op">)</span>
 <span class="va">y.train</span> <span class="op">&lt;-</span> <span class="va">xtr</span><span class="op">$</span><span class="va">V618</span>
 <span class="va">x.test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix</a></span><span class="op">(</span><span class="va">V618</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">xte</span><span class="op">)</span>
@@ -274,7 +275,7 @@ to monitor the error rate (instead of using the OOB error estimates):</p>
 <p>According to the help page for the <code>plot</code> method for objects of class
 <code>randomForest</code>, the following plot should show both error rates (OOB plus
 those on the test set):</p>
-<div class="sourceCode" id="cb225"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb226"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">a.rf</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="42-random-forests_files/figure-html/rf.isolet.test.plot-1.png" width="90%" style="display: block; margin: auto;"></div>
 </div>
@@ -285,7 +286,7 @@ those on the test set):</p>
 <p>To explore which variables were used in the forest,
 and also, their importance rank as discussed in
 class, we can use the function <code>varImpPlot</code>:</p>
-<div class="sourceCode" id="cb226"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb227"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/varImpPlot.html">varImpPlot</a></span><span class="op">(</span><span class="va">a.rf</span>, n.var <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="42-random-forests_files/figure-html/rf.isolet3-1.png" width="90%" style="display: block; margin: auto;"></div>
 </div>
@@ -296,7 +297,7 @@ class, we can use the function <code>varImpPlot</code>:</p>
 <p>We now compare the Random Forest with some of the other classifiers we saw in class,
 using their classification error rate on the test set as our comparison measure.
 We first start with K-NN:</p>
-<div class="sourceCode" id="cb227"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb228"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">class</a></span><span class="op">)</span>
 <span class="va">u1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/class/man/knn.html">knn</a></span><span class="op">(</span>train <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, test <span class="op">=</span> <span class="va">xte</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, cl <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="fl">618</span><span class="op">]</span>, k <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">u1</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span>
@@ -335,7 +336,7 @@ We first start with K-NN:</p>
 <p>To use logistic regression we first create a new variable that is 1
 for the letter <strong>C</strong> and 0 for the letter <strong>Z</strong>, and use it as
 our response variable.</p>
-<div class="sourceCode" id="cb228"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb229"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">xtr</span><span class="op">$</span><span class="va">V619</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">xtr</span><span class="op">$</span><span class="va">V618</span> <span class="op">==</span> <span class="fl">3</span><span class="op">)</span>
 <span class="va">d.glm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">V619</span> <span class="op">~</span> <span class="va">.</span> <span class="op">-</span> <span class="va">V618</span>, data <span class="op">=</span> <span class="va">xtr</span>, family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span>
 <span class="va">pr.glm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">d.glm</span>, newdata <span class="op">=</span> <span class="va">xte</span>, type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0.5</span><span class="op">)</span>
@@ -347,7 +348,7 @@ our response variable.</p>
 <p>Question for the reader: why do you think this classifier’s performance
 is so disappointing?</p>
 <p>It is interesting to see how a simple LDA classifier does:</p>
-<div class="sourceCode" id="cb229"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb230"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span>
 <span class="va">xtr</span><span class="op">$</span><span class="va">V619</span> <span class="op">&lt;-</span> <span class="cn">NULL</span>
 <span class="va">d.lda</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/lda.html">lda</a></span><span class="op">(</span><span class="va">V618</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">xtr</span><span class="op">)</span>
@@ -359,7 +360,7 @@ is so disappointing?</p>
 <span class="co">#&gt;     26  2 57</span></code></pre></div>
 <p>Finally, note that a carefully built classification tree
 performs remarkably well, only using 3 features:</p>
-<div class="sourceCode" id="cb230"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb231"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bethatkinson/rpart">rpart</a></span><span class="op">)</span>
 <span class="va">my.c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.control.html">rpart.control</a></span><span class="op">(</span>minsplit <span class="op">=</span> <span class="fl">5</span>, cp <span class="op">=</span> <span class="fl">1e-8</span>, xval <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">987</span><span class="op">)</span>
@@ -376,7 +377,7 @@ performs remarkably well, only using 3 features:</p>
 default values for the stopping criterion tuning parameters, the
 tree also uses only 3 features, but its classification error rate
 on the test set is larger than that of the pruned one:</p>
-<div class="sourceCode" id="cb231"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb232"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">987</span><span class="op">)</span>
 <span class="va">a2.tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">V618</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">xtr</span>, method <span class="op">=</span> <span class="st">"class"</span>, parms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>split <span class="op">=</span> <span class="st">"information"</span><span class="op">)</span><span class="op">)</span>
 <span class="va">p2.t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a2.tree</span>, newdata <span class="op">=</span> <span class="va">xte</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span>
@@ -416,7 +417,7 @@ on the test set is larger than that of the pruned one:</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-08-18.</p>
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-09-02.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

@@ -59,6 +59,7 @@
 <li><a class="" href="parametric-classifiers.html"><span class="header-section-number">11</span> Parametric classifiers</a></li>
 <li><a class="" href="qda.html"><span class="header-section-number">12</span> QDA</a></li>
 <li><a class="" href="classification-trees.html"><span class="header-section-number">13</span> Classification Trees</a></li>
+<li class="book-part">Module 4 – Modern techniques</li>
 <li><a class="" href="bagging-for-regression.html"><span class="header-section-number">14</span> Bagging for regression</a></li>
 <li><a class="" href="bagging-for-classification.html"><span class="header-section-number">15</span> Bagging for classification</a></li>
 <li><a class="" href="random-forests.html"><span class="header-section-number">16</span> Random Forests</a></li>
@@ -117,7 +118,7 @@ is with the function <code>lars</code> in package <code>lars</code>. Both, of co
 compute the same estimators, but they do so in different ways.</p>
 <p>We first compute the path of LASSO solutions for the <code>credit</code> data
 used in previous lectures:</p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/Credit.csv"</span>, sep <span class="op">=</span> <span class="st">","</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="co"># use non-factor variables</span>
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">11</span><span class="op">)</span><span class="op">]</span>
@@ -132,11 +133,11 @@ used in previous lectures:</p>
 <span class="op">)</span></code></pre></div>
 <p>The <code>plot</code> method can be used to show the path of solutions, just as
 we did for ridge regression:</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">a</span>, xvar <span class="op">=</span> <span class="st">"lambda"</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, lwd <span class="op">=</span> <span class="fl">6</span>, cex.axis <span class="op">=</span> <span class="fl">1.5</span>, cex.lab <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/creditlasso3-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Using <code><a href="https://rdrr.io/pkg/lars/man/lars.html">lars::lars()</a></code> we obtain:</p>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www-stat.stanford.edu/~hastie/Papers/#LARS">lars</a></span><span class="op">)</span>
 <span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lars/man/lars.html">lars</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, type <span class="op">=</span> <span class="st">"lasso"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">b</span>, lwd <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></code></pre></div>
@@ -144,7 +145,7 @@ we did for ridge regression:</p>
 <p>With <code>lars</code> the returned object is a matrix of regression estimators, one
 for each value of the penalty constant where a new coefficient “enters” the
 model:</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># see the variables</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span>
 <span class="co">#&gt;         Income      Limit   Rating     Cards        Age Education</span>
@@ -171,7 +172,7 @@ a variable enters or drops the model.</p>
 are possible) we can use K-fold CV to estimate the MSPE of a few of them
 (for a grid of values of the penalty parameter, for example), and
 choose the one with smallest estimated MSPE:</p>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># select one solution</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
 <span class="va">tmp.la</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lars/man/cv.lars.html">cv.lars</a></span><span class="op">(</span>
@@ -181,7 +182,7 @@ choose the one with smallest estimated MSPE:</p>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/creditlars3-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Given their random nature, it is always a good idea to run K-fold CV experiments
 more than once:</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span>
 <span class="va">tmp.la</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lars/man/cv.lars.html">cv.lars</a></span><span class="op">(</span>
   x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span>, type <span class="op">=</span> <span class="st">"lasso"</span>, K <span class="op">=</span> <span class="fl">5</span>,
@@ -190,7 +191,7 @@ more than once:</p>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/creditlars4-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>We now repeat the same steps as above but using the implementation
 in <code>glmnet</code>:</p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># run 5-fold CV with glmnet()</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
 <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>
@@ -200,7 +201,7 @@ in <code>glmnet</code>:</p>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">tmp</span>, lwd <span class="op">=</span> <span class="fl">6</span>, cex.axis <span class="op">=</span> <span class="fl">1.5</span>, cex.lab <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/creditcv-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>We ran CV again:</p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span>
 <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>
   x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">1</span>,
@@ -209,14 +210,14 @@ in <code>glmnet</code>:</p>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">tmp</span>, lwd <span class="op">=</span> <span class="fl">6</span>, cex.axis <span class="op">=</span> <span class="fl">1.5</span>, cex.lab <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/creditcv2-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Zoom in the CV plot to check the 1-SE rule:</p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">tmp</span>, lwd <span class="op">=</span> <span class="fl">6</span>, cex.axis <span class="op">=</span> <span class="fl">1.5</span>, cex.lab <span class="op">=</span> <span class="fl">1.2</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">22000</span>, <span class="fl">33000</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/creditcv4-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>The returned object includes the “optimal” value of the
 penalization parameter, which can be used to
 find the corresponding estimates for the regression
 coefficients, using the method <code>coef</code>:</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># optimal lambda</span>
 <span class="va">tmp</span><span class="op">$</span><span class="va">lambda.min</span>
 <span class="co">#&gt; [1] 0.04978707</span>
@@ -235,7 +236,7 @@ coefficients, using the method <code>coef</code>:</p>
 any value of the penalty parameter. For example we
 show below the coefficients corresponding
 to penalty values of exp(4) and exp(4.5):</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># coefficients for other values of lambda</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">tmp</span>, s <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; 7 x 1 sparse Matrix of class "dgCMatrix"</span>
@@ -264,7 +265,7 @@ to penalty values of exp(4) and exp(4.5):</p>
 <p>We now use 50 runs of 5-fold cross-validation to
 estimate (and compare) the MSPEs of the different
 estimators / predictors:</p>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">xm</span><span class="op">)</span>
 <span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">5</span>
@@ -318,7 +319,7 @@ general estimated using K-fold cross validation).</p>
 <code>alpha = 0</code> to select an <strong>approximately optimal</strong>
 Ridge Regression fit (what makes the calculation
 below <strong>only approximately</strong> optimal?).</p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">airp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/rutgers-lib-30861_CSV-1.csv"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span>
 <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="va">airp</span><span class="op">$</span><span class="va">MORT</span><span class="op">)</span>
 <span class="va">xm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">airp</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">airp</span><span class="op">)</span> <span class="op">!=</span> <span class="st">"MORT"</span><span class="op">]</span><span class="op">)</span>
@@ -334,7 +335,7 @@ below <strong>only approximately</strong> optimal?).</p>
 <p>The plot above is included for illustration purposes only.
 Similarly, we now compute an approximately optimal LASSO fit,
 and look at the curve of estimated MSPEs:</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># LASSO</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span>
 <span class="va">air.l1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>
@@ -345,7 +346,7 @@ and look at the curve of estimated MSPEs:</p>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/airp.lasso-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>It is interesting to compare the corresponding estimated regression coefficients,
 so we put them side by side in two columns:</p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span>
   <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">air.l2</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>,
   <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">air.l1</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>
@@ -387,7 +388,7 @@ mentioned above. Note that in this visualization method variables were
 grouped (“clustered”) according to their pairwise correlations in order to
 improve the interpretability of the plot. We will see later in this course
 the particular clustering method used here (hierarchical clustering).</p>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.sthda.com/english/wiki/ggcorrplot">ggcorrplot</a></span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/ggcorrplot/man/ggcorrplot.html">ggcorrplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">xm</span><span class="op">)</span>, hc.order <span class="op">=</span> <span class="cn">TRUE</span>, outline.col <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/airp.correlations-1.png" width="90%" style="display: block; margin: auto;"></div>
@@ -430,7 +431,7 @@ values of one of the penalty constants, while the other
 one (<code>alpha</code>) is kept fixed. To compare different
 Elastic Net fits we run <code>cv.glmnet</code> with 4 values of
 <code>alpha</code>: 0.05, 0.1, 0.5 and 0.75.</p>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># EN</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span>
 <span class="va">air.en.75</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>
@@ -454,10 +455,10 @@ Elastic Net fits we run <code>cv.glmnet</code> with 4 values of
 <span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">air.en.05</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/airp.en-1.png" width="90%" style="display: block; margin: auto;"></div>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">air.en.5</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/airp.en-2.png" width="90%" style="display: block; margin: auto;"></div>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">air.en.75</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/airp.en-3.png" width="90%" style="display: block; margin: auto;"></div>
 <div id="run-en-on-airpollution-data-compare-fits" class="section level3">
@@ -467,7 +468,7 @@ Elastic Net fits we run <code>cv.glmnet</code> with 4 values of
 <p>We now compare the estimates of the regression coefficients
 obtained with the different methods discussed so far to
 alleviate potential problems caused by correlated covariates.</p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span>
   <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">air.l2</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>,
   <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">air.l1</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>,
@@ -547,7 +548,7 @@ the LASSO) provides slightly better estimated MSPEs.</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-08-18.</p>
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-09-02.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

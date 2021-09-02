@@ -59,6 +59,7 @@
 <li><a class="" href="parametric-classifiers.html"><span class="header-section-number">11</span> Parametric classifiers</a></li>
 <li><a class="" href="qda.html"><span class="header-section-number">12</span> QDA</a></li>
 <li><a class="" href="classification-trees.html"><span class="header-section-number">13</span> Classification Trees</a></li>
+<li class="book-part">Module 4 – Modern techniques</li>
 <li><a class="" href="bagging-for-regression.html"><span class="header-section-number">14</span> Bagging for regression</a></li>
 <li><a class="" href="bagging-for-classification.html"><span class="header-section-number">15</span> Bagging for classification</a></li>
 <li><a class="" href="random-forests.html"><span class="header-section-number">16</span> Random Forests</a></li>
@@ -136,7 +137,7 @@ it before we compute the distances. We also
 change the misleading column names assigned
 by <code>read.table</code>, which are not features but
 rather observation numbers:</p>
-<div class="sourceCode" id="cb353"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb354"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/breweries.dat"</span>, header <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Brew-"</span>, <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
@@ -149,7 +150,7 @@ of class <code>hclust</code> produces the associated dendogram. The function <co
 computes the height at which one shuld <em>cut</em> the dendogram to
 obtain a desired number <em>k</em> of clusters. Below we show
 the result for <em>K = 3</em> clusters:</p>
-<div class="sourceCode" id="cb354"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb355"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># hierarchical</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://svn.r-project.org/R-packages/trunk/cluster/">cluster</a></span><span class="op">)</span>
 <span class="co"># show the dendogram</span>
@@ -159,7 +160,7 @@ the result for <em>K = 3</em> clusters:</p>
 <div class="inline-figure"><img src="54-hclust_files/figure-html/breweries.2-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Now we repeat the analysis but using Euclidean distances and <em>single linkage</em>,
 and show <em>K = 3</em> clusters:</p>
-<div class="sourceCode" id="cb355"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb356"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">br.dis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/dist.html">dist</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="co"># L2</span>
 <span class="va">br.hc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/hclust.html">hclust</a></span><span class="op">(</span><span class="va">br.dis</span>, method <span class="op">=</span> <span class="st">"single"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">br.hc</span><span class="op">)</span>
@@ -187,30 +188,30 @@ the data, which in this case
 are the specific dissimilarities between languages
 discussed in class, and we arrange them in a
 matrix that can be used by <code>hclust</code>:</p>
-<div class="sourceCode" id="cb356"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb357"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/languages.dat"</span>, header <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">dd</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"E"</span>, <span class="st">"N"</span>, <span class="st">"Da"</span>, <span class="st">"Du"</span>, <span class="st">"G"</span>, <span class="st">"Fr"</span>, <span class="st">"S"</span>, <span class="st">"I"</span>, <span class="st">"P"</span>, <span class="st">"H"</span>, <span class="st">"Fi"</span><span class="op">)</span>
 <span class="va">dd</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">dd</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">dd</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span>
 <span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/dist.html">as.dist</a></span><span class="op">(</span><span class="va">dd</span><span class="op">)</span></code></pre></div>
 <p>Now we compute a hierarchical clustering sequence using <strong>single linkage</strong>,
 plot the corresponding dendogram and identify 4 clusters:</p>
-<div class="sourceCode" id="cb357"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb358"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/hclust.html">hclust</a></span><span class="op">(</span><span class="va">d</span>, method <span class="op">=</span> <span class="st">"single"</span><span class="op">)</span>, main <span class="op">=</span> <span class="st">""</span>, xlab <span class="op">=</span> <span class="st">""</span>, sub <span class="op">=</span> <span class="st">""</span>, hang <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/rect.hclust.html">rect.hclust</a></span><span class="op">(</span><span class="va">cl</span>, k <span class="op">=</span> <span class="fl">4</span>, border <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="54-hclust_files/figure-html/langs2-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Compare the above with the results obtained with <strong>complete linkage</strong>:</p>
-<div class="sourceCode" id="cb358"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb359"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/hclust.html">hclust</a></span><span class="op">(</span><span class="va">d</span>, method <span class="op">=</span> <span class="st">"complete"</span><span class="op">)</span>, main <span class="op">=</span> <span class="st">""</span>, xlab <span class="op">=</span> <span class="st">""</span>, sub <span class="op">=</span> <span class="st">""</span>, hang <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/rect.hclust.html">rect.hclust</a></span><span class="op">(</span><span class="va">cl</span>, k <span class="op">=</span> <span class="fl">4</span>, border <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="54-hclust_files/figure-html/langs3-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>With <strong>average linkage</strong> we obtain:</p>
-<div class="sourceCode" id="cb359"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb360"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/hclust.html">hclust</a></span><span class="op">(</span><span class="va">d</span>, method <span class="op">=</span> <span class="st">"average"</span><span class="op">)</span>, main <span class="op">=</span> <span class="st">""</span>, xlab <span class="op">=</span> <span class="st">""</span>, sub <span class="op">=</span> <span class="st">""</span>, hang <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/rect.hclust.html">rect.hclust</a></span><span class="op">(</span><span class="va">cl</span>, k <span class="op">=</span> <span class="fl">4</span>, border <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="54-hclust_files/figure-html/langs3.1-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>And finally, using <strong>Ward’s criterion</strong> results in the following
 dendogram and 4 clusters:</p>
-<div class="sourceCode" id="cb360"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb361"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/hclust.html">hclust</a></span><span class="op">(</span><span class="va">d</span>, method <span class="op">=</span> <span class="st">"ward.D2"</span><span class="op">)</span>, main <span class="op">=</span> <span class="st">""</span>, xlab <span class="op">=</span> <span class="st">""</span>, sub <span class="op">=</span> <span class="st">""</span>, hang <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/rect.hclust.html">rect.hclust</a></span><span class="op">(</span><span class="va">cl</span>, k <span class="op">=</span> <span class="fl">4</span>, border <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="54-hclust_files/figure-html/langs4-1.png" width="90%" style="display: block; margin: auto;"></div>
@@ -223,7 +224,7 @@ dendogram and 4 clusters:</p>
 distances and Ward’s information criterion. Below we show the
 clusters identified when we stop the algorithm at <em>K = 8</em>, which
 based on the dendogram seems to be a reasonable choice:</p>
-<div class="sourceCode" id="cb361"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb362"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">nci</span>, package <span class="op">=</span> <span class="st">"ElemStatLearn"</span><span class="op">)</span>
 <span class="va">nci.dis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/dist.html">dist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">nci</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">"euclidean"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">nci.hc.w</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/hclust.html">hclust</a></span><span class="op">(</span><span class="va">nci.dis</span>, method <span class="op">=</span> <span class="st">"ward.D2"</span><span class="op">)</span>,
@@ -234,7 +235,7 @@ based on the dendogram seems to be a reasonable choice:</p>
 <div class="inline-figure"><img src="54-hclust_files/figure-html/cancer-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>For completeness, below we show the results obtained with the other linkage criteria,
 including Ward’s:</p>
-<div class="sourceCode" id="cb362"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb363"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nci.hc.s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/hclust.html">hclust</a></span><span class="op">(</span><span class="va">nci.dis</span>, method <span class="op">=</span> <span class="st">"single"</span><span class="op">)</span>
 <span class="va">nci.hc.c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/hclust.html">hclust</a></span><span class="op">(</span><span class="va">nci.dis</span>, method <span class="op">=</span> <span class="st">"complete"</span><span class="op">)</span>
 <span class="va">nci.hc.a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/hclust.html">hclust</a></span><span class="op">(</span><span class="va">nci.dis</span>, method <span class="op">=</span> <span class="st">"average"</span><span class="op">)</span>
@@ -242,11 +243,11 @@ including Ward’s:</p>
 <span class="co"># plot them</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">nci.hc.s</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">nci</span><span class="op">)</span>, cex <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="54-hclust_files/figure-html/cancer2-1.png" width="90%" style="display: block; margin: auto;"></div>
-<div class="sourceCode" id="cb363"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb364"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">nci.hc.c</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">nci</span><span class="op">)</span>, cex <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="54-hclust_files/figure-html/cancer2-2.png" width="90%" style="display: block; margin: auto;"></div>
-<div class="sourceCode" id="cb364"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb365"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">nci.hc.a</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">nci</span><span class="op">)</span>, cex <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="54-hclust_files/figure-html/cancer2-3.png" width="90%" style="display: block; margin: auto;"></div>
@@ -266,7 +267,7 @@ Below we show the results of using hierarchical clustering with complete and ave
 linkage merging criteria, which produce identical clusters. You
 are encouraged to investigate what can be found with other
 merging criteria.</p>
-<div class="sourceCode" id="cb365"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb366"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># read the pairwise dissimilarities</span>
 <span class="va">a2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/nations2.dat"</span>, header <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
@@ -284,7 +285,7 @@ merging criteria.</p>
 <span class="va">na.hc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/hclust.html">hclust</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/dist.html">as.dist</a></span><span class="op">(</span><span class="va">a2</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">"complete"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">na.hc</span>, labels <span class="op">=</span> <span class="va">nams2</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="54-hclust_files/figure-html/nations-1.png" width="90%" style="display: block; margin: auto;"></div>
-<div class="sourceCode" id="cb366"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb367"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co"># compute hierarchical clustering using average linkage</span>
 <span class="va">na.hc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/hclust.html">hclust</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/dist.html">as.dist</a></span><span class="op">(</span><span class="va">a2</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">"average"</span><span class="op">)</span>
@@ -297,14 +298,14 @@ merging criteria.</p>
 </h2>
 <p>We revisit here the UN votes example (see Lecture 19). Using Euclidean
 distances and Ward’s criterion we obtain the following 3 clusters:</p>
-<div class="sourceCode" id="cb367"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb368"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"data/unvotes.csv"</span>, sep <span class="op">=</span> <span class="st">","</span>, row.names <span class="op">=</span> <span class="fl">1</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="va">un.dis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/dist.html">dist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">"euclidean"</span><span class="op">)</span>
 <span class="va">un.hc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/hclust.html">hclust</a></span><span class="op">(</span><span class="va">un.dis</span>, method <span class="op">=</span> <span class="st">"ward.D2"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">un.hc</span>, cex <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span>
 <span class="va">un.hc.3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/rect.hclust.html">rect.hclust</a></span><span class="op">(</span><span class="va">un.hc</span>, k <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="54-hclust_files/figure-html/unvotes-1.png" width="90%" style="display: block; margin: auto;"></div>
-<div class="sourceCode" id="cb368"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb369"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">un.hc.3</span>, <span class="va">names</span><span class="op">)</span>
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt;  [1] "Australia"   "Austria"     "Belgium"     "Bulgaria"    "Canada"     </span>
@@ -335,13 +336,13 @@ distances and Ward’s criterion we obtain the following 3 clusters:</p>
 <span class="co">#&gt; [37] "Trinidad.and.Tobago"  "Venezuela"            "Zambia"</span></code></pre></div>
 <p>If we repeat the same exercise but using <span class="math inline">\(L_1\)</span> distances we obtain
 different clusters.</p>
-<div class="sourceCode" id="cb369"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb370"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">un.dis.l1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/dist.html">dist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">"manhattan"</span><span class="op">)</span>
 <span class="va">un.hc.l1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/hclust.html">hclust</a></span><span class="op">(</span><span class="va">un.dis.l1</span>, method <span class="op">=</span> <span class="st">"ward.D2"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">un.hc.l1</span>, cex <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span>
 <span class="va">un.hc.l1.3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/rect.hclust.html">rect.hclust</a></span><span class="op">(</span><span class="va">un.hc.l1</span>, k <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="54-hclust_files/figure-html/unvotes.l1-1.png" width="90%" style="display: block; margin: auto;"></div>
-<div class="sourceCode" id="cb370"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb371"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">un.hc.l1.3</span>, <span class="va">names</span><span class="op">)</span>
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt;  [1] "Australia"   "Austria"     "Belgium"     "Bulgaria"    "Canada"     </span>
@@ -375,13 +376,13 @@ different clusters.</p>
 if we show them on a map. We first find the
 cluster labels corresponding to 3 clusters
 using Euclidean and <span class="math inline">\(L_1\)</span> distances:</p>
-<div class="sourceCode" id="cb371"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb372"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">labs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cutree.html">cutree</a></span><span class="op">(</span><span class="va">un.hc</span>, k <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 <span class="va">labs.l1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cutree.html">cutree</a></span><span class="op">(</span><span class="va">un.hc.l1</span>, k <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <p>We can now use these labels to color a map, as
 we did previously. For the Euclidean distances
 we obtain:</p>
-<div class="sourceCode" id="cb372"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb373"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/AndySouth/rworldmap/">rworldmap</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://vincentarelbundock.github.io/countrycode/">countrycode</a></span><span class="op">)</span>
 <span class="va">these</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://vincentarelbundock.github.io/countrycode/reference/countrycode.html">countrycode</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>, <span class="st">"country.name"</span>, <span class="st">"iso3c"</span><span class="op">)</span>
@@ -432,7 +433,7 @@ account the actual nature of the available features.</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-08-18.</p>
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-09-02.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

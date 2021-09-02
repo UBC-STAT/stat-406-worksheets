@@ -59,6 +59,7 @@
 <li><a class="" href="parametric-classifiers.html"><span class="header-section-number">11</span> Parametric classifiers</a></li>
 <li><a class="" href="qda.html"><span class="header-section-number">12</span> QDA</a></li>
 <li><a class="" href="classification-trees.html"><span class="header-section-number">13</span> Classification Trees</a></li>
+<li class="book-part">Module 4 – Modern techniques</li>
 <li><a class="" href="bagging-for-regression.html"><span class="header-section-number">14</span> Bagging for regression</a></li>
 <li><a class="" href="bagging-for-classification.html"><span class="header-section-number">15</span> Bagging for classification</a></li>
 <li><a class="" href="random-forests.html"><span class="header-section-number">16</span> Random Forests</a></li>
@@ -100,20 +101,20 @@ responses are known, but that was not used when training the
 predcitor or estimating the model), and the comparing the
 predictions with the actual responses.</p>
 <p>First, we load the training set and fit both models:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/pollution-train.dat"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span>
 <span class="va">full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">MORT</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">x.tr</span><span class="op">)</span>
 <span class="va">reduced</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">MORT</span> <span class="op">~</span> <span class="va">POOR</span> <span class="op">+</span> <span class="va">HC</span> <span class="op">+</span> <span class="va">NOX</span> <span class="op">+</span> <span class="va">HOUS</span> <span class="op">+</span> <span class="va">NONW</span>, data <span class="op">=</span> <span class="va">x.tr</span><span class="op">)</span></code></pre></div>
 <p>Although the <strong>full</strong> model fits the data better than the
 reduced one (see Lecture 1), its predictions on the test set are better.
 First, compute the two vectors of test set predictions:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x.te</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/pollution-test.dat"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span>
 <span class="va">pr.full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">full</span>, newdata <span class="op">=</span> <span class="va">x.te</span><span class="op">)</span>
 <span class="va">pr.reduced</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">reduced</span>, newdata <span class="op">=</span> <span class="va">x.te</span><span class="op">)</span></code></pre></div>
 <p>And now, use them to estimate the mean squared prediction error of
 each model:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">x.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">MORT</span> <span class="op">-</span> <span class="va">pr.full</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] 2859.367</span>
 <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">x.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">MORT</span> <span class="op">-</span> <span class="va">pr.reduced</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
@@ -142,7 +143,7 @@ we apply it to estimate the mean squared
 prediction error of the <strong>full</strong> and <strong>reduced</strong>
 models. Again, we assume that the reduced model
 was chosen independently from the training set.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"data/rutgers-lib-30861_CSV-1.csv"</span><span class="op">)</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="va">pr.full</span> <span class="op">&lt;-</span> <span class="va">pr.reduced</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n</span><span class="op">)</span>
@@ -155,7 +156,7 @@ was chosen independently from the training set.</p>
 <p>Now we have the leave-one-out predictions for each model
 and can compute the corresponding estimated mean squared
 prediction errors:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">MORT</span> <span class="op">-</span> <span class="va">pr.full</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
 <span class="co">#&gt; [1] 2136.785</span>
 <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">MORT</span> <span class="op">-</span> <span class="va">pr.reduced</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
@@ -180,7 +181,7 @@ The following script does <strong>5-fold CV</strong> for the
 <code>full</code> and <code>reduced</code> linear models on the
 pollution dataset, once again assuming that the reduced model
 was originally chosen without using the data.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">5</span>
 <span class="va">pr.full</span> <span class="op">&lt;-</span> <span class="va">pr.reduced</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n</span><span class="op">)</span>
@@ -200,7 +201,7 @@ was originally chosen without using the data.</p>
 <span class="op">}</span></code></pre></div>
 <p>We now compute the estimated mean squared prediction
 error of each model:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">xs</span><span class="op">$</span><span class="va">MORT</span> <span class="op">-</span> <span class="va">pr.full</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
 <span class="co">#&gt; [1] 2227.21</span>
 <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">xs</span><span class="op">$</span><span class="va">MORT</span> <span class="op">-</span> <span class="va">pr.reduced</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
@@ -216,13 +217,13 @@ mean squared prediction errors for each estimator.
 First, fit the <strong>full</strong> and <strong>reduced</strong> models using the
 whole data set as training:</li>
 </ul>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m.f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">MORT</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">x</span><span class="op">)</span>
 <span class="va">m.r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">MORT</span> <span class="op">~</span> <span class="va">POOR</span> <span class="op">+</span> <span class="va">HC</span> <span class="op">+</span> <span class="va">NOX</span> <span class="op">+</span> <span class="va">HOUS</span> <span class="op">+</span> <span class="va">NONW</span>, data <span class="op">=</span> <span class="va">x</span><span class="op">)</span></code></pre></div>
 <p>We will use 50 runs of 5-fold CV comparing the <strong>full</strong> and <strong>reduced</strong> models.
 Again, here we assume that the reduced model was not obtained
 using the training data.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">50</span>
 <span class="va">mspe1</span> <span class="op">&lt;-</span> <span class="va">mspe2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">vector</a></span><span class="op">(</span><span class="st">"double"</span>, <span class="va">N</span><span class="op">)</span>
 <span class="va">ii</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%%</span> <span class="fl">5</span> <span class="op">+</span> <span class="fl">1</span>
@@ -301,7 +302,7 @@ We will discuss it later.</p></li>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-08-18.</p>
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-09-02.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

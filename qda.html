@@ -59,6 +59,7 @@
 <li><a class="" href="parametric-classifiers.html"><span class="header-section-number">11</span> Parametric classifiers</a></li>
 <li><a class="active" href="qda.html"><span class="header-section-number">12</span> QDA</a></li>
 <li><a class="" href="classification-trees.html"><span class="header-section-number">13</span> Classification Trees</a></li>
+<li class="book-part">Module 4 – Modern techniques</li>
 <li><a class="" href="bagging-for-regression.html"><span class="header-section-number">14</span> Bagging for regression</a></li>
 <li><a class="" href="bagging-for-classification.html"><span class="header-section-number">15</span> Bagging for classification</a></li>
 <li><a class="" href="random-forests.html"><span class="header-section-number">16</span> Random Forests</a></li>
@@ -98,7 +99,7 @@ boundaries are quadratic functions of the vector of features <strong>X</strong>.
 <p>We illustrate QDA on the same <code>vaso</code> data we used before. We first load the
 data, and train a QDA classifier using the function <code>qda</code> in package <code>MASS</code>
 (this can also be written as <code><a href="https://rdrr.io/pkg/MASS/man/qda.html">MASS::qda()</a></code>).</p>
-<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">vaso</span>, package <span class="op">=</span> <span class="st">"robustbase"</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span>
 <span class="va">a.qda</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/qda.html">qda</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">vaso</span><span class="op">)</span></code></pre></div>
@@ -106,7 +107,7 @@ data, and train a QDA classifier using the function <code>qda</code> in package 
 2-dimensional vector of features and use the <code>predict</code> method
 associated with a <code>qda</code> object to predict the conditional probability of
 class <code>blue</code>:</p>
-<div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">xvol</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span>, length <span class="op">=</span> <span class="fl">200</span><span class="op">)</span>
 <span class="va">xrat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span>, length <span class="op">=</span> <span class="fl">200</span><span class="op">)</span>
 <span class="va">xx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html">expand.grid</a></span><span class="op">(</span><span class="va">xvol</span>, <span class="va">xrat</span><span class="op">)</span>
@@ -159,7 +160,7 @@ illustrate them on the well-known Handwritten Digit Recognition Data
 load the data, and extract the images corresponding to digits 0, 1 and
 8. These should be challenging enough to discriminate given their
 similar shapes.</p>
-<div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb140"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">zip.train</span>, package <span class="op">=</span> <span class="st">"ElemStatLearn"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">zip.test</span>, package <span class="op">=</span> <span class="st">"ElemStatLearn"</span><span class="op">)</span>
 <span class="va">x.tr</span> <span class="op">&lt;-</span> <span class="va">zip.train</span><span class="op">[</span><span class="va">zip.train</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">8</span><span class="op">)</span>, <span class="op">]</span>
@@ -167,13 +168,13 @@ similar shapes.</p>
 <p>The values of the pixes of each image are in the rows of the
 corresponding matrix (columns 2:256), and the true class of each image is in
 the first column. Note that there are relatively few 8’s in this training set:</p>
-<div class="sourceCode" id="cb140"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb141"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">x.tr</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;    0    1    8 </span>
 <span class="co">#&gt; 1194 1005  542</span></code></pre></div>
 <p>To display these 16x16 images we adapt a simple function to plot matrices:</p>
-<div class="sourceCode" id="cb141"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># ----- Define a function for plotting a matrix ----- #</span>
 <span class="co"># modified from: http://www.phaget4.org/R/image_matrix.html</span>
 <span class="va">myImagePlot</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
@@ -191,7 +192,7 @@ the first column. Note that there are relatively few 8’s in this training set:
 <span class="op">}</span></code></pre></div>
 <p>Next we choose 9 images at random from the training set,
 and display them in a 3x3 array of images:</p>
-<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb143"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">a</span> <span class="op">&lt;-</span> <span class="va">x.tr</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">987</span><span class="op">)</span>
 <span class="va">sa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fl">9</span><span class="op">)</span>
@@ -200,13 +201,13 @@ and display them in a 3x3 array of images:</p>
   <span class="fu">myImagePlot</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="va">a</span><span class="op">[</span><span class="va">sa</span><span class="op">[</span><span class="va">j</span><span class="op">]</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>, <span class="fl">16</span>, <span class="fl">16</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 <div class="inline-figure"><img src="31-qda-knn_files/figure-html/ziplot9-1.png" width="90%" style="display: block; margin: auto;"></div>
-<div class="sourceCode" id="cb143"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb144"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>We can also show the “average 8” in the training set:</p>
-<div class="sourceCode" id="cb144"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb145"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">myImagePlot</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colMeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">x.tr</span>, subset <span class="op">=</span> <span class="op">(</span><span class="va">x.tr</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">==</span> <span class="fl">8</span><span class="op">)</span>, select <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>, <span class="fl">16</span>, <span class="fl">16</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="31-qda-knn_files/figure-html/zipav-1.png" width="90%" style="display: block; margin: auto;"></div>
-<div class="sourceCode" id="cb145"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb146"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># alternatively: myImagePlot(t(matrix(colMeans(a[a[,1]==8,-1]), 16, 16)))</span></code></pre></div>
 <p>We will now use LDA, QDA and a multinomial logistic model. The
 latter is the natural extension of logistic regression to more than
@@ -222,13 +223,13 @@ in a <code>data frame</code> (as you can then refer to features by their
 names and use the <code>data</code> argument). So, we first transform
 our matrix into a data frame, and name the resulting variables
 <em>V1</em>, <em>V2</em>, …, <em>V257</em>:</p>
-<div class="sourceCode" id="cb146"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">x.tr</span><span class="op">)</span>
 <span class="va">x.te</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">x.te</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">x.te</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">x.tr</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"V"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">257</span>, sep <span class="op">=</span> <span class="st">""</span><span class="op">)</span></code></pre></div>
 <p>Now we use <code>lda</code> and <code>multinom</code> (this last one from package <code>nnet</code>) to train
 an LDA and a multinomial classifier to these 3-class data:</p>
-<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb148"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/lda.html">lda</a></span><span class="op">(</span><span class="va">V1</span> <span class="op">~</span> <span class="va">.</span> <span class="op">-</span> <span class="va">V257</span>, data <span class="op">=</span> <span class="va">x.tr</span><span class="op">)</span> <span class="co"># x.tr[,1] ~ x[, 2:256])</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">nnet</a></span><span class="op">)</span>
 <span class="va">a.log</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nnet/man/multinom.html">multinom</a></span><span class="op">(</span><span class="va">V1</span> <span class="op">~</span> <span class="va">.</span> <span class="op">-</span> <span class="va">V257</span>, data <span class="op">=</span> <span class="va">x.tr</span>, maxit <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span>
@@ -266,7 +267,7 @@ the corresponding help page for more information. We will probably
 discuss this further later in the course.</p>
 <p>For now we obtain the predictions on the test set and build a
 matrix of classification errors for each classifier. For LDA we have:</p>
-<div class="sourceCode" id="cb148"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb149"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pr.lda</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a</span>, newdata <span class="op">=</span> <span class="va">x.te</span><span class="op">)</span><span class="op">$</span><span class="va">class</span>
 <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">pr.lda</span>, <span class="va">x.te</span><span class="op">$</span><span class="va">V1</span><span class="op">)</span>
 <span class="co">#&gt;       </span>
@@ -275,7 +276,7 @@ matrix of classification errors for each classifier. For LDA we have:</p>
 <span class="co">#&gt;      1   0 258   0</span>
 <span class="co">#&gt;      8   6   4 157</span></code></pre></div>
 <p>For the logistic multinomial classifier we have:</p>
-<div class="sourceCode" id="cb149"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb150"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pr.log</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a.log</span>, newdata <span class="op">=</span> <span class="va">x.te</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">pr.log</span>, <span class="va">x.te</span><span class="op">$</span><span class="va">V1</span><span class="op">)</span>
 <span class="co">#&gt;       </span>
@@ -284,7 +285,7 @@ matrix of classification errors for each classifier. For LDA we have:</p>
 <span class="co">#&gt;      1  12 258  10</span>
 <span class="co">#&gt;      8   5   3 143</span></code></pre></div>
 <p>We now attempt to train a QDA classifier:</p>
-<div class="sourceCode" id="cb150"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb151"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">a.qda</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/try.html">try</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/qda.html">qda</a></span><span class="op">(</span><span class="va">V1</span> <span class="op">~</span> <span class="va">.</span> <span class="op">-</span> <span class="va">V257</span>, data <span class="op">=</span> <span class="va">x.tr</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; Error in qda.default(x, grouping, ...) : rank deficiency in group 0</span>
 <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">a.qda</span><span class="op">)</span>
@@ -293,7 +294,7 @@ matrix of classification errors for each classifier. For LDA we have:</p>
 the training set for at least one class is rank deficient (which can
 be found by looking at the error message stored in the returned
 object <code>a.qda</code></p>
-<div class="sourceCode" id="cb151"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb152"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">a.qda</span>
 <span class="co">#&gt; [1] "Error in qda.default(x, grouping, ...) : rank deficiency in group 0\n"</span>
 <span class="co">#&gt; attr(,"class")</span>
@@ -301,7 +302,7 @@ object <code>a.qda</code></p>
 <span class="co">#&gt; attr(,"condition")</span>
 <span class="co">#&gt; &lt;simpleError in qda.default(x, grouping, ...): rank deficiency in group 0&gt;</span></code></pre></div>
 <p>Indeed, we have:</p>
-<div class="sourceCode" id="cb152"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb153"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x1</span> <span class="op">&lt;-</span> <span class="va">x.tr</span><span class="op">[</span><span class="va">x.tr</span><span class="op">$</span><span class="va">V1</span> <span class="op">==</span> <span class="fl">0</span>, <span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">x1</span><span class="op">)</span>
 <span class="co">#&gt; [1] 1194  257</span>
@@ -340,7 +341,7 @@ probability).</p>
 <p>We first we use a trivial 1-NN classifier: the estimated conditional probabilities
 for each class at a point <strong>X</strong>, will simply be 0 or 1 depending on the class of the closest
 neighbour to <strong>X</strong> in the training set.</p>
-<div class="sourceCode" id="cb153"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb154"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">class</a></span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">vaso</span>, package <span class="op">=</span> <span class="st">"robustbase"</span><span class="op">)</span>
 <span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span>, length <span class="op">=</span> <span class="fl">200</span><span class="op">)</span>
@@ -365,7 +366,7 @@ The function <code>knn</code> returns the estimated probabilities in the
 function <code>attr</code> to extract it (as usual, the R help pages are
 a good source of information if you have any questions about the
 code below):</p>
-<div class="sourceCode" id="cb154"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb155"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">u5</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span>
   <span class="fu"><a href="https://rdrr.io/pkg/class/man/knn.html">knn</a></span><span class="op">(</span>train <span class="op">=</span> <span class="va">vaso</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">]</span>, cl <span class="op">=</span> <span class="va">vaso</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span>, test <span class="op">=</span> <span class="va">xx</span>, k <span class="op">=</span> <span class="fl">5</span>, prob <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
   <span class="st">"prob"</span>
@@ -382,7 +383,7 @@ code below):</p>
 <p>We now turn to the digits data. We now look at the images
 for digits 1, 3 and 8 and create the corresponding
 training and test sets:</p>
-<div class="sourceCode" id="cb155"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb156"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">zip.train</span>, package <span class="op">=</span> <span class="st">"ElemStatLearn"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">zip.test</span>, package <span class="op">=</span> <span class="st">"ElemStatLearn"</span><span class="op">)</span>
 <span class="va">x.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">zip.train</span><span class="op">[</span><span class="va">zip.train</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">8</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span>
@@ -391,7 +392,7 @@ training and test sets:</p>
 <p>We now train 1-, 5-, 10- and 50-NN classifiers and evaluate them on
 the test set. We report the misclassification rate on the test set,
 along with the corresponding tables:</p>
-<div class="sourceCode" id="cb156"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb157"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">u1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/class/man/knn.html">knn</a></span><span class="op">(</span>train <span class="op">=</span> <span class="va">x.tr</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>, cl <span class="op">=</span> <span class="va">x.tr</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, test <span class="op">=</span> <span class="va">x.te</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>, k <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">u1</span>, <span class="va">x.te</span><span class="op">$</span><span class="va">V1</span><span class="op">)</span>
 <span class="co">#&gt;    </span>
@@ -481,7 +482,7 @@ conditional distribution of <strong>X</strong> in each class). Class-wise pre-st
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-08-18.</p>
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-09-02.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

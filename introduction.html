@@ -59,6 +59,7 @@
 <li><a class="" href="parametric-classifiers.html"><span class="header-section-number">11</span> Parametric classifiers</a></li>
 <li><a class="" href="qda.html"><span class="header-section-number">12</span> QDA</a></li>
 <li><a class="" href="classification-trees.html"><span class="header-section-number">13</span> Classification Trees</a></li>
+<li class="book-part">Module 4 – Modern techniques</li>
 <li><a class="" href="bagging-for-regression.html"><span class="header-section-number">14</span> Bagging for regression</a></li>
 <li><a class="" href="bagging-for-classification.html"><span class="header-section-number">15</span> Bagging for classification</a></li>
 <li><a class="" href="random-forests.html"><span class="header-section-number">16</span> Random Forests</a></li>
@@ -130,26 +131,26 @@ also look at the arguments <code>nu</code> and <code>nv</code> for the function 
 </h2>
 <p>We first read the data for the simple illustration of PC’s as best lower
 dimensional approximations.</p>
-<div class="sourceCode" id="cb281"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb282"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/t8-5.dat"</span>, header <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p>Note that the data has 5 explanatory variables. Here
 we only use two of them in order to be able to visualize the analysis
 more easily:</p>
-<div class="sourceCode" id="cb282"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb283"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">xx</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">xx</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Prof degree"</span>, <span class="st">"Median home value"</span><span class="op">)</span></code></pre></div>
 <p>As discussed in class, we standardize the data to avoid a large difference
 in scales “hijacking” the principal components:</p>
-<div class="sourceCode" id="cb283"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb284"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">xx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">xx</span>, center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colMeans</a></span><span class="op">(</span><span class="va">xx</span><span class="op">)</span>, scale <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>We now define two auxiliary functions to compute Euclidean
 norms and squared Euclidean norms (less general by probably
 faster than <code>R</code>’s <code><a href="https://rdrr.io/r/base/norm.html">base::norm</a></code>):</p>
-<div class="sourceCode" id="cb284"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb285"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">norm2</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">a</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
 <span class="va">norm</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu">norm2</span><span class="op">(</span><span class="va">a</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>We start by looking at the data with a scatter plot:</p>
-<div class="sourceCode" id="cb285"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb286"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">xx</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">"black"</span>, cex <span class="op">=</span> <span class="fl">2</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.5</span>, <span class="fl">4.5</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.5</span>, <span class="fl">4.5</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">0</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"grey"</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fl">0</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"grey"</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
@@ -166,7 +167,7 @@ along the subspace generated by <span class="math inline">\(\mathbf{v} = (1, 0.0
 the scalars
 <span class="math inline">\(\langle \mathbf{x}_i, \mathbf{v} \rangle = \mathbf{x}_i^\top \mathbf{v}\)</span> for each
 point <span class="math inline">\(\mathbf{x}_i\)</span>:</p>
-<div class="sourceCode" id="cb286"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb287"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.05</span><span class="op">)</span>
 <span class="va">a</span> <span class="op">&lt;-</span> <span class="va">a</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/norm.html">norm</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span>
 <span class="co"># Find the projections (coordinates of the</span>
@@ -174,11 +175,11 @@ point <span class="math inline">\(\mathbf{x}_i\)</span>:</p>
 <span class="va">prs</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">xx</span> <span class="op">%*%</span> <span class="va">a</span><span class="op">)</span></code></pre></div>
 <p>We now compute the projections
 <span class="math inline">\(\pi_{\mathbf{v}} ( \mathbf{x}_i ) = \langle \mathbf{x}_i, \mathbf{v} \rangle \, \mathbf{v}\)</span>:</p>
-<div class="sourceCode" id="cb287"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb288"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pr</span> <span class="op">&lt;-</span> <span class="va">prs</span> <span class="op">%*%</span> <span class="va">a</span></code></pre></div>
 <p>and add them to the plot, with a few observations highlighted. The subspace
 is shown in red, and the orthogonal projections as solid red dots on that line:</p>
-<div class="sourceCode" id="cb288"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb289"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Plot the data</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">xx</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">"black"</span>, cex <span class="op">=</span> <span class="fl">2</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.5</span>, <span class="fl">4.5</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.5</span>, <span class="fl">4.5</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">0</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"grey"</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
@@ -218,18 +219,18 @@ for other digits to explore whether similar conclusions hold for
 them). We load the training data from the <code>ElemStatLearn</code> package in R,
 and extract the images that correspond to the digit 3. For more
 information use <code><a href="https://rdrr.io/pkg/ElemStatLearn/man/zip.train.html">help(zip.train, package='ElemStatLearn')</a></code>.</p>
-<div class="sourceCode" id="cb289"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb290"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">zip.train</span>, package <span class="op">=</span> <span class="st">"ElemStatLearn"</span><span class="op">)</span>
 <span class="va">a</span> <span class="op">&lt;-</span> <span class="va">zip.train</span><span class="op">[</span><span class="va">zip.train</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">==</span> <span class="fl">3</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span></code></pre></div>
 <p>Define an auxiliary function to compute
 the squared Euclidean distance between two vectors
 (recall that we have already defined the function <code>norm2</code> above):</p>
-<div class="sourceCode" id="cb290"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb291"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dist</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span> <span class="fu">norm2</span><span class="op">(</span><span class="va">a</span> <span class="op">-</span> <span class="va">b</span><span class="op">)</span></code></pre></div>
 <p>To display the images we adapt the following function
 for plotting a matrix, which was
 originally available at <a href="http://www.phaget4.org/R/image_matrix.html">http://www.phaget4.org/R/image_matrix.html</a>:</p>
-<div class="sourceCode" id="cb291"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb292"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">myImagePlot</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">min</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
   <span class="va">max</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
@@ -244,7 +245,7 @@ originally available at <a href="http://www.phaget4.org/R/image_matrix.html">htt
   <span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 <p>Using this function, we plot 9 randomly chosen images from our data set:</p>
-<div class="sourceCode" id="cb292"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb293"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">31</span><span class="op">)</span>
 <span class="va">sa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span>, <span class="fl">9</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mai <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="fl">5</span>, xaxs <span class="op">=</span> <span class="st">"i"</span>, yaxs <span class="op">=</span> <span class="st">"i"</span><span class="op">)</span>
@@ -259,7 +260,7 @@ originally available at <a href="http://www.phaget4.org/R/image_matrix.html">htt
 and eigenvalues of the covariance matrix more efficiently. In fact,
 note that we do not need to even compute the covariance matrix
 and can use the SVD of the centred data.</p>
-<div class="sourceCode" id="cb293"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb294"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ac</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">a</span>, center <span class="op">=</span> <span class="cn">TRUE</span>, scale <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">si.svd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/svd.html">svd</a></span><span class="op">(</span><span class="va">ac</span><span class="op">)</span></code></pre></div>
 <p>Using the relationship between the eigenvectors of the covariance matrix
@@ -267,19 +268,19 @@ and the SVD of the <span class="math inline">\(n \times p\)</span> data matrix, 
 centered data on their orthogonal projections along each of the first and 2nd and 3rd
 principal directions (eigenvectors of the covariance matrix). Recall that the data
 are stored as rows of the matrix <code>a</code>:</p>
-<div class="sourceCode" id="cb294"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb295"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="va">ac</span> <span class="op">%*%</span> <span class="va">si.svd</span><span class="op">$</span><span class="va">v</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span>
 <span class="va">v2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="va">ac</span> <span class="op">%*%</span> <span class="va">si.svd</span><span class="op">$</span><span class="va">v</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <p>As discussed in class, we identify 5 quantiles of each of these
 coordinates to use as our 2-dimensional grid:</p>
-<div class="sourceCode" id="cb295"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb296"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">qv1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">v1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">.05</span>, <span class="fl">.25</span>, <span class="fl">.5</span>, <span class="fl">.75</span>, <span class="fl">.95</span><span class="op">)</span><span class="op">)</span>
 <span class="va">qv2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">v2</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">.05</span>, <span class="fl">.25</span>, <span class="fl">.5</span>, <span class="fl">.75</span>, <span class="fl">.95</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>We can visualize the grid of these 5 x 5 = 25 points
 over the scatter plot of all the 2-dimensional projections
 of the data (their coordinates on the principal components
 basis):</p>
-<div class="sourceCode" id="cb296"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb297"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">qv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html">expand.grid</a></span><span class="op">(</span><span class="va">qv1</span>, <span class="va">qv2</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">v1</span>, <span class="va">v2</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">qv</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, <span class="va">qv</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></code></pre></div>
@@ -290,28 +291,28 @@ with projections closest to each of the 5 x 5 = 25 points in the grid
 which is in the 256 dimensional space) can be computed
 in terms of their coordinates on the principal-basis only (which
 are 2-dimensional points):</p>
-<div class="sourceCode" id="cb297"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb298"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">v1</span>, <span class="va">v2</span><span class="op">)</span>
 <span class="va">cvs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span><span class="fl">0</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">qv</span><span class="op">)</span><span class="op">)</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">qv</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="va">cvs</span><span class="op">[</span><span class="va">j</span>, <span class="op">]</span> <span class="op">&lt;-</span> <span class="va">vs</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">vs</span>, <span class="fl">1</span>, <span class="va">dist</span>, b <span class="op">=</span> <span class="va">qv</span><span class="op">[</span><span class="va">j</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="op">]</span></code></pre></div>
 <p>We now add these points to our plot (we use color blue for them):</p>
-<div class="sourceCode" id="cb298"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb299"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">v1</span>, <span class="va">v2</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">qv</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, <span class="va">qv</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">qv</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">cvs</span><span class="op">[</span><span class="va">j</span>, <span class="fl">1</span><span class="op">]</span>, <span class="va">cvs</span><span class="op">[</span><span class="va">j</span>, <span class="fl">2</span><span class="op">]</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="51-pca_files/figure-html/digits.p5-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Using these “blue” coordinates, we construct the corresponding points
 in the 256-dimensional space:</p>
-<div class="sourceCode" id="cb299"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb300"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">si.svd</span><span class="op">$</span><span class="va">v</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span> <span class="op">%*%</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">cvs</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>and identify the images in our data set that are closest to these points</p>
-<div class="sourceCode" id="cb300"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb301"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">repre</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">qv</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">app</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">qv</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="va">repre</span><span class="op">[</span><span class="va">j</span>, <span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ac</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">ac</span>, <span class="fl">1</span>, <span class="va">dist</span>, b <span class="op">=</span> <span class="va">app</span><span class="op">[</span><span class="va">j</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="op">]</span></code></pre></div>
 <p>These are the actual images that are closest to the points in the array <code>app</code>
 above. Now add the column means and display these 25 images according to the points
 they represent in the red grid:</p>
-<div class="sourceCode" id="cb301"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb302"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">repre</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">repre</span>, center <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colMeans</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span>, scale <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mai <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="fl">5</span>, xaxs <span class="op">=</span> <span class="st">"i"</span>, yaxs <span class="op">=</span> <span class="st">"i"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span>
@@ -329,7 +330,7 @@ along each of these 2 principal directions.</p>
 <p>For details see Appendix <a href="alt-pca.html#alt-pca">A</a>.</p>
 <p>A function implementing this method to compute the first
 principal component is:</p>
-<div class="sourceCode" id="cb302"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb303"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">alter.pca.k1</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">max.it</span> <span class="op">=</span> <span class="fl">500</span>, <span class="va">eps</span> <span class="op">=</span> <span class="fl">1e-10</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">n2</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">a</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
   <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>
@@ -349,19 +350,19 @@ principal component is:</p>
 <span class="op">}</span></code></pre></div>
 <p>We use it on the digits data above to compute the
 first principal component (we also time it):</p>
-<div class="sourceCode" id="cb303"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb304"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu">alter.pca.k1</span><span class="op">(</span><span class="va">ac</span><span class="op">)</span><span class="op">$</span><span class="va">a</span><span class="op">)</span>
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;   0.088   0.017   0.105</span></code></pre></div>
+<span class="co">#&gt;   0.090   0.017   0.107</span></code></pre></div>
 <p>and compare it with the one given by <code>svd</code>,
 which we also time. Note that the
 sign of the eigenvectors is arbitrary, so we adjust
 these vectors in order to have first elements with the
 same sign.</p>
-<div class="sourceCode" id="cb304"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb305"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">tmp2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/svd.html">svd</a></span><span class="op">(</span><span class="va">ac</span><span class="op">)</span><span class="op">$</span><span class="va">v</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span>
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;   0.158   0.001   0.160</span>
+<span class="co">#&gt;   0.157   0.002   0.159</span>
 <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="va">tmp</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/sign.html">sign</a></span><span class="op">(</span><span class="va">tmp2</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">*</span> <span class="va">tmp</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">tmp</span> <span class="op">-</span> <span class="va">tmp2</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. </span>
@@ -375,37 +376,37 @@ consider the following synthetic data set with n = 2000 observation
 and p = 1000, and compare the timing and the results
 (even when forcing <code>svd</code> to only compute a single component).</p>
 <p>First generate the data set</p>
-<div class="sourceCode" id="cb305"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb306"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">2000</span>
 <span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">1000</span>
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">rt</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">p</span>, df <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, <span class="va">n</span>, <span class="va">p</span><span class="op">)</span></code></pre></div>
 <p>Compute the first eigenvector using alternating regression, and
 time it:</p>
-<div class="sourceCode" id="cb306"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb307"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu">alter.pca.k1</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;    user  system elapsed </span>
 <span class="co">#&gt;   0.395   0.022   0.418</span>
 <span class="va">a1</span> <span class="op">&lt;-</span> <span class="va">tmp</span><span class="op">$</span><span class="va">a</span></code></pre></div>
 <p>Compute the first eigenvector using <code>svd</code>, and
 time it:</p>
-<div class="sourceCode" id="cb307"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb308"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">e1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/svd.html">svd</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cov</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">u</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span>
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;   4.439   0.046   4.486</span></code></pre></div>
+<span class="co">#&gt;   4.475   0.020   4.515</span></code></pre></div>
 <p>Asking <code>svd</code> to only compute one component does not
 seem to make the algorithm faster (the results are
 identical):</p>
-<div class="sourceCode" id="cb308"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb309"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">e1.1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/svd.html">svd</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cov</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, nu <span class="op">=</span> <span class="fl">1</span>, nv <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">$</span><span class="va">u</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span>
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;   4.455   0.023   4.481</span>
+<span class="co">#&gt;   4.475   0.017   4.620</span>
 <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">e1</span> <span class="op">-</span> <span class="va">e1.1</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span>
 <span class="co">#&gt;       0       0       0       0       0       0</span></code></pre></div>
 <p>Finally, check that the first eigenvector computed with
 <code>svd</code> and with the alternating regression approach
 are practially identical:</p>
-<div class="sourceCode" id="cb309"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb310"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">a1</span> <span class="op">&lt;-</span> <span class="va">a1</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/sign.html">sign</a></span><span class="op">(</span><span class="va">e1</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">*</span> <span class="va">a1</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">e1</span> <span class="op">-</span> <span class="va">a1</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. </span>
@@ -441,7 +442,7 @@ are practially identical:</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-08-18.</p>
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-09-02.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

@@ -59,6 +59,7 @@
 <li><a class="" href="parametric-classifiers.html"><span class="header-section-number">11</span> Parametric classifiers</a></li>
 <li><a class="" href="qda.html"><span class="header-section-number">12</span> QDA</a></li>
 <li><a class="" href="classification-trees.html"><span class="header-section-number">13</span> Classification Trees</a></li>
+<li class="book-part">Module 4 – Modern techniques</li>
 <li><a class="" href="bagging-for-regression.html"><span class="header-section-number">14</span> Bagging for regression</a></li>
 <li><a class="" href="bagging-for-classification.html"><span class="header-section-number">15</span> Bagging for classification</a></li>
 <li><a class="" href="random-forests.html"><span class="header-section-number">16</span> Random Forests</a></li>
@@ -120,7 +121,7 @@ corresponding help page: <code><a href="https://rdrr.io/pkg/SemiPar/man/lidar.ht
 We now load the data and plot it, the response
 variable is <code>logratio</code> and the explanatory one is
 <code>range</code>:</p>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">lidar</span>, package <span class="op">=</span> <span class="st">"SemiPar"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="va">range</span>, data <span class="op">=</span> <span class="va">lidar</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">"gray"</span>, cex <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="22-nonpar-splines-poly_files/figure-html/nonparam-1.png" width="90%" style="display: block; margin: auto;"></div>
@@ -142,7 +143,7 @@ of <code>range</code>, and plug that into the call to <code><a href="https://rdr
 The code below fits two such approximations (a 3rd degree and a
 4th degree polynomial), plots the data
 and overlays the estimated regression function:</p>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Degree 4 polynomials</span>
 <span class="va">pm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/poly.html">poly</a></span><span class="op">(</span><span class="va">range</span>, <span class="fl">4</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">lidar</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="va">range</span>, data <span class="op">=</span> <span class="va">lidar</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">"gray"</span>, cex <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>
@@ -160,7 +161,7 @@ of the approximation. However, this is
 easily seen not to be a good idea. Below we compare the
 4th degree approximation used above (in blue) with
 a 10th degree one (in red):</p>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Degree 10 polynomials</span>
 <span class="va">pm2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/poly.html">poly</a></span><span class="op">(</span><span class="va">range</span>, <span class="fl">10</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">lidar</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="va">range</span>, data <span class="op">=</span> <span class="va">lidar</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">"gray"</span>, cex <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>
@@ -204,7 +205,7 @@ of an explicit basis) is in fact nothing
 more than slightly more complex linear models.</p>
 <p>First we find the 5 knots mentioned above that will be used to
 construct the spline basis:</p>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># select the knots at 5 specific quantiles</span>
 <span class="op">(</span><span class="va">kn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">lidar</span><span class="op">$</span><span class="va">range</span>, <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span> <span class="op">/</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] 444.6667 499.6667 555.0000 609.6667 664.6667</span></code></pre></div>
@@ -215,7 +216,7 @@ at the n observed values of the (single) explanatory variable <em>x_1</em>, …,
 matrix <strong>X</strong> has in its <em>(i, j)</em> cell the value <em>f_j(x_i)</em>,
 for <em>j=1</em>, …, <em>k</em>, and <em>i=1</em>, …, <em>n</em>. In the code below we use (abuse?) <code>R</code>’s <em>recycling</em> rules
 when operating over vectors and arrays (can you spot it?)</p>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># prepare the matrix of covariates / explanatory variables</span>
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">lidar</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">kn</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">kn</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
@@ -226,7 +227,7 @@ when operating over vectors and arrays (can you spot it?)</p>
 the coefficients of the linear combination of the functions in the spline basis
 that will provide our regression function estimator. We then plot the data and overlay the
 fitted / estimated regression function:</p>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Fit the regression model</span>
 <span class="va">ppm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">lidar</span><span class="op">$</span><span class="va">logratio</span> <span class="op">~</span> <span class="va">x</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="va">range</span>, data <span class="op">=</span> <span class="va">lidar</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">"gray"</span>, cex <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>
@@ -252,7 +253,7 @@ function with the one we obtained above
 using our <strong>poor people naive basis</strong>. The plot below overlays both
 fits (the naive one with a thick pink line as above, and the one
 using b-splines with a thinner blue line):</p>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">splines</span><span class="op">)</span>
 <span class="va">ppm2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/splines/bs.html">bs</a></span><span class="op">(</span><span class="va">range</span>, degree <span class="op">=</span> <span class="fl">1</span>, knots <span class="op">=</span> <span class="va">kn</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">lidar</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="va">range</span>, data <span class="op">=</span> <span class="va">lidar</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">"gray"</span>, cex <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>
@@ -262,7 +263,7 @@ using b-splines with a thinner blue line):</p>
 <p>As expected, both fits provide the same estimated regression function, although
 its coefficients are naturally different (<strong>but their lengths are the same</strong>,
 is this a coincidence, or will it always happen?)</p>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">ppm</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1]  0.0269095640  0.0002488169 -0.0003235802 -0.0082773735  0.0063779378</span>
 <span class="co">#&gt; [6]  0.0007385513 -0.0001847752</span>
@@ -286,7 +287,7 @@ quadratic spline basis with knots located at the elements of the vector <code>kn
 As before, we then simply use <code>lm</code>
 to estimate the coefficients, and overlay the estimated regression
 function over the data:</p>
-<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="va">range</span>, data <span class="op">=</span> <span class="va">lidar</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">"gray"</span>, cex <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>
 <span class="va">ppmq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/splines/bs.html">bs</a></span><span class="op">(</span><span class="va">range</span>, degree <span class="op">=</span> <span class="fl">2</span>, knots <span class="op">=</span> <span class="va">kn</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">lidar</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">ppmq</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">range</span><span class="op">)</span><span class="op">]</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="va">range</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">lidar</span>, lwd <span class="op">=</span> <span class="fl">6</span>, col <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span></code></pre></div>
@@ -298,28 +299,28 @@ predictors) is that we can easily compute (pointwise) standard errors
 for the fitted regression curve, as follows. We first fit and
 plot a quadratic
 spline using the same 5 knots as before:</p>
-<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="va">range</span>, data <span class="op">=</span> <span class="va">lidar</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">"gray"</span>, cex <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>
 <span class="va">ppmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/splines/bs.html">bs</a></span><span class="op">(</span><span class="va">range</span>, degree <span class="op">=</span> <span class="fl">2</span>, knots <span class="op">=</span> <span class="va">kn</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">lidar</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">ppmc</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">range</span><span class="op">)</span><span class="op">]</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="va">range</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">lidar</span>, lwd <span class="op">=</span> <span class="fl">6</span>, col <span class="op">=</span> <span class="st">"gray30"</span><span class="op">)</span></code></pre></div>
 <p>To compute the estimated standard error of the predicted regression curve on a grid
 of values of the explanatory variable <code>range</code>, we first build a grid of 200 equally spaced points
 within the observed scope of the variable <code>range</code>:</p>
-<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">xx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">lidar</span><span class="op">$</span><span class="va">range</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">lidar</span><span class="op">$</span><span class="va">range</span><span class="op">)</span>, length <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></code></pre></div>
 <p>The <code>predict</code> method for objects of class <code>lm</code> returns estimated standard
 errors for each fitted value if we set the argument
 <code>se.fit = TRUE</code>:</p>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ppmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/splines/bs.html">bs</a></span><span class="op">(</span><span class="va">range</span>, degree <span class="op">=</span> <span class="fl">2</span>, knots <span class="op">=</span> <span class="va">kn</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">lidar</span><span class="op">)</span>
 <span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">ppmc</span>, newdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>range <span class="op">=</span> <span class="va">xx</span><span class="op">)</span>, se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>We now compute upper and lower confidence bands (I used 2 standard errors) around the fitted regression line:</p>
-<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">up</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">ps</span><span class="op">$</span><span class="va">fit</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">ps</span><span class="op">$</span><span class="va">se.fit</span><span class="op">)</span>
 <span class="va">lo</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">ps</span><span class="op">$</span><span class="va">fit</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">ps</span><span class="op">$</span><span class="va">se.fit</span><span class="op">)</span></code></pre></div>
 <p>Finally, we display the <em>confidence bands</em> we just constructed (using <strong>base R</strong> graphics,
 but also consider using <code>ggplot2</code>):</p>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="va">range</span>, data <span class="op">=</span> <span class="va">lidar</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">"gray"</span>, cex <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">ppmc</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">range</span><span class="op">)</span><span class="op">]</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="va">range</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">lidar</span>, lwd <span class="op">=</span> <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"gray30"</span><span class="op">)</span>
 <span class="va">myrgb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/col2rgb.html">col2rgb</a></span><span class="op">(</span><span class="st">"red"</span><span class="op">)</span> <span class="op">/</span> <span class="fl">256</span> <span class="co"># , alpha=TRUE)</span>
@@ -329,7 +330,7 @@ but also consider using <code>ggplot2</code>):</p>
 <div class="inline-figure"><img src="22-nonpar-splines-poly_files/figure-html/bsplines.se5-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p><strong>It is important to note that the above confidence bands were constructed assuming that the knots were fixed (not random), and similarly for the degree of the spline basis.</strong></p>
 <p>Increasing the degree of the cubic basis yields smoother fits (having higher order continuous derivatives). For example, using cubic splines yields an even smoother fit:</p>
-<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># cubic splines</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="va">range</span>, data <span class="op">=</span> <span class="va">lidar</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">"gray"</span>, cex <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>
 <span class="va">ppmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/splines/bs.html">bs</a></span><span class="op">(</span><span class="va">range</span>, degree <span class="op">=</span> <span class="fl">3</span>, knots <span class="op">=</span> <span class="va">kn</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">lidar</span><span class="op">)</span>
@@ -344,7 +345,7 @@ and wiggle, particularly at the upper end of our observations.</p>
 </h2>
 <p>So far we have used 5 knots, but we could have used any other number of knots. If we consider a quadratic
 spline basis with 10 knots, the fit appears a bit better (at least aesthetically):</p>
-<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">10</span>
 <span class="va">kn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">lidar</span><span class="op">$</span><span class="va">range</span>, <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">k</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="va">k</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="va">range</span>, data <span class="op">=</span> <span class="va">lidar</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">"gray"</span>, cex <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>
@@ -352,7 +353,7 @@ spline basis with 10 knots, the fit appears a bit better (at least aesthetically
 <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">ppmc</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">range</span><span class="op">)</span><span class="op">]</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="va">range</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">lidar</span>, lwd <span class="op">=</span> <span class="fl">6</span>, col <span class="op">=</span> <span class="st">"tomato3"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="22-nonpar-splines-poly_files/figure-html/bsplines.10knots-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>What about using more knots? The following plot used 50 knots:</p>
-<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">50</span>
 <span class="va">kn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">lidar</span><span class="op">$</span><span class="va">range</span>, <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">k</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">k</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="va">ppmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/splines/bs.html">bs</a></span><span class="op">(</span><span class="va">range</span>, degree <span class="op">=</span> <span class="fl">2</span>, knots <span class="op">=</span> <span class="va">kn</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">lidar</span><span class="op">)</span>
@@ -394,21 +395,21 @@ are available from its help page.</p>
 <p>When applied to the <code>lidar</code> data with penalization
 parameter equal to 0.2 (setting the argument <code>spar = 0.2</code>)
 we obtain the following estimated regression function:</p>
-<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="va">range</span>, data <span class="op">=</span> <span class="va">lidar</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">"gray"</span>, cex <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>
 <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/smooth.spline.html">smooth.spline</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">lidar</span><span class="op">$</span><span class="va">range</span>, y <span class="op">=</span> <span class="va">lidar</span><span class="op">$</span><span class="va">logratio</span>, spar <span class="op">=</span> <span class="fl">0.2</span>, cv <span class="op">=</span> <span class="cn">FALSE</span>,
     all.knots <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">$</span><span class="va">y</span> <span class="op">~</span> <span class="va">tmp</span><span class="op">$</span><span class="va">x</span>, lwd <span class="op">=</span> <span class="fl">6</span>, col <span class="op">=</span> <span class="st">"magenta"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="22-nonpar-splines-poly_files/figure-html/smoothing1-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>This fit is clearly too wiggly and unsatisfactory. To obtain a smoother fit we increase the penalty term to 0.5:</p>
-<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="va">range</span>, data <span class="op">=</span> <span class="va">lidar</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">"gray"</span>, cex <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>
 <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/smooth.spline.html">smooth.spline</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">lidar</span><span class="op">$</span><span class="va">range</span>, y <span class="op">=</span> <span class="va">lidar</span><span class="op">$</span><span class="va">logratio</span>, spar <span class="op">=</span> <span class="fl">0.5</span>, cv <span class="op">=</span> <span class="cn">FALSE</span>,
     all.knots <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">$</span><span class="va">y</span> <span class="op">~</span> <span class="va">tmp</span><span class="op">$</span><span class="va">x</span>, lwd <span class="op">=</span> <span class="fl">6</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="22-nonpar-splines-poly_files/figure-html/smoothing1.5-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>The larger the penalty parameter, the smoother the fit. Setting it to 0.8 yields:</p>
-<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="va">range</span>, data <span class="op">=</span> <span class="va">lidar</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">"gray"</span>, cex <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>
 <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/smooth.spline.html">smooth.spline</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">lidar</span><span class="op">$</span><span class="va">range</span>, y <span class="op">=</span> <span class="va">lidar</span><span class="op">$</span><span class="va">logratio</span>, spar <span class="op">=</span> <span class="fl">0.8</span>, cv <span class="op">=</span> <span class="cn">FALSE</span>,
     all.knots <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
@@ -417,7 +418,7 @@ we obtain the following estimated regression function:</p>
 <p>It is easy to see that the larger the penalty coefficient the closer
 the resulting natural cubic spline becomes to a linear function (why?).
 For example, if we use <code><a href="https://rdrr.io/r/stats/smooth.spline.html">smooth.spline(spar=2)</a></code>:</p>
-<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="va">range</span>, data <span class="op">=</span> <span class="va">lidar</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">"gray"</span>, cex <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>
 <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/smooth.spline.html">smooth.spline</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">lidar</span><span class="op">$</span><span class="va">range</span>, y <span class="op">=</span> <span class="va">lidar</span><span class="op">$</span><span class="va">logratio</span>, spar <span class="op">=</span> <span class="fl">2</span>, cv <span class="op">=</span> <span class="cn">FALSE</span>, all.knots <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">$</span><span class="va">y</span> <span class="op">~</span> <span class="va">tmp</span><span class="op">$</span><span class="va">x</span>, lwd <span class="op">=</span> <span class="fl">6</span>, col <span class="op">=</span> <span class="st">"tomato3"</span><span class="op">)</span></code></pre></div>
@@ -432,7 +433,7 @@ cross-validation, and for these linear predictors, leave-one-out cross-validatio
 is particularly attractive (in terms of computational cost).
 The function <code>smooth.spline</code> in <code>R</code> will compute (and use) an optimal value for the penalty term using
 leave-one-out cross-validation when we set the argument <code>cv = TRUE</code>:</p>
-<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tmp.cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/smooth.spline.html">smooth.spline</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">lidar</span><span class="op">$</span><span class="va">range</span>, y <span class="op">=</span> <span class="va">lidar</span><span class="op">$</span><span class="va">logratio</span>, cv <span class="op">=</span> <span class="cn">TRUE</span>, all.knots <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co"># tmp.cv$spar = 0.974</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="va">range</span>, data <span class="op">=</span> <span class="va">lidar</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">"gray"</span>, cex <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>
@@ -447,7 +448,7 @@ also returned in the element
 <code>$spar</code> of the object returned by <code>smooth.spline</code>. Just as a <strong>sanity check</strong>
 we can now call <code>smooth.spline</code> with <code>cv = FALSE</code> and manually set
 <code>spar</code> to this optimal value, and verify that we obtain the same fit:</p>
-<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="va">range</span>, data <span class="op">=</span> <span class="va">lidar</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="st">"gray"</span>, cex <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">tmp.cv</span><span class="op">$</span><span class="va">y</span> <span class="op">~</span> <span class="va">tmp.cv</span><span class="op">$</span><span class="va">x</span>, lwd <span class="op">=</span> <span class="fl">8</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span>
 <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/smooth.spline.html">smooth.spline</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">lidar</span><span class="op">$</span><span class="va">range</span>, y <span class="op">=</span> <span class="va">lidar</span><span class="op">$</span><span class="va">logratio</span>, spar <span class="op">=</span> <span class="va">tmp.cv</span><span class="op">$</span><span class="va">spar</span>, cv <span class="op">=</span> <span class="cn">FALSE</span>,
@@ -504,7 +505,7 @@ and references therein. Software in <code>R</code> implementing this method is a
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-08-18.</p>
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-09-02.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

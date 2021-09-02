@@ -1,7 +1,7 @@
 --- 
 title: "UBC Stat 406 Worksheets"
 author: "Daniel J. McDonald and Matías Salibán-Barrera"
-date: "2021-08-18"
+date: "2021-09-02"
 site: bookdown::bookdown_site
 output: bookdown::bs4_book
 documentclass: book
@@ -18,7 +18,7 @@ description: "These notes accompany the lectures for UBC's Stat 406."
 
 # Stat 406 Worksheets {-}
 
-<img src="cover.png" width="350" height="300" align="right" alt="" class="cover" /> **Authors:**<br>[Daniel J. McDonald](https://dajmcdon.github.io/)<br>[Matías Salibán-Barrera](https://www.stat.ubc.ca/users/matias-salibian-barrera)<br><br>**Last updated:** <br>18 August 2021
+<img src="cover.png" width="350" height="300" align="right" alt="" class="cover" /> **Authors:**<br>[Daniel J. McDonald](https://dajmcdon.github.io/)<br>[Matías Salibán-Barrera](https://www.stat.ubc.ca/users/matias-salibian-barrera)<br><br>**Last updated:** <br>02 September 2021
 
 <br>
 <br>

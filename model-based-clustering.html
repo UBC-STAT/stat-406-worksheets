@@ -59,6 +59,7 @@
 <li><a class="" href="parametric-classifiers.html"><span class="header-section-number">11</span> Parametric classifiers</a></li>
 <li><a class="" href="qda.html"><span class="header-section-number">12</span> QDA</a></li>
 <li><a class="" href="classification-trees.html"><span class="header-section-number">13</span> Classification Trees</a></li>
+<li class="book-part">Module 4 – Modern techniques</li>
 <li><a class="" href="bagging-for-regression.html"><span class="header-section-number">14</span> Bagging for regression</a></li>
 <li><a class="" href="bagging-for-classification.html"><span class="header-section-number">15</span> Bagging for classification</a></li>
 <li><a class="" href="random-forests.html"><span class="header-section-number">16</span> Random Forests</a></li>
@@ -128,7 +129,7 @@ We first load the data and reduce it to a 2-dimensional
 problem, in order to be able to plot the results.
 It will be a very nice exercise for the reader to
 re-do this analysis on the original data set.</p>
-<div class="sourceCode" id="cb325"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb326"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"data/unvotes.csv"</span>, sep <span class="op">=</span> <span class="st">","</span>, row.names <span class="op">=</span> <span class="fl">1</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co"># Compute pairwise distances and use MDS</span>
 <span class="va">dd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/dist.html">dist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span>
@@ -140,7 +141,7 @@ distributed) clusters in the data. First
 we find initial maximum likelihood estimators (i.e. initial
 values for the EM algorithm), using a random
 partition of the data:</p>
-<div class="sourceCode" id="cb326"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb327"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">3</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span>
@@ -166,7 +167,7 @@ think of an appropriate convergence criterion? Should
 we look at the parameter
 estimates, the gammas (posterior class probabilities),
 the likelihood function?</p>
-<div class="sourceCode" id="cb327"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb328"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://mvtnorm.R-forge.R-project.org">mvtnorm</a></span><span class="op">)</span>
 <span class="va">niter</span> <span class="op">&lt;-</span> <span class="fl">120</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">niter</span><span class="op">)</span> <span class="op">{</span>
@@ -200,7 +201,7 @@ on a relatively fine grid of points and displaying them.
 We will color the points according to the estimated
 group labels (the largest estimated posterior
 probability for each point). We first compute those</p>
-<div class="sourceCode" id="cb328"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb329"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># estimated groups</span>
 <span class="va">emlab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">gammas</span>, <span class="fl">1</span>, <span class="va">which.max</span><span class="op">)</span>
 <span class="co"># build a 100 x 100 grid</span>
@@ -224,7 +225,7 @@ probability for each point). We first compute those</p>
 <span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="53-model-based-clustering_files/figure-html/displ1-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>We can also show each separate estimated component:</p>
-<div class="sourceCode" id="cb329"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb330"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m2</span> <span class="op">&lt;-</span> <span class="va">m</span> <span class="op">%*%</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span><span class="op">(</span><span class="va">pis</span><span class="op">)</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">k</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="https://rdrr.io/r/graphics/filled.contour.html">filled.contour</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">x2</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">m2</span><span class="op">[</span>, <span class="va">j</span><span class="op">]</span>, <span class="va">ngr</span>, <span class="va">ngr</span><span class="op">)</span>,
@@ -243,7 +244,7 @@ probability for each point). We first compute those</p>
 <p>We will illustrate the problem with a synthetic data set.
 There are 3 groups with 300 observations in each,
 and 3 variables / features.</p>
-<div class="sourceCode" id="cb330"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb331"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># sample size</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">300</span>
 
@@ -265,7 +266,7 @@ and 3 variables / features.</p>
 <div class="inline-figure"><img src="53-model-based-clustering_files/figure-html/disp.noise1-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>It is not a surprise that model-based clustering works
 very well in this case:</p>
-<div class="sourceCode" id="cb331"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb332"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://mclust-org.github.io/mclust/">mclust</a></span><span class="op">)</span>
 <span class="co"># select the number of clusters using likelihood-base criterion</span>
 <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mclust-org.github.io/mclust/reference/Mclust.html">Mclust</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
@@ -273,7 +274,7 @@ very well in this case:</p>
 <span class="fu"><a href="https://rdrr.io/r/graphics/pairs.html">pairs</a></span><span class="op">(</span><span class="va">x</span>, col <span class="op">=</span> <span class="va">m</span><span class="op">$</span><span class="va">class</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="53-model-based-clustering_files/figure-html/mclust.noise1-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>We now create a data set that does not satisfy the model:</p>
-<div class="sourceCode" id="cb332"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb333"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">31</span><span class="op">)</span>
 <span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html">rexp</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="fl">3</span>, rate <span class="op">=</span> <span class="fl">.2</span><span class="op">)</span>, <span class="va">n</span>, <span class="fl">3</span><span class="op">)</span>
 <span class="va">mu2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">20</span><span class="op">)</span>
@@ -294,7 +295,7 @@ very well in this case:</p>
 function increases until k = 3, and it
 almost stops growing after k = 4. The
 the maximum is nonetheless attained at k = 8.</p>
-<div class="sourceCode" id="cb333"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb334"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">m3</span><span class="op">$</span><span class="va">BIC</span><span class="op">[</span>, <span class="fl">6</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"b"</span>, xlab <span class="op">=</span> <span class="st">"K"</span>, ylab <span class="op">=</span> <span class="st">"BIC"</span>, lwd <span class="op">=</span> <span class="fl">2</span>, pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="53-model-based-clustering_files/figure-html/wrong.bic-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>It is interesting to note that
@@ -303,7 +304,7 @@ the right number of clusters and cluster memberships
 rather easily. Here is the sum-of-squares plot based
 on K-means, which indicates that K = 3 is a sensible
 choice:</p>
-<div class="sourceCode" id="cb334"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb335"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># run k-means with k = 2, 2, ..., 10</span>
 <span class="co"># to try to identify how many clusters are present</span>
 <span class="va">m3.l</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">vector</a></span><span class="op">(</span><span class="st">"list"</span>, <span class="fl">10</span><span class="op">)</span>
@@ -314,14 +315,14 @@ choice:</p>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fl">2</span><span class="op">:</span><span class="fl">10</span>, <span class="va">ss</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span>, xlab <span class="op">=</span> <span class="st">"K"</span>, ylab <span class="op">=</span> <span class="st">"W_k"</span>, type <span class="op">=</span> <span class="st">"b"</span>, lwd <span class="op">=</span> <span class="fl">2</span>, pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="53-model-based-clustering_files/figure-html/wrong.kmeans.ss-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>The clusters found when K-means was run with kK = 3 were:</p>
-<div class="sourceCode" id="cb335"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb336"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/pairs.html">pairs</a></span><span class="op">(</span><span class="va">x.3</span>, col <span class="op">=</span> <span class="va">m3.l</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="53-model-based-clustering_files/figure-html/wrong.kmeans.clusters-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Furthermore, if you force <code><a href="https://mclust-org.github.io/mclust/reference/mclust-package.html">mclust()</a></code> to use 3 classes
 it works fairly well, even thought the model is wrong. The
 main problem here is that BIC depends heavily on the
 assumed likelihood / probabilistic model:</p>
-<div class="sourceCode" id="cb336"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb337"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m3.3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mclust-org.github.io/mclust/reference/Mclust.html">Mclust</a></span><span class="op">(</span><span class="va">x.3</span>, G <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/pairs.html">pairs</a></span><span class="op">(</span><span class="va">x.3</span>, col <span class="op">=</span> <span class="va">m3.3</span><span class="op">$</span><span class="va">class</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="53-model-based-clustering_files/figure-html/wrong.forced-1.png" width="90%" style="display: block; margin: auto;"></div>
@@ -337,7 +338,7 @@ these methods (both K-means and mclust)
 We will create two data sets with “noise” features:
 one with Gaussian noise, and
 one with uniformly distributed noise.</p>
-<div class="sourceCode" id="cb337"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb338"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">31</span><span class="op">)</span>
 <span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="fl">3</span>, mean <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, <span class="va">n</span>, <span class="fl">3</span><span class="op">)</span> <span class="op">%*%</span> <span class="va">s1.sqrt</span>
 <span class="va">mu2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">9</span>, <span class="fl">9</span>, <span class="fl">3</span><span class="op">)</span>
@@ -351,7 +352,7 @@ one with uniformly distributed noise.</p>
 <span class="va">x.5</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="fl">3</span> <span class="op">*</span> <span class="fl">3</span>, mean <span class="op">=</span> <span class="fl">0</span>, sd <span class="op">=</span> <span class="fl">150</span><span class="op">)</span>, <span class="va">n</span> <span class="op">*</span> <span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>We now find clusters using a Gaussian model,
 and select the number of clusters using likelihood-base criterion:</p>
-<div class="sourceCode" id="cb338"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb339"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mclust-org.github.io/mclust/reference/Mclust.html">Mclust</a></span><span class="op">(</span><span class="va">x.4</span><span class="op">)</span>
 <span class="va">m5</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mclust-org.github.io/mclust/reference/Mclust.html">Mclust</a></span><span class="op">(</span><span class="va">x.5</span><span class="op">)</span></code></pre></div>
 <p>If we use the first 3
@@ -360,12 +361,12 @@ cluster structure)
 to
 show the clusters found by <code>mclust</code>
 when the noise was not Gaussian, we get:</p>
-<div class="sourceCode" id="cb339"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb340"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/pairs.html">pairs</a></span><span class="op">(</span><span class="va">x.4</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, col <span class="op">=</span> <span class="va">m4</span><span class="op">$</span><span class="va">class</span>, pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="53-model-based-clustering_files/figure-html/unif.noise.mclust-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>And even when the noise had a Gaussian
 distribution, we do not identify the ``right’’ clusters:</p>
-<div class="sourceCode" id="cb340"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb341"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># pairs(x.5[,1:3], col=m5$class, pch=19)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">m5</span><span class="op">$</span><span class="va">class</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, each <span class="op">=</span> <span class="va">n</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;    </span>
@@ -375,16 +376,16 @@ distribution, we do not identify the ``right’’ clusters:</p>
 <span class="co">#&gt;   3   0   0 300</span></code></pre></div>
 <p>If we force <code><a href="https://mclust-org.github.io/mclust/reference/mclust-package.html">mclust()</a></code> to identify 3 clusters, things look
 much better both for Gaussian and non-Gaussian noise:</p>
-<div class="sourceCode" id="cb341"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb342"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m4.3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mclust-org.github.io/mclust/reference/Mclust.html">Mclust</a></span><span class="op">(</span><span class="va">x.4</span>, G <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 <span class="va">m5.3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mclust-org.github.io/mclust/reference/Mclust.html">Mclust</a></span><span class="op">(</span><span class="va">x.5</span>, G <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 <span class="co"># it works well</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/pairs.html">pairs</a></span><span class="op">(</span><span class="va">x.4</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, col <span class="op">=</span> <span class="va">m4.3</span><span class="op">$</span><span class="va">class</span>, pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="53-model-based-clustering_files/figure-html/force.noise.mclust-1.png" width="90%" style="display: block; margin: auto;"></div>
-<div class="sourceCode" id="cb342"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb343"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/pairs.html">pairs</a></span><span class="op">(</span><span class="va">x.5</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, col <span class="op">=</span> <span class="va">m5.3</span><span class="op">$</span><span class="va">class</span>, pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="53-model-based-clustering_files/figure-html/force.noise.mclust-2.png" width="90%" style="display: block; margin: auto;"></div>
-<div class="sourceCode" id="cb343"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb344"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">m4.3</span><span class="op">$</span><span class="va">class</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, each <span class="op">=</span> <span class="va">n</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;    </span>
 <span class="co">#&gt;       1   2   3</span>
@@ -402,7 +403,7 @@ I refer you to the robust and sparse K-means
 method (links on the module’s main page).</p>
 <p>Within sum-of-squares plot
 for K-means with non-Gaussian noise:</p>
-<div class="sourceCode" id="cb344"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb345"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m4.l</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">vector</a></span><span class="op">(</span><span class="st">"list"</span>, <span class="fl">10</span><span class="op">)</span>
 <span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">2</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span> <span class="op">{</span>
@@ -412,7 +413,7 @@ for K-means with non-Gaussian noise:</p>
 <div class="inline-figure"><img src="53-model-based-clustering_files/figure-html/unif.noise.kmeans-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Within sum-of-squares plot
 for K-means with Gaussian noise:</p>
-<div class="sourceCode" id="cb345"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb346"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m5.l</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">vector</a></span><span class="op">(</span><span class="st">"list"</span>, <span class="fl">10</span><span class="op">)</span>
 <span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">2</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span> <span class="op">{</span>
@@ -422,10 +423,10 @@ for K-means with Gaussian noise:</p>
 <div class="inline-figure"><img src="53-model-based-clustering_files/figure-html/gauss.noise.kmeans-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Not even forcing <code>k-means</code> to identify 3 clusters helps when
 there are noise features:</p>
-<div class="sourceCode" id="cb346"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb347"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/pairs.html">pairs</a></span><span class="op">(</span><span class="va">x.4</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, col <span class="op">=</span> <span class="va">m4.l</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">cluster</span>, pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="53-model-based-clustering_files/figure-html/force.noise.kmeans-1.png" width="90%" style="display: block; margin: auto;"></div>
-<div class="sourceCode" id="cb347"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb348"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/pairs.html">pairs</a></span><span class="op">(</span><span class="va">x.5</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, col <span class="op">=</span> <span class="va">m5.l</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">cluster</span>, pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="53-model-based-clustering_files/figure-html/force.noise.kmeans-2.png" width="90%" style="display: block; margin: auto;"></div>
 </div>
@@ -456,7 +457,7 @@ We first create a simple synthetic data set with
 50 observations in 2 dimensions, normally distributed with center
 at the point (3,7), and a fairly strong correlation
 between its two coordinates:</p>
-<div class="sourceCode" id="cb348"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb349"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://mvtnorm.R-forge.R-project.org">mvtnorm</a></span><span class="op">)</span>
 <span class="co"># mean vector</span>
 <span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">7</span><span class="op">)</span>
@@ -506,20 +507,20 @@ discussion in class for more details.</p>
 the two incomplete observations to
 the data set above, we append them at the “bottom” of the
 matrix <code>x</code>:</p>
-<div class="sourceCode" id="cb349"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb350"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
 <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="cn">NA</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fl">5.5</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Next, we compute initial values for the estimates of the parameters
 of the model. These can be, for example, the sample mean and
 sample covariance matrix using only the fully observed
 data points:</p>
-<div class="sourceCode" id="cb350"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb351"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colMeans</a></span><span class="op">(</span><span class="va">dat</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="va">si</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">dat</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>Before we start the EM iterations it will be helpful to
 keep track of wich observations are missing a coordinate
 (we store their indices in the vector <code>mi</code>):</p>
-<div class="sourceCode" id="cb351"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb352"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span>
 <span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">2</span>
 <span class="co"># find observations with a missing coordinate</span>
@@ -528,7 +529,7 @@ keep track of wich observations are missing a coordinate
 missing coordinates are: 51, 52.</p>
 <p>Now we run 100 iterations of the EM algorithm, although convergence
 is achieved much sooner:</p>
-<div class="sourceCode" id="cb352"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb353"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># For this data we don't need many iterations</span>
 <span class="va">niter</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="co"># how many observations with missing entries:</span>
@@ -585,7 +586,7 @@ shape and distribution of the other points in the data set:</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-08-18.</p>
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-09-02.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

@@ -59,6 +59,7 @@
 <li><a class="" href="parametric-classifiers.html"><span class="header-section-number">11</span> Parametric classifiers</a></li>
 <li><a class="" href="qda.html"><span class="header-section-number">12</span> QDA</a></li>
 <li><a class="" href="classification-trees.html"><span class="header-section-number">13</span> Classification Trees</a></li>
+<li class="book-part">Module 4 – Modern techniques</li>
 <li><a class="" href="bagging-for-regression.html"><span class="header-section-number">14</span> Bagging for regression</a></li>
 <li><a class="" href="bagging-for-classification.html"><span class="header-section-number">15</span> Bagging for classification</a></li>
 <li><a class="" href="random-forests.html"><span class="header-section-number">16</span> Random Forests</a></li>
@@ -88,7 +89,7 @@
 issue consider the following simple experiment. As before,
 we apply stepwise on 5 randomly selected folds of the data, and look at the
 models selected in each of them.</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">airp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/rutgers-lib-30861_CSV-1.csv"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span>
 <span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">5</span>
@@ -135,7 +136,7 @@ we need to set the argument <code>alpha = 0</code> of <code><a href="https://glm
 We also specify a range of possible values of the penalty
 coefficient (below we use a grid of 50 values between
 exp(-3) and exp(10)).</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://glmnet.stanford.edu">glmnet</a></span><span class="op">)</span>
 <span class="co"># alpha = 0 - Ridge</span>
 <span class="co"># alpha = 1 - LASSO</span>
@@ -150,7 +151,7 @@ exp(-3) and exp(10)).</p>
 each possible value of the regularization parameter. We can look at
 them using the <code>plot</code> method for objects of class <code>glmnet</code> as
 follows:</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">a</span>, xvar <span class="op">=</span> <span class="st">"lambda"</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, lwd <span class="op">=</span> <span class="fl">6</span>, cex.axis <span class="op">=</span> <span class="fl">1.5</span>, cex.lab <span class="op">=</span> <span class="fl">1.2</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">20</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="20-ridge-regression_files/figure-html/ridge.plot-1.png" width="90%" style="display: block; margin: auto;"></div>
 <div id="selecting-the-level-of-regularization" class="section level2">
@@ -163,7 +164,7 @@ the MSPE of the estimator resulting from each value of the penalization paramete
 One way to do this is to run K-fold cross validation for each value of
 the penalty. The <code>glmnet</code> package provides a built-in function to do this,
 and a <code>plot</code> method to display the results:</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># run 5-fold CV</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
 <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0</span>, family <span class="op">=</span> <span class="st">"gaussian"</span><span class="op">)</span>
@@ -185,7 +186,7 @@ a few times and explore how much variability is involved. If one were interested
 in selecting one value of the penalization parameter that was more stable than
 that obtained from a single 5-fold CV run, one could run it several times and
 take the average of the estimated optimal values. For example:</p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
 <span class="va">op.la</span> <span class="op">&lt;-</span> <span class="fl">0</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span> <span class="op">{</span>
@@ -206,7 +207,7 @@ take the average of the estimated optimal values. For example:</p>
 MSPE of 3 models: the <strong>full</strong> model, the one
 selected by <strong>stepwise</strong> and the <strong>ridge regression</strong>
 one.</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">xm</span><span class="op">)</span>
 <span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">5</span>
 <span class="va">ii</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op">%%</span> <span class="va">k</span> <span class="op">+</span> <span class="fl">1</span>
@@ -263,12 +264,12 @@ on credit card users. The interest is in predicting the
 balance carried by a client. We first load the data, and to
 simplify the presentation here we consider only the numerical
 explanatory variables:</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/Credit.csv"</span>, sep <span class="op">=</span> <span class="st">","</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">11</span><span class="op">)</span><span class="op">]</span></code></pre></div>
 <p>There are 6 available covariates, and a stepwise search selects
 a model with 5 of them (discarding <code>Education</code>):</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span>
 <span class="va">null</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Balance</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">x</span><span class="op">)</span>
 <span class="va">full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Balance</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">x</span><span class="op">)</span>
@@ -332,7 +333,7 @@ ratio of each eigenvalue of <strong>X’X</strong> with respect to itself plus <
 of the Ridge Regression fit to the air pollution data when the
 penalty parameter is considered to be fixed at the average optimal value
 over 20 runs of 5-fold CV:</p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">airp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/rutgers-lib-30861_CSV-1.csv"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span>
 <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="va">airp</span><span class="op">$</span><span class="va">MORT</span><span class="op">)</span>
 <span class="va">xm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">airp</span><span class="op">[</span>, <span class="op">-</span><span class="fl">16</span><span class="op">]</span><span class="op">)</span>
@@ -399,7 +400,7 @@ matrix.</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-08-18.</p>
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-09-02.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

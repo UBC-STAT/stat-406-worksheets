@@ -59,6 +59,7 @@
 <li><a class="" href="parametric-classifiers.html"><span class="header-section-number">11</span> Parametric classifiers</a></li>
 <li><a class="" href="qda.html"><span class="header-section-number">12</span> QDA</a></li>
 <li><a class="" href="classification-trees.html"><span class="header-section-number">13</span> Classification Trees</a></li>
+<li class="book-part">Module 4 – Modern techniques</li>
 <li><a class="active" href="bagging-for-regression.html"><span class="header-section-number">14</span> Bagging for regression</a></li>
 <li><a class="" href="bagging-for-classification.html"><span class="header-section-number">15</span> Bagging for classification</a></li>
 <li><a class="" href="random-forests.html"><span class="header-section-number">16</span> Random Forests</a></li>
@@ -105,7 +106,7 @@ However, for pedagogical and illustrative purposes, in these notes I will
 <p>Again, to simplify the discussion and presentation, in order to evaluate
 prediction quality I will split the
 data (<code>Boston</code>) into a training and a test set. We do this now:</p>
-<div class="sourceCode" id="cb167"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb168"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bethatkinson/rpart">rpart</a></span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">Boston</span>, package <span class="op">=</span> <span class="st">"MASS"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span>
@@ -127,7 +128,7 @@ more elegant and easy to read code, and it is
 illustrated below, but first we will use the
 the former (and hopefully clearer) strategy.</p>
 <p>First create an array where we will store all the predictions:</p>
-<div class="sourceCode" id="cb168"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb169"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">5</span>
 <span class="va">myps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span><span class="cn">NA</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.te</span><span class="op">)</span>, <span class="va">N</span><span class="op">)</span><span class="op">)</span>
 <span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.control.html">rpart.control</a></span><span class="op">(</span>minsplit <span class="op">=</span> <span class="fl">3</span>, cp <span class="op">=</span> <span class="fl">1e-3</span>, xval <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
@@ -136,14 +137,14 @@ the former (and hopefully clearer) strategy.</p>
 As discussed in class, we now generate <code>N</code> bootstrap samples
 by generating vectors of randomly sampled indices (with replacement), the
 relevant lines of code are:</p>
-<div class="sourceCode" id="cb169"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb170"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n.tr</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">...</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
 <p>where we train the trees on the data set <code>dat.tr[ii, ]</code>, which is the boostrap sample.
 Then, for each of these trees we compute the corresponding (vector of) predictions on the
 test set (<code><a href="https://rdrr.io/r/stats/predict.html">predict(tmp, newdata=dat.te, type='vector')</a></code>) and store them.
 Putting all the pieces together we get:</p>
-<div class="sourceCode" id="cb170"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb171"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">n.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span>
@@ -157,16 +158,16 @@ predictions obtained with the <code>N</code> different trees. Because of the way
 I stored the results in the matrix <code>myps</code>, the bagged prediction of each point in
 <code>dat.te</code> is the average of the corresponding row in the matrix <code>myps</code>. We can compute
 all these (<span class="math inline">\(n_e\)</span>) averages at once using <code><a href="https://rdrr.io/r/base/colSums.html">rowMeans()</a></code> as follows:</p>
-<div class="sourceCode" id="cb171"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb172"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pr.bagg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span><span class="op">(</span><span class="va">myps</span><span class="op">)</span></code></pre></div>
 <p>Finally, the estimated MSPE of the bagged ensemble of trees obtained with our specific
 test set is:</p>
-<div class="sourceCode" id="cb172"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb173"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.bagg</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] 14.54751</span></code></pre></div>
 <p>We can now compare this with the similarly estimated
 MSPE of the pruned tree:</p>
-<div class="sourceCode" id="cb173"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb174"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">myc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.control.html">rpart.control</a></span><span class="op">(</span>minsplit <span class="op">=</span> <span class="fl">2</span>, cp <span class="op">=</span> <span class="fl">1e-5</span>, xval <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span>
 <span class="va">bos.to</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>,
@@ -193,7 +194,7 @@ artifact of this specific training / test partition, or if similar
 patterns of MSPE are observed for other random training / test splits.
 Below we try a different test/training split and repeat the
 bagging experiment above:</p>
-<div class="sourceCode" id="cb177"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb178"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span>
 <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span>
@@ -242,7 +243,7 @@ the same, I will just do it for ensemble of <span class="math inline">\(N = 100\
 To simplify the comparison between this implementation of
 bagging and the one used above, we first re-create
 the original training / test split</p>
-<div class="sourceCode" id="cb178"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb179"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span>
 <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span>
@@ -250,12 +251,12 @@ the original training / test split</p>
 <span class="va">dat.tr</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="op">-</span><span class="va">ii</span>, <span class="op">]</span></code></pre></div>
 <p>Now, let’s create a <code>list</code> of 100 (empty) elements, each element of this
 list will store a regression tree:</p>
-<div class="sourceCode" id="cb179"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb180"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">mybag</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">vector</a></span><span class="op">(</span><span class="st">"list"</span>, <span class="va">N</span><span class="op">)</span></code></pre></div>
 <p>Now, we train the <span class="math inline">\(N\)</span> trees as before, but store them in the <code>list</code> (without
 computing any predictions):</p>
-<div class="sourceCode" id="cb180"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb181"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n.tr</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
@@ -272,7 +273,7 @@ efficient (allowing for future uses of the ensemble),
 and compact. Of course both give exactly the same results. Below
 we illustrate both strategies. If we use the <strong>first approach (loop)</strong>
 we obtain the following estimated MSPE using the test set:</p>
-<div class="sourceCode" id="cb181"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb182"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pr.bagg2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.te</span><span class="op">)</span><span class="op">)</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">pr.bagg2</span> <span class="op">&lt;-</span> <span class="va">pr.bagg2</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">mybag</span><span class="op">[[</span><span class="va">j</span><span class="op">]</span><span class="op">]</span>, newdata <span class="op">=</span> <span class="va">dat.te</span><span class="op">)</span> <span class="op">/</span> <span class="va">N</span>
@@ -280,7 +281,7 @@ we obtain the following estimated MSPE using the test set:</p>
 <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.bagg2</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] 12.10982</span></code></pre></div>
 <p>(compare it with the results we obtained before). Using the <strong>second approach (sapply)</strong>:</p>
-<div class="sourceCode" id="cb182"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb183"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pr.bagg3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">mybag</span>, <span class="va">predict</span>, newdata <span class="op">=</span> <span class="va">dat.te</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.bagg3</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] 12.10982</span></code></pre></div>
@@ -293,7 +294,7 @@ we obtain the following estimated MSPE using the test set:</p>
 <p>Bagging does not provide much of an advantage when applied to linear
 predictors (can you explain why?) Nevertheless, let us try it on the <code>lidar</code> data,
 which, as we did before, we randomly split into a training and test set:</p>
-<div class="sourceCode" id="cb183"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb184"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">lidar</span>, package <span class="op">=</span> <span class="st">"SemiPar"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">lidar</span><span class="op">)</span>
@@ -301,7 +302,7 @@ which, as we did before, we randomly split into a training and test set:</p>
 <span class="va">lid.te</span> <span class="op">&lt;-</span> <span class="va">lidar</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>
 <span class="va">lid.tr</span> <span class="op">&lt;-</span> <span class="va">lidar</span><span class="op">[</span><span class="op">-</span><span class="va">ii</span>, <span class="op">]</span></code></pre></div>
 <p>Now fit a cubic spline, and estimate the MSPE using the test set:</p>
-<div class="sourceCode" id="cb184"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb185"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">splines</span><span class="op">)</span>
 <span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/splines/bs.html">bs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">range</span>, df <span class="op">=</span> <span class="fl">10</span>, degree <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">lid.tr</span><span class="op">)</span>
 <span class="va">oo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">lid.tr</span><span class="op">$</span><span class="va">range</span><span class="op">)</span>
@@ -310,7 +311,7 @@ which, as we did before, we randomly split into a training and test set:</p>
 <span class="co">#&gt; [1] 0.007427559</span></code></pre></div>
 <p>We build an ensemble of 10 fits and estimate the corresponding
 MSPE using the test set:</p>
-<div class="sourceCode" id="cb185"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb186"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">10</span>
 <span class="va">myps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">lid.te</span><span class="op">)</span>, <span class="va">N</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
@@ -327,7 +328,7 @@ MSPE using the test set:</p>
 original single spline.
 Furthermore, adding more elements to the ensemble does not seem to improve the
 estimated MSPEs:</p>
-<div class="sourceCode" id="cb186"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb187"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">myps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">lid.te</span><span class="op">)</span>, <span class="va">N</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
@@ -371,7 +372,7 @@ estimated MSPEs:</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-08-18.</p>
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-09-02.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
