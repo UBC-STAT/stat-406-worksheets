@@ -101,7 +101,6 @@ filled.contour(aa, bb, matrix(p.t[, 1], 200, 200),
 <img src="41-bagging-classifiers_files/figure-html/inst2.2-1.png" width="90%" style="display: block; margin: auto;" />
 
 ```r
-
 filled.contour(aa, bb, matrix(p2.t[, 1], 200, 200),
   col = terrain.colors(20), xlab = "GPA", ylab = "GMAT",
   plot.axes = {
@@ -136,7 +135,6 @@ filled.contour(aa, bb, matrix(p.t[, 2], 200, 200),
 <img src="41-bagging-classifiers_files/figure-html/kk-1.png" width="90%" style="display: block; margin: auto;" />
 
 ```r
-
 filled.contour(aa, bb, matrix(p2.t[, 2], 200, 200),
   col = terrain.colors(20), xlab = "GPA", ylab = "GMAT",
   plot.axes = {
@@ -170,7 +168,6 @@ filled.contour(aa, bb, matrix(p.t[, 3], 200, 200),
 <img src="41-bagging-classifiers_files/figure-html/kk2-1.png" width="90%" style="display: block; margin: auto;" />
 
 ```r
-
 filled.contour(aa, bb, matrix(p2.t[, 3], 200, 200),
   col = terrain.colors(20), xlab = "GPA", ylab = "GMAT",
   plot.axes = {

@@ -115,17 +115,50 @@ with(dat.te, mean((medv - pr.t3)^2))
 Would the quality of the bagged predictions improve if we use 
 a larger ensemble? For example, what happens if we **bagg** $N = 10$ trees? 
 
-```
+```r
+N <- 10
+myps <- array(NA, dim = c(nrow(dat.te), N))
+n.tr <- nrow(dat.tr)
+set.seed(123)
+for (j in 1:N) {
+  ii <- sample(n.tr, replace = TRUE)
+  tmp <- rpart(medv ~ ., data = dat.tr[ii, ], method = "anova", control = con)
+  myps[, j] <- predict(tmp, newdata = dat.te, type = "vector")
+}
+pr.bagg <- rowMeans(myps)
+with(dat.te, mean((medv - pr.bagg)^2))
 #> [1] 13.97641
 ```
 or $N = 100$ trees? 
 
-```
+```r
+N <- 100
+myps <- array(NA, dim = c(nrow(dat.te), N))
+n.tr <- nrow(dat.tr)
+set.seed(123)
+for (j in 1:N) {
+  ii <- sample(n.tr, replace = TRUE)
+  tmp <- rpart(medv ~ ., data = dat.tr[ii, ], method = "anova", control = con)
+  myps[, j] <- predict(tmp, newdata = dat.te, type = "vector")
+}
+pr.bagg <- rowMeans(myps)
+with(dat.te, mean((medv - pr.bagg)^2))
 #> [1] 12.10982
 ```
 or $N = 1000$ trees? 
 
-```
+```r
+N <- 1000
+myps <- array(NA, dim = c(nrow(dat.te), N))
+n.tr <- nrow(dat.tr)
+set.seed(123)
+for (j in 1:N) {
+  ii <- sample(n.tr, replace = TRUE)
+  tmp <- rpart(medv ~ ., data = dat.tr[ii, ], method = "anova", control = con)
+  myps[, j] <- predict(tmp, newdata = dat.te, type = "vector")
+}
+pr.bagg <- rowMeans(myps)
+with(dat.te, mean((medv - pr.bagg)^2))
 #> [1] 11.48381
 ```
 

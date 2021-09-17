@@ -113,6 +113,13 @@ K-fold CV). If we run it again, we will most likely get different results. In ma
 however, the results will be qualitatively similar. If we run 5-fold CV again for this
 data get the following plot:
 
+
+```r
+set.seed(23)
+tmp <- cv.glmnet(x = xm, y = y, lambda = lambdas, nfolds = 5, alpha = 0, family = "gaussian")
+plot(tmp, lwd = 6, cex.axis = 1.5, cex.lab = 1.2)
+```
+
 <img src="20-ridge-regression_files/figure-html/ridge.cv2-1.png" width="90%" style="display: block; margin: auto;" />
 
 Note that both plots are similar, but not equal. It would be a good idea to repeat this
@@ -187,6 +194,40 @@ average optimal penalty value using 20 runs.
 The improvement does not appear to be 
 substantial.
 
+
+```r
+n <- nrow(xm)
+k <- 5
+ii <- (1:n) %% k + 1
+set.seed(123)
+N <- 100
+mspe.ri2 <- rep(0, N)
+for (i in 1:N) {
+  ii <- sample(ii)
+  pr.ri2 <- rep(0, n)
+  for (j in 1:k) {
+    op.la <- 0
+    for (h in 1:20) {
+      tmp <- cv.glmnet(x = xm, y = y, lambda = lambdas, nfolds = 5, alpha = 0, family = "gaussian")
+      op.la <- op.la + tmp$lambda.min # tmp$lambda.1se
+    }
+    op.la <- op.la / 20
+    tmp.ri <- cv.glmnet(
+      x = xm[ii != j, ], y = y[ii != j], lambda = lambdas, nfolds = 5,
+      alpha = 0, family = "gaussian"
+    )
+    pr.ri2[ii == j] <- predict(tmp.ri, s = op.la, newx = xm[ii == j, ])
+  }
+  mspe.ri2[i] <- mean((airp$MORT - pr.ri2)^2)
+}
+boxplot(mspe.ri2, mspe.ri, mspe.st, mspe.f,
+  names = c("Stable R", "Ridge", "Stepwise", "Full"),
+  col = c("steelblue", "gray80", "tomato", "springgreen"), cex.axis = 1.5, cex.lab = 1.5,
+  cex.main = 2, ylim = c(1300, 3000)
+)
+mtext(expression(hat(MSPE)), side = 2, line = 2.5)
+```
+
 <img src="20-ridge-regression_files/figure-html/stableridge.mspe-1.png" width="90%" style="display: block; margin: auto;" />
 
 ## An example where one may not need to select variables
@@ -224,12 +265,81 @@ full <- lm(Balance ~ ., data = x)
 It is an easy exercise to check that the MSPE of this
 smaller model is in fact worse than the one for the **full** one:
 
+
+```r
+n <- nrow(x)
+k <- 5
+ii <- (1:n) %% k + 1
+set.seed(123)
+N <- 100
+mspe.st <- mspe.f <- rep(0, N)
+for (i in 1:N) {
+  ii <- sample(ii)
+  pr.f <- pr.st <- rep(0, n)
+  for (j in 1:k) {
+    null <- lm(Balance ~ 1, data = x[ii != j, ])
+    full <- lm(Balance ~ ., data = x[ii != j, ])
+    tmp.st <- stepAIC(null, scope = list(lower = null, upper = full), trace = 0)
+    pr.st[ii == j] <- predict(tmp.st, newdata = x[ii == j, ])
+    pr.f[ii == j] <- predict(full, newdata = x[ii == j, ])
+  }
+  mspe.st[i] <- mean((x$Balance - pr.st)^2)
+  mspe.f[i] <- mean((x$Balance - pr.f)^2)
+}
+boxplot(mspe.st, mspe.f,
+  names = c("Stepwise", "Full"),
+  col = c("tomato", "springgreen"), cex.axis = 1.5,
+  cex.lab = 1.5, cex.main = 2
+)
+mtext(expression(hat(MSPE)), side = 2, line = 2.5)
+```
+
 <img src="20-ridge-regression_files/figure-html/credit3-1.png" width="90%" style="display: block; margin: auto;" />
 
 Using ridge regression instead of stepwise to prevent 
 the negative effect of possible correlations among the
 covariates yields a slight improvement (over the **full** model), 
 but it is not clear the gain is worth the effort. 
+
+
+```r
+y <- as.vector(x$Balance)
+xm <- as.matrix(x[, -7])
+lambdas <- exp(seq(-3, 10, length = 50))
+n <- nrow(xm)
+k <- 5
+ii <- (1:n) %% k + 1
+set.seed(123)
+N <- 100
+mspe.st <- mspe.ri <- mspe.f <- rep(0, N)
+for (i in 1:N) {
+  ii <- sample(ii)
+  pr.f <- pr.ri <- pr.st <- rep(0, n)
+  for (j in 1:k) {
+    tmp.ri <- cv.glmnet(
+      x = xm[ii != j, ], y = y[ii != j], lambda = lambdas,
+      nfolds = 5, alpha = 0, family = "gaussian"
+    )
+    null <- lm(Balance ~ 1, data = x[ii != j, ])
+    full <- lm(Balance ~ ., data = x[ii != j, ])
+    tmp.st <- stepAIC(null, scope = list(lower = null, upper = full), trace = 0)
+    pr.ri[ii == j] <- predict(tmp.ri, s = "lambda.min", newx = xm[ii == j, ])
+    pr.st[ii == j] <- predict(tmp.st, newdata = x[ii == j, ])
+    pr.f[ii == j] <- predict(full, newdata = x[ii == j, ])
+  }
+  mspe.ri[i] <- mean((x$Balance - pr.ri)^2)
+  mspe.st[i] <- mean((x$Balance - pr.st)^2)
+  mspe.f[i] <- mean((x$Balance - pr.f)^2)
+}
+boxplot(mspe.ri, mspe.st, mspe.f,
+  names = c(
+    "Ridge", "Stepwise",
+    "Full"
+  ), col = c("gray80", "tomato", "springgreen"), cex.axis = 1.5,
+  cex.lab = 1.5, cex.main = 2
+)
+mtext(expression(hat(MSPE)), side = 2, line = 2.5)
+```
 
 <img src="20-ridge-regression_files/figure-html/credit4-1.png" width="90%" style="display: block; margin: auto;" />
 

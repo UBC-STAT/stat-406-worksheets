@@ -53,6 +53,31 @@ the procedure many times (100, say) and looking
 at the estimated mean squared prediction errors
 obtained each time for each model. 
 
+
+```r
+x <- read.csv("data/rutgers-lib-30861_CSV-1.csv")
+set.seed(123)
+Nsplits <- 100
+mspe.full <- mspe.red <- vector("numeric", Nsplits)
+for (j in 1:Nsplits) {
+  g <- sample(rep(1:4, each = 15))
+  a.tr <- x[g != 2, ]
+  a.te <- x[g == 2, ]
+  full <- lm(MORT ~ ., data = a.tr)
+  reduced <- lm(MORT ~ POOR + HC + NOX + HOUS + NONW, data = a.tr)
+  a.te$pr.full <- predict(full, newdata = a.te)
+  a.te$pr.reduced <- predict(reduced, newdata = a.te)
+  mspe.full[j] <- with(a.te, mean((MORT - pr.full)^2))
+  mspe.red[j] <- with(a.te, mean((MORT - pr.reduced)^2))
+}
+boxplot(mspe.full, mspe.red,
+  names = c("Full", "Reduced"),
+  col = c("gray80", "tomato3"),
+  main = "Air Pollution - 100 training/test splits", ylim = c(0, 5000)
+)
+mtext(expression(hat(MSPE)), side = 2, line = 2.5)
+```
+
 <img src="10-test-set-and-cv_files/figure-html/testrain-1.png" width="90%" style="display: block; margin: auto;" />
 
 

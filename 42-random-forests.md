@@ -71,7 +71,39 @@ filled.contour(aa, bb, matrix(pp.rf[, 1], 200, 200),
 <img src="42-random-forests_files/figure-html/rf1.1-1.png" width="90%" style="display: block; margin: auto;" />
 
 And the predicted conditional probabilities for the rest of the classes are:
-<img src="42-random-forests_files/figure-html/rf2-1.png" width="90%" style="display: block; margin: auto;" /><img src="42-random-forests_files/figure-html/rf2-2.png" width="90%" style="display: block; margin: auto;" />
+
+```r
+filled.contour(aa, bb, matrix(pp.rf[, 2], 200, 200),
+  col = terrain.colors(20),
+  xlab = "GPA", ylab = "GMAT", plot.axes = {
+    axis(1)
+    axis(2)
+  },
+  panel.last = {
+    points(mm[, -3],
+      pch = 19, cex = 1.5,
+      col = c("red", "blue", "green")[mm[, 3]]
+    )
+  }
+)
+```
+
+<img src="42-random-forests_files/figure-html/rf2-1.png" width="90%" style="display: block; margin: auto;" />
+
+```r
+filled.contour(aa, bb, matrix(pp.rf[, 3], 200, 200),
+  col = terrain.colors(20), xlab = "GPA",
+  ylab = "GMAT", plot.axes = {
+    axis(1)
+    axis(2)
+  },
+  panel.last = {
+    points(mm[, -3], pch = 19, cex = 1.5, col = c("red", "blue", "green")[mm[, 3]])
+  }
+)
+```
+
+<img src="42-random-forests_files/figure-html/rf2-2.png" width="90%" style="display: block; margin: auto;" />
 
 A very interesting exercise would be to train a Random Forest on the perturbed data
 (in `mm2`) and verify that the predicted conditional probabilities do not change much, 
@@ -263,28 +295,24 @@ table(u1, xte$V618)
 #> u1    3 26
 #>   3  57  9
 #>   26  3 51
-
 u5 <- knn(train = xtr[, -618], test = xte[, -618], cl = xtr[, 618], k = 5)
 table(u5, xte$V618)
 #>     
 #> u5    3 26
 #>   3  58  5
 #>   26  2 55
-
 u10 <- knn(train = xtr[, -618], test = xte[, -618], cl = xtr[, 618], k = 10)
 table(u10, xte$V618)
 #>     
 #> u10   3 26
 #>   3  58  6
 #>   26  2 54
-
 u20 <- knn(train = xtr[, -618], test = xte[, -618], cl = xtr[, 618], k = 20)
 table(u20, xte$V618)
 #>     
 #> u20   3 26
 #>   3  58  5
 #>   26  2 55
-
 u50 <- knn(train = xtr[, -618], test = xte[, -618], cl = xtr[, 618], k = 50)
 table(u50, xte$V618)
 #>     

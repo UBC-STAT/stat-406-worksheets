@@ -217,6 +217,11 @@ sim3 <- boosting(class ~ ., data = sim.tr, boos = FALSE, mfinal = 300, control =
 plot(errorevol(sim3, newdata = sim.te))
 ```
 
+```r
+foursplit <- rpart.control(cp = -1, maxdepth = 4, minsplit = 0, xval = 0)
+set.seed(17)
+sim4 <- boosting(class ~ ., data = sim.tr, boos = FALSE, mfinal = 300, control = foursplit)
+```
 the error rate on the test set is 
 
 ```r

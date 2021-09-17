@@ -7,7 +7,7 @@
 <title>4 Comparing models | UBC Stat 406 Worksheets</title>
 <meta name="author" content="Daniel J. McDonald and Matías Salibán-Barrera">
 <meta name="description" content="4.1 General strategy Suppose we have a set of competing models from which we want to choose the “best” one. In order to properly define our problem we need the following: a list of models to be...">
-<meta name="generator" content="bookdown 0.23 with bs4_book()">
+<meta name="generator" content="bookdown 0.24 with bs4_book()">
 <meta property="og:title" content="4 Comparing models | UBC Stat 406 Worksheets">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://ubc-stat.github.io/stat-406-worksheets/comparing-models.html">
@@ -17,7 +17,7 @@
 <meta name="twitter:description" content="4.1 General strategy Suppose we have a set of competing models from which we want to choose the “best” one. In order to properly define our problem we need the following: a list of models to be...">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.0/transition.js"></script><script src="libs/bs3compat-0.3.0/tabs.js"></script><script src="libs/bs3compat-0.3.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
@@ -127,7 +127,7 @@ for more details.</p>
 regression model for the airpollution data. In <code>R</code> we can use
 the function <code>stepAIC</code> in package <code>MASS</code> to perform a stepwise
 search, for the synthetic data set discussed in class:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
 <span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">506</span><span class="op">)</span>
 <span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">506</span>, mean <span class="op">=</span> <span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
@@ -152,7 +152,7 @@ argument <code>trace=TRUE</code> in the call to <code>stepAIC</code> above.
 The selected model is automatically fit and returned, so that
 in the code above <code>st</code> is an object of class <code>lm</code> containing the
 “best” linear regression fit.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">st</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
@@ -165,11 +165,44 @@ in the code above <code>st</code> is an object of class <code>lm</code> containi
 the <strong>full</strong> model and that selected with <strong>stepwise</strong>.
 We use 50 runs of 5-fold CV, and obtain
 the following:</p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">5</span>
+<span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+<span class="va">ii</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op">%%</span> <span class="va">k</span> <span class="op">+</span> <span class="fl">1</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
+<span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">50</span>
+<span class="va">mspe.t</span> <span class="op">&lt;-</span> <span class="va">mspe.f</span> <span class="op">&lt;-</span> <span class="va">mspe.st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">N</span><span class="op">)</span>
+<span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">ii</span><span class="op">)</span>
+  <span class="va">pr.t</span> <span class="op">&lt;-</span> <span class="va">pr.f</span> <span class="op">&lt;-</span> <span class="va">pr.st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n</span><span class="op">)</span>
+  <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">k</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">x0</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span>
+    <span class="va">null0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">x0</span><span class="op">)</span>
+    <span class="va">full0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">x0</span><span class="op">)</span> <span class="co"># needed for stepwise</span>
+    <span class="va">true0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">+</span> <span class="va">x2</span>, data <span class="op">=</span> <span class="va">x0</span><span class="op">)</span>
+    <span class="va">step.lm0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html">stepAIC</a></span><span class="op">(</span><span class="va">null0</span>, scope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="va">null0</span>, upper <span class="op">=</span> <span class="va">full0</span><span class="op">)</span>, trace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+    <span class="va">pr.st</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">step.lm0</span>, newdata <span class="op">=</span> <span class="va">x</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
+    <span class="va">pr.f</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">full0</span>, newdata <span class="op">=</span> <span class="va">x</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
+    <span class="va">pr.t</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">true0</span>, newdata <span class="op">=</span> <span class="va">x</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
+  <span class="op">}</span>
+  <span class="va">mspe.st</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">pr.st</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
+  <span class="va">mspe.f</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">pr.f</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
+  <span class="va">mspe.t</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="va">pr.t</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
+<span class="op">}</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="va">mspe.st</span>, <span class="va">mspe.f</span>,
+  names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Stepwise"</span>, <span class="st">"Full"</span><span class="op">)</span>,
+  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"gray60"</span>, <span class="st">"hotpink"</span><span class="op">)</span>, ylab <span class="op">=</span> <span class="st">"MSPE"</span>
+<span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="12-model-selection-aic_files/figure-html/cv1-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Note that since this is a synthetic data set, we can also
 estimate the MSPE of the <strong>true</strong> model (could we compute it analytically instead?)
 and compare it with that of the <strong>full</strong> and <strong>stepwise</strong> models.
 We obtain:</p>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="va">mspe.t</span>, <span class="va">mspe.st</span>, <span class="va">mspe.f</span>,
+  names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"True"</span>, <span class="st">"Stepwise"</span>, <span class="st">"Full"</span><span class="op">)</span>,
+  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"tomato"</span>, <span class="st">"gray60"</span>, <span class="st">"hotpink"</span><span class="op">)</span>, ylab <span class="op">=</span> <span class="st">"MSPE"</span>
+<span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="12-model-selection-aic_files/figure-html/cv2-1.png" width="90%" style="display: block; margin: auto;"></div>
 <div id="stepwise-applied-to-the-air-pollution-data" class="section level3">
 <h3>
@@ -178,7 +211,7 @@ We obtain:</p>
 <p>We now use stepwise on the air pollution data to select a model, and
 estimate its MSPE using 5-fold CV. We compare the predictions of
 this model with that of the full model.</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span>
 <span class="va">airp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/rutgers-lib-30861_CSV-1.csv"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span>
 <span class="va">null</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">MORT</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">airp</span><span class="op">)</span>
@@ -194,7 +227,7 @@ this model with that of the full model.</p>
 <span class="co">#&gt;   1934.0539       1.8565      -2.2620      -3.3200     -10.9205    -137.3831  </span>
 <span class="co">#&gt;        EDUC         NONW           HC          NOX  </span>
 <span class="co">#&gt;    -23.4211       4.6623      -0.9221       1.8710</span></code></pre></div>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">5</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">airp</span><span class="op">)</span>
 <span class="va">ii</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op">%%</span> <span class="va">k</span> <span class="op">+</span> <span class="fl">1</span>
@@ -222,13 +255,13 @@ this model with that of the full model.</p>
 <div class="inline-figure"><img src="12-model-selection-aic_files/figure-html/mspe.air-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>We can also use the package <code>leaps</code> to run a more thorough search
 among all possible subsets. We do this with the air pollution data:</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">leaps</span><span class="op">)</span>
 <span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/leaps/man/leaps.html">leaps</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">airp</span><span class="op">[</span>, <span class="op">-</span><span class="fl">16</span><span class="op">]</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">airp</span><span class="op">$</span><span class="va">MORT</span>, int <span class="op">=</span> <span class="cn">TRUE</span>, method <span class="op">=</span> <span class="st">"Cp"</span>, nbest <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
 <p>In the call above we asked <code>leaps</code> to compute the 10 best models
 of each size, according to Mallow’s Cp criterion. We can look at
 the returned object</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span>
 <span class="co">#&gt; List of 4</span>
 <span class="co">#&gt;  $ which: logi [1:141, 1:15] FALSE FALSE TRUE FALSE FALSE FALSE ...</span>
@@ -240,7 +273,7 @@ the returned object</p>
 <span class="co">#&gt;  $ Cp   : num [1:141] 53.6 82.3 82.6 97 97.2 ...</span></code></pre></div>
 <p>We now find the best model (based on Mallow’s Cp), and
 fit the corresponding model:</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">j0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">Cp</span><span class="op">)</span>
 <span class="op">(</span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">MORT</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">airp</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">which</span><span class="op">[</span><span class="va">j0</span>, <span class="op">]</span>, <span class="cn">TRUE</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; </span>
@@ -254,20 +287,20 @@ fit the corresponding model:</p>
 <span class="co">#&gt;      0.2596</span></code></pre></div>
 <p>We compare which variables are used in this model with those
 used in the model found with stepwise:</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/formula.html">formula</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>
 <span class="co">#&gt; PREC + JANT + JULT + EDUC + NONW + SO.</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/formula.html">formula</a></span><span class="op">(</span><span class="va">tmp.st</span><span class="op">)</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>
 <span class="co">#&gt; PREC + JANT + JULT + OVR65 + POPN + EDUC + NONW + HC + NOX</span></code></pre></div>
 <p>It is reasonable to ask whether the model found by <code>leaps</code> is
 much better than the one returned by <code>stepAIC</code>:</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/extractAIC.html">extractAIC</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span>
 <span class="co">#&gt; [1]   7.0000 429.0017</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/extractAIC.html">extractAIC</a></span><span class="op">(</span><span class="va">tmp.st</span><span class="op">)</span>
 <span class="co">#&gt; [1]  10.000 429.634</span></code></pre></div>
 <p>Finally, what is the MSPE of the model found by <code>leaps</code>?</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># proper way</span>
 <span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">5</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">airp</span><span class="op">)</span>
@@ -310,12 +343,12 @@ on credit card users. The interest is in predicting the
 balance carried by a client. We first load the data, and to
 simplify the presentation here we consider only the numerical
 explanatory variables:</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/Credit.csv"</span>, sep <span class="op">=</span> <span class="st">","</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">11</span><span class="op">)</span><span class="op">]</span></code></pre></div>
 <p>There are 6 available covariates, and a stepwise search selects
 a model with 5 of them (discarding <code>Education</code>):</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span>
 <span class="va">null</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Balance</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">x</span><span class="op">)</span>
 <span class="va">full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Balance</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">x</span><span class="op">)</span>
@@ -330,6 +363,32 @@ a model with 5 of them (discarding <code>Education</code>):</p>
 <span class="co">#&gt;   -449.3610       2.0224      -7.5621       0.1286      -0.8883      11.5527</span></code></pre></div>
 <p>It is an easy exercise to check that the MSPE of this
 smaller model is in fact worse than the one for the <strong>full</strong> one:</p>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+<span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">5</span>
+<span class="va">ii</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op">%%</span> <span class="va">k</span> <span class="op">+</span> <span class="fl">1</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
+<span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100</span>
+<span class="va">mspe.st</span> <span class="op">&lt;-</span> <span class="va">mspe.f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">N</span><span class="op">)</span>
+<span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">ii</span><span class="op">)</span>
+  <span class="va">pr.f</span> <span class="op">&lt;-</span> <span class="va">pr.st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n</span><span class="op">)</span>
+  <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">k</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">null</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Balance</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">x</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
+    <span class="va">full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Balance</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">x</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
+    <span class="va">tmp.st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html">stepAIC</a></span><span class="op">(</span><span class="va">null</span>, scope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="va">null</span>, upper <span class="op">=</span> <span class="va">full</span><span class="op">)</span>, trace <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
+    <span class="va">pr.st</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp.st</span>, newdata <span class="op">=</span> <span class="va">x</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
+    <span class="va">pr.f</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">full</span>, newdata <span class="op">=</span> <span class="va">x</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
+  <span class="op">}</span>
+  <span class="va">mspe.st</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">Balance</span> <span class="op">-</span> <span class="va">pr.st</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
+  <span class="va">mspe.f</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">Balance</span> <span class="op">-</span> <span class="va">pr.f</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
+<span class="op">}</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="va">mspe.st</span>, <span class="va">mspe.f</span>,
+  names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Stepwise"</span>, <span class="st">"Full"</span><span class="op">)</span>,
+  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"tomato"</span>, <span class="st">"springgreen"</span><span class="op">)</span>, cex.axis <span class="op">=</span> <span class="fl">1.5</span>,
+  cex.lab <span class="op">=</span> <span class="fl">1.5</span>, cex.main <span class="op">=</span> <span class="fl">2</span>
+<span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/plotmath.html">hat</a></span><span class="op">(</span><span class="va">MSPE</span><span class="op">)</span><span class="op">)</span>, side <span class="op">=</span> <span class="fl">2</span>, line <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="12-model-selection-aic_files/figure-html/credit3-1.png" width="90%" style="display: block; margin: auto;"></div>
 <!-- ## Shrinkage methods / Ridge regression  -->
 <!-- Stepwise methods are highly variable, and thus their predictions may not  -->
@@ -373,7 +432,7 @@ smaller model is in fact worse than the one for the <strong>full</strong> one:</
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-09-02.</p>
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-09-17.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

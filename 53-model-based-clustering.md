@@ -53,6 +53,11 @@ tmp <- cmdscale(dd, k = 2)
 
 This is the data with which we will work: 
 
+
+```r
+plot(tmp, pch = 19, col = "gray50", cex = 2, xlab = "", ylab = "")
+```
+
 <img src="53-model-based-clustering_files/figure-html/scatter-1.png" width="90%" style="display: block; margin: auto;" />
 
 We will now use the EM algorithm to find (Gaussian-ly
@@ -83,6 +88,12 @@ need to use such *weighted averages* computations, since
 in general the weights are between 0 and 1. 
 
 This is the initial configuration (pure noise):
+
+
+```r
+plot(tmp[, 1], tmp[, 2], pch = 19, cex = 2, 
+     col = c("black", "red", "darkblue")[b], xlab = "", ylab = "")
+```
 
 <img src="53-model-based-clustering_files/figure-html/initial.scatter-1.png" width="90%" style="display: block; margin: auto;" />
 
@@ -199,6 +210,11 @@ x <- rbind(x1, x2, x3)
 ```
 
 This is how the data look
+
+
+```r
+pairs(x, col = "gray", pch = 19)
+```
 
 <img src="53-model-based-clustering_files/figure-html/disp.noise1-1.png" width="90%" style="display: block; margin: auto;" />
 
@@ -477,6 +493,13 @@ x <- rmvnorm(50, mean = mu, sigma = si)
 This is the data. The larger red point indicates
 the sample mean (3.13, 7.15):
 
+
+```r
+plot(x, pch = 19, col = "gray30", xlim = c(0, 8), ylim = c(0, 13), xlab = "X1", ylab = "X2", cex = 1.5)
+xbar <- colMeans(x)
+points(xbar[1], xbar[2], pch = 19, col = "tomato", cex = 2)
+```
+
 <img src="53-model-based-clustering_files/figure-html/scatter0-1.png" width="90%" style="display: block; margin: auto;" />
 
 Assume we have an observation (5, **NA**) where the 
@@ -486,6 +509,17 @@ missing. We indicate them with grey lines
 to indicate the uncertainty about their missing
 entries:
 
+
+```r
+plot(x, pch = 19, col = "gray30", xlim = c(0, 8), ylim = c(0, 13), xlab = "X1", ylab = "X2", cex = 1.5)
+abline(v = 5, lwd = 6, col = "gray80")
+abline(h = 5.5, lwd = 6, col = "gray80")
+points(x, pch = 19, col = "gray30", cex = 1.5)
+points(xbar[1], xbar[2], pch = 19, col = "tomato", cex = 2)
+text(1, 6, "(NA, 5.5)")
+text(6, 2, "(5, NA)")
+```
+
 <img src="53-model-based-clustering_files/figure-html/scatter.missing0-1.png" width="90%" style="display: block; margin: auto;" />
 
 A simple method to impute the missing coordinates would be to
@@ -493,6 +527,17 @@ replace them by the mean of the missing variable over the
 rest of the data. Hence (5, **NA**) becomes (5, *7.15*) and 
 (**NA**, 5.5) becomes (*3.13*, 5.5). The imputed points
 are shown below as blue dots:
+
+
+```r
+plot(x, pch = 19, col = "gray30", xlim = c(0, 8), ylim = c(0, 13), xlab = "X1", ylab = "X2", cex = 1.5)
+abline(h = 5.5, lwd = 6, col = "gray80")
+abline(v = 5, lwd = 6, col = "gray80")
+points(x, pch = 19, col = "gray30", cex = 1.5)
+points(xbar[1], xbar[2], pch = 19, col = "tomato", cex = 2)
+points(5, xbar[2], pch = 19, col = "steelblue", cex = 2)
+points(xbar[1], 5.5, pch = 19, col = "steelblue", cex = 2)
+```
 
 <img src="53-model-based-clustering_files/figure-html/marginal0-1.png" width="90%" style="display: block; margin: auto;" />
 
@@ -576,6 +621,16 @@ for (i in 1:niter) {
 ```
 The imputed data are now much more in line with the
 shape and distribution of the other points in the data set:
+
+
+```r
+plot(x, pch = 19, col = "gray30", xlim = c(0, 8), ylim = c(0, 13), xlab = "X1", ylab = "X2", cex = 1.5)
+abline(h = 5.5, lwd = 6, col = "gray80")
+abline(v = 5, lwd = 6, col = "gray80")
+points(x, pch = 19, col = "gray30", cex = 1.5)
+points(xbar[1], xbar[2], pch = 19, col = "tomato", cex = 2)
+for (h in 1:length(mi)) points(dat[mi[h], 1], dat[mi[h], 2], pch = 19, col = "steelblue", cex = 2)
+```
 
 <img src="53-model-based-clustering_files/figure-html/em-imputed-1.png" width="90%" style="display: block; margin: auto;" />
 

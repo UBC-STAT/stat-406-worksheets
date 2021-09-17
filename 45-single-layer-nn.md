@@ -156,7 +156,6 @@ mean(b1 != x.tr$V618)
 b2 <- predict(a2, type = "class") # , type='raw')
 mean(b2 != x.tr$V618)
 #> [1] 0
-
 b1 <- predict(a1, newdata = x.te, type = "class") # , type='raw')
 mean(b1 != x.te$V618)
 #> [1] 0.03333333
@@ -219,15 +218,12 @@ a2$value
 b1 <- predict(a1, type = "class") # , type='raw')
 mean(b1 != x.tr$V618)
 #> [1] 0
-
 b2 <- predict(a2, type = "class") # , type='raw')
 mean(b2 != x.tr$V618)
 #> [1] 0
-
 b1 <- predict(a1, newdata = x.te, type = "class") # , type='raw')
 mean(b1 != x.te$V618)
 #> [1] 0.008333333
-
 b2 <- predict(a2, newdata = x.te, type = "class") # , type='raw')
 mean(b2 != x.te$V618)
 #> [1] 0.008333333

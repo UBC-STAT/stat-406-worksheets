@@ -393,6 +393,44 @@ we have considered so far: a full linear model, a model selected via stepwise + 
 ridge regression and LASSO. As usual, we use 50 runs of 5-fold CV, and obtain
 the following boxplots:
 
+
+```r
+library(MASS)
+n <- nrow(xm)
+k <- 5
+ii <- (1:n) %% k + 1
+set.seed(123)
+N <- 50
+mspe.la <- mspe.st <- mspe.ri <- mspe.f <- rep(0, N)
+for (i in 1:N) {
+  ii <- sample(ii)
+  pr.la <- pr.f <- pr.ri <- pr.st <- rep(0, n)
+  for (j in 1:k) {
+    tmp.ri <- cv.glmnet(
+      x = xm[ii != j, ], y = y[ii != j], lambda = lambdas,
+      nfolds = 5, alpha = 0, family = "gaussian"
+    )
+    tmp.la <- cv.glmnet(
+      x = xm[ii != j, ], y = y[ii != j], lambda = lambdas,
+      nfolds = 5, alpha = 1, family = "gaussian"
+    )
+    null <- lm(MORT ~ 1, data = airp[ii != j, ])
+    full <- lm(MORT ~ ., data = airp[ii != j, ])
+    tmp.st <- stepAIC(null, scope = list(lower = null, upper = full), trace = FALSE)
+    pr.ri[ii == j] <- predict(tmp.ri, s = "lambda.min", newx = xm[ii == j, ])
+    pr.la[ii == j] <- predict(tmp.la, s = "lambda.min", newx = xm[ii == j, ])
+    pr.st[ii == j] <- predict(tmp.st, newdata = airp[ii == j, ])
+    pr.f[ii == j] <- predict(full, newdata = airp[ii == j, ])
+  }
+  mspe.ri[i] <- mean((airp$MORT - pr.ri)^2)
+  mspe.la[i] <- mean((airp$MORT - pr.la)^2)
+  mspe.st[i] <- mean((airp$MORT - pr.st)^2)
+  mspe.f[i] <- mean((airp$MORT - pr.f)^2)
+}
+boxplot(mspe.la, mspe.ri, mspe.st, mspe.f, names = c("LASSO", "Ridge", "Stepwise", "Full"), col = c("steelblue", "gray80", "tomato", "springgreen"), cex.axis = 1, cex.lab = 1, cex.main = 2)
+mtext(expression(hat(MSPE)), side = 2, line = 2.5)
+```
+
 <img src="21-lasso-elnet_files/figure-html/bigcompare-1.png" width="90%" style="display: block; margin: auto;" />
 
 We see that there is a marginal advantage of LASSO, but it is rather minor, and 
@@ -511,6 +549,32 @@ presentation.
 
 ### Compare MSPE's of Full, LASSO, Ridge, EN and stepwise
 
+
+
+```r
+ii <- (1:n) %% k + 1
+set.seed(123)
+N <- 50
+mspe.en <- rep(0, N)
+for (i in 1:N) {
+  ii <- sample(ii)
+  pr.en <- rep(0, n)
+  for (j in 1:k) {
+    tmp.en <- cv.glmnet(
+      x = xm[ii != j, ], y = y[ii != j], lambda = lambdas,
+      nfolds = 5, alpha = 0.75, family = "gaussian"
+    )
+    pr.en[ii == j] <- predict(tmp.en, s = "lambda.min", newx = xm[ii == j, ])
+  }
+  mspe.en[i] <- mean((airp$MORT - pr.en)^2)
+}
+boxplot(mspe.en, mspe.la, mspe.ri, mspe.st, mspe.f,
+  names = c("EN", "LASSO", "Ridge", "Stepwise", "Full"),
+  col = c("hotpink", "steelblue", "gray80", "tomato", "springgreen"),
+  cex.axis = 1, cex.lab = 1, cex.main = 2
+)
+mtext(expression(hat(MSPE)), side = 2, line = 2.5)
+```
 
 <img src="21-lasso-elnet_files/figure-html/bigcompare2-1.png" width="90%" style="display: block; margin: auto;" />
 

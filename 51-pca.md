@@ -142,6 +142,37 @@ for (j in 1:length(ind)) {
 We repeat the above but projecting on a different direction
 $\mathbf{v} \propto (-1, 3)^\top$: 
 
+
+```r
+a <- c(-1, 3)
+a <- a / norm(a)
+# Find the projections (coordinates of the
+# observations on this basis of size 1)
+prs <- (xx %*% a)
+# Find the orthogonal projections of each
+# observation on this subspace of dimension 1
+pr <- prs %*% a
+# Plot the data
+plot(xx, pch = 19, col = "black", cex = 2, xlim = c(-1.5, 4.5), ylim = c(-1.5, 4.5))
+abline(h = 0, lwd = 2, col = "grey", lty = 2)
+abline(v = 0, lwd = 2, col = "grey", lty = 2)
+
+# Show the subspace on which we are projecting
+abline(0, a[2] / a[1], lwd = 2, col = "red")
+
+# Add the projections of the data on this subspace
+points(pr[, 1], pr[, 2], pch = 19, cex = 1.5, col = "red")
+
+# Highlight a few of them
+ind <- c(26, 25, 48, 36)
+pr2 <- pr[ind, ]
+for (j in 1:length(ind)) {
+  lines(c(xx[ind[j], 1], pr2[j, 1]), c(xx[ind[j], 2], pr2[j, 2]),
+    col = "blue", lwd = 3.5, lty = 2
+  )
+}
+```
+
 <img src="51-pca_files/figure-html/proj2-1.png" width="90%" style="display: block; margin: auto;" />
 
 We saw in class that the direction $\mathbf{v}$ that results 
@@ -341,7 +372,7 @@ first principal component (we also time it):
 ```r
 system.time(tmp <- alter.pca.k1(ac)$a)
 #>    user  system elapsed 
-#>   0.090   0.017   0.107
+#>   0.089   0.018   0.107
 ```
 and compare it with the one given by `svd`,
  which we also time. Note that the
@@ -352,7 +383,7 @@ same sign.
 ```r
 system.time(tmp2 <- svd(ac)$v[, 1])
 #>    user  system elapsed 
-#>   0.157   0.002   0.159
+#>   0.158   0.003   0.172
 tmp <- tmp * sign(tmp2[1] * tmp[1])
 summary(abs(tmp - tmp2))
 #>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
@@ -382,7 +413,7 @@ time it:
 ```r
 system.time(tmp <- alter.pca.k1(x))
 #>    user  system elapsed 
-#>   0.395   0.022   0.418
+#>   0.417   0.024   0.441
 a1 <- tmp$a
 ```
 Compute the first eigenvector using `svd`, and
@@ -391,7 +422,7 @@ time it:
 ```r
 system.time(e1 <- svd(cov(x))$u[, 1])
 #>    user  system elapsed 
-#>   4.475   0.020   4.515
+#>   4.475   0.033   4.706
 ```
 Asking `svd` to only compute one component does not
 seem to make the algorithm faster (the results are
@@ -400,7 +431,7 @@ identical):
 ```r
 system.time(e1.1 <- svd(cov(x), nu = 1, nv = 1)$u[, 1])
 #>    user  system elapsed 
-#>   4.475   0.017   4.620
+#>   4.441   0.008   4.456
 summary(abs(e1 - e1.1))
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #>       0       0       0       0       0       0

@@ -80,12 +80,51 @@ the **full** model and that selected with **stepwise**.
 We use 50 runs of 5-fold CV, and obtain
 the following:
 
+
+```r
+k <- 5
+n <- nrow(x)
+ii <- (1:n) %% k + 1
+set.seed(123)
+N <- 50
+mspe.t <- mspe.f <- mspe.st <- rep(0, N)
+for (i in 1:N) {
+  ii <- sample(ii)
+  pr.t <- pr.f <- pr.st <- rep(0, n)
+  for (j in 1:k) {
+    x0 <- x[ii != j, ]
+    null0 <- lm(y ~ 1, data = x0)
+    full0 <- lm(y ~ ., data = x0) # needed for stepwise
+    true0 <- lm(y ~ x1 + x2, data = x0)
+    step.lm0 <- stepAIC(null0, scope = list(lower = null0, upper = full0), trace = FALSE)
+    pr.st[ii == j] <- predict(step.lm0, newdata = x[ii == j, ])
+    pr.f[ii == j] <- predict(full0, newdata = x[ii == j, ])
+    pr.t[ii == j] <- predict(true0, newdata = x[ii == j, ])
+  }
+  mspe.st[i] <- mean((x$y - pr.st)^2)
+  mspe.f[i] <- mean((x$y - pr.f)^2)
+  mspe.t[i] <- mean((x$y - pr.t)^2)
+}
+boxplot(mspe.st, mspe.f,
+  names = c("Stepwise", "Full"),
+  col = c("gray60", "hotpink"), ylab = "MSPE"
+)
+```
+
 <img src="12-model-selection-aic_files/figure-html/cv1-1.png" width="90%" style="display: block; margin: auto;" />
 
 Note that since this is a synthetic data set, we can also
 estimate the MSPE of the **true** model (could we compute it analytically instead?)
 and compare it with that of the **full** and **stepwise** models. 
 We obtain:
+
+
+```r
+boxplot(mspe.t, mspe.st, mspe.f,
+  names = c("True", "Stepwise", "Full"),
+  col = c("tomato", "gray60", "hotpink"), ylab = "MSPE"
+)
+```
 
 <img src="12-model-selection-aic_files/figure-html/cv2-1.png" width="90%" style="display: block; margin: auto;" />
 
@@ -270,6 +309,35 @@ full <- lm(Balance ~ ., data = x)
 ```
 It is an easy exercise to check that the MSPE of this
 smaller model is in fact worse than the one for the **full** one:
+
+
+```r
+n <- nrow(x)
+k <- 5
+ii <- (1:n) %% k + 1
+set.seed(123)
+N <- 100
+mspe.st <- mspe.f <- rep(0, N)
+for (i in 1:N) {
+  ii <- sample(ii)
+  pr.f <- pr.st <- rep(0, n)
+  for (j in 1:k) {
+    null <- lm(Balance ~ 1, data = x[ii != j, ])
+    full <- lm(Balance ~ ., data = x[ii != j, ])
+    tmp.st <- stepAIC(null, scope = list(lower = null, upper = full), trace = 0)
+    pr.st[ii == j] <- predict(tmp.st, newdata = x[ii == j, ])
+    pr.f[ii == j] <- predict(full, newdata = x[ii == j, ])
+  }
+  mspe.st[i] <- mean((x$Balance - pr.st)^2)
+  mspe.f[i] <- mean((x$Balance - pr.f)^2)
+}
+boxplot(mspe.st, mspe.f,
+  names = c("Stepwise", "Full"),
+  col = c("tomato", "springgreen"), cex.axis = 1.5,
+  cex.lab = 1.5, cex.main = 2
+)
+mtext(expression(hat(MSPE)), side = 2, line = 2.5)
+```
 
 <img src="12-model-selection-aic_files/figure-html/credit3-1.png" width="90%" style="display: block; margin: auto;" />
 

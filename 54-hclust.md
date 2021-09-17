@@ -201,14 +201,12 @@ plot(nci.hc.s, labels = colnames(nci), cex = .5)
 <img src="54-hclust_files/figure-html/cancer2-1.png" width="90%" style="display: block; margin: auto;" />
 
 ```r
-
 plot(nci.hc.c, labels = colnames(nci), cex = .5)
 ```
 
 <img src="54-hclust_files/figure-html/cancer2-2.png" width="90%" style="display: block; margin: auto;" />
 
 ```r
-
 plot(nci.hc.a, labels = colnames(nci), cex = .5)
 ```
 
@@ -256,7 +254,6 @@ plot(na.hc, labels = nams2)
 <img src="54-hclust_files/figure-html/nations-1.png" width="90%" style="display: block; margin: auto;" />
 
 ```r
-
 # compute hierarchical clustering using average linkage
 na.hc <- hclust(as.dist(a2), method = "average")
 plot(na.hc, labels = nams2)
@@ -390,6 +387,17 @@ mapCountryData(malMap,
 
 While with the $L_1$ distances we get:
 
+
+
+```r
+par(mai = c(0, 0, 0, 0), xaxs = "i", yaxs = "i")
+mapCountryData(malMap,
+  nameColumnToPlot = "cluster", catMethod = "categorical",
+  missingCountryCol = "white", addLegend = FALSE, mapTitle = "",
+  colourPalette = c("darkgreen", "hotpink", "tomato", "blueviolet", "yellow"),
+  oceanCol = "dodgerblue"
+)
+```
 
 <img src="54-hclust_files/figure-html/unvotes.maps.2.2-1.png" width="90%" style="display: block; margin: auto;" />
 
