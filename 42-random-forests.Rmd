@@ -65,7 +65,7 @@ filled.contour(aa, bb, matrix(pp.rf[, 1], 200, 200),
 ```
 
 And the predicted conditional probabilities for the rest of the classes are:
-```{r rf2, fig.width=6, fig.height=6, message=FALSE, warning=FALSE, echo=FALSE}
+```{r rf2, fig.width=6, fig.height=6, message=FALSE, warning=FALSE, echo=TRUE}
 filled.contour(aa, bb, matrix(pp.rf[, 2], 200, 200),
   col = terrain.colors(20),
   xlab = "GPA", ylab = "GMAT", plot.axes = {

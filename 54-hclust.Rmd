@@ -279,7 +279,7 @@ While with the $L_1$ distances we get:
 malDF <- data.frame(country = these, cluster = labs.l1)
 malMap <- joinCountryData2Map(malDF, joinCode = "ISO3", nameJoinColumn = "country")
 ```
-```{r unvotes.maps.2.2, echo=FALSE}
+```{r unvotes.maps.2.2, echo=TRUE}
 par(mai = c(0, 0, 0, 0), xaxs = "i", yaxs = "i")
 mapCountryData(malMap,
   nameColumnToPlot = "cluster", catMethod = "categorical",

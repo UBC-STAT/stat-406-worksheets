@@ -52,7 +52,7 @@ tmp <- cmdscale(dd, k = 2)
 
 This is the data with which we will work: 
 
-```{r scatter, echo=FALSE}
+```{r scatter, echo=TRUE}
 plot(tmp, pch = 19, col = "gray50", cex = 2, xlab = "", ylab = "")
 ```
 
@@ -84,7 +84,7 @@ in general the weights are between 0 and 1.
 
 This is the initial configuration (pure noise):
 
-```{r initial.scatter, echo=FALSE}
+```{r initial.scatter, echo=TRUE}
 plot(tmp[, 1], tmp[, 2], pch = 19, cex = 2, 
      col = c("black", "red", "darkblue")[b], xlab = "", ylab = "")
 ```
@@ -195,7 +195,7 @@ x <- rbind(x1, x2, x3)
 
 This is how the data look
 
-```{R disp.noise1, echo=FALSE}
+```{R disp.noise1, echo=TRUE}
 pairs(x, col = "gray", pch = 19)
 ```
 
@@ -411,7 +411,7 @@ x <- rmvnorm(50, mean = mu, sigma = si)
 This is the data. The larger red point indicates
 the sample mean (3.13, 7.15):
 
-```{r scatter0, echo=FALSE}
+```{r scatter0, echo=TRUE}
 plot(x, pch = 19, col = "gray30", xlim = c(0, 8), ylim = c(0, 13), xlab = "X1", ylab = "X2", cex = 1.5)
 xbar <- colMeans(x)
 points(xbar[1], xbar[2], pch = 19, col = "tomato", cex = 2)
@@ -424,7 +424,7 @@ missing. We indicate them with grey lines
 to indicate the uncertainty about their missing
 entries:
 
-```{r scatter.missing0, echo=FALSE}
+```{r scatter.missing0, echo=TRUE}
 plot(x, pch = 19, col = "gray30", xlim = c(0, 8), ylim = c(0, 13), xlab = "X1", ylab = "X2", cex = 1.5)
 abline(v = 5, lwd = 6, col = "gray80")
 abline(h = 5.5, lwd = 6, col = "gray80")
@@ -440,7 +440,7 @@ rest of the data. Hence (5, **NA**) becomes (5, *7.15*) and
 (**NA**, 5.5) becomes (*3.13*, 5.5). The imputed points
 are shown below as blue dots:
 
-```{r marginal0, echo=FALSE}
+```{r marginal0, echo=TRUE}
 plot(x, pch = 19, col = "gray30", xlim = c(0, 8), ylim = c(0, 13), xlab = "X1", ylab = "X2", cex = 1.5)
 abline(h = 5.5, lwd = 6, col = "gray80")
 abline(v = 5, lwd = 6, col = "gray80")
@@ -527,7 +527,7 @@ for (i in 1:niter) {
 The imputed data are now much more in line with the
 shape and distribution of the other points in the data set:
 
-```{r em-imputed, echo=FALSE}
+```{r em-imputed, echo=TRUE}
 plot(x, pch = 19, col = "gray30", xlim = c(0, 8), ylim = c(0, 13), xlab = "X1", ylab = "X2", cex = 1.5)
 abline(h = 5.5, lwd = 6, col = "gray80")
 abline(v = 5, lwd = 6, col = "gray80")

@@ -71,7 +71,7 @@ the **full** model and that selected with **stepwise**.
 We use 50 runs of 5-fold CV, and obtain
 the following:
 
-```{r cv1, fig.width=5, fig.height=5, echo=FALSE}
+```{r cv1, fig.width=5, fig.height=5, echo=TRUE}
 k <- 5
 n <- nrow(x)
 ii <- (1:n) %% k + 1
@@ -106,7 +106,7 @@ estimate the MSPE of the **true** model (could we compute it analytically instea
 and compare it with that of the **full** and **stepwise** models. 
 We obtain:
 
-```{r cv2, fig.width=5, fig.height=5, echo=FALSE}
+```{r cv2, fig.width=5, fig.height=5}
 boxplot(mspe.t, mspe.st, mspe.f,
   names = c("True", "Stepwise", "Full"),
   col = c("tomato", "gray60", "hotpink"), ylab = "MSPE"
@@ -242,7 +242,7 @@ full <- lm(Balance ~ ., data = x)
 It is an easy exercise to check that the MSPE of this
 smaller model is in fact worse than the one for the **full** one:
 
-```{r credit3, fig.width=5, fig.height=5, echo=FALSE}
+```{r credit3, fig.width=5, fig.height=5}
 n <- nrow(x)
 k <- 5
 ii <- (1:n) %% k + 1

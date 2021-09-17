@@ -130,7 +130,7 @@ for (j in 1:length(ind)) {
 We repeat the above but projecting on a different direction
 $\mathbf{v} \propto (-1, 3)^\top$: 
 
-```{r proj2, echo=FALSE}
+```{r proj2, echo=TRUE}
 a <- c(-1, 3)
 a <- a / norm(a)
 # Find the projections (coordinates of the

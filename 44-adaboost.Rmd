@@ -174,7 +174,7 @@ set.seed(17)
 sim3 <- boosting(class ~ ., data = sim.tr, boos = FALSE, mfinal = 300, control = threesplit)
 plot(errorevol(sim3, newdata = sim.te))
 ```
-```{r boston001, echo=FALSE, eval=FALSE}
+```{r boston001, echo=TRUE, eval=FALSE}
 foursplit <- rpart.control(cp = -1, maxdepth = 4, minsplit = 0, xval = 0)
 set.seed(17)
 sim4 <- boosting(class ~ ., data = sim.tr, boos = FALSE, mfinal = 300, control = foursplit)

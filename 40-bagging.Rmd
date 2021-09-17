@@ -105,7 +105,7 @@ with(dat.te, mean((medv - pr.t3)^2))
 ```
 Would the quality of the bagged predictions improve if we use 
 a larger ensemble? For example, what happens if we **bagg** $N = 10$ trees? 
-```{r bag10, fig.width=5, fig.height=5, message=FALSE, warning=TRUE, echo=FALSE}
+```{r bag10, fig.width=5, fig.height=5, message=FALSE, warning=TRUE, echo=TRUE}
 N <- 10
 myps <- array(NA, dim = c(nrow(dat.te), N))
 n.tr <- nrow(dat.tr)
@@ -119,7 +119,7 @@ pr.bagg <- rowMeans(myps)
 with(dat.te, mean((medv - pr.bagg)^2))
 ```
 or $N = 100$ trees? 
-```{r bag100, fig.width=5, fig.height=5, message=FALSE, warning=TRUE, echo=FALSE}
+```{r bag100, fig.width=5, fig.height=5, message=FALSE, warning=TRUE, echo=TRUE}
 N <- 100
 myps <- array(NA, dim = c(nrow(dat.te), N))
 n.tr <- nrow(dat.tr)
@@ -133,7 +133,7 @@ pr.bagg <- rowMeans(myps)
 with(dat.te, mean((medv - pr.bagg)^2))
 ```
 or $N = 1000$ trees? 
-```{r bag1000, fig.width=5, fig.height=5, message=FALSE, warning=TRUE, echo=FALSE}
+```{r bag1000, fig.width=5, fig.height=5, message=FALSE, warning=TRUE, echo=TRUE}
 N <- 1000
 myps <- array(NA, dim = c(nrow(dat.te), N))
 n.tr <- nrow(dat.tr)

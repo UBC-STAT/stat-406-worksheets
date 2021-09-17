@@ -295,7 +295,7 @@ we have considered so far: a full linear model, a model selected via stepwise + 
 ridge regression and LASSO. As usual, we use 50 runs of 5-fold CV, and obtain
 the following boxplots:
 
-```{r bigcompare, fig.width=5, fig.height=5, warning=FALSE, message=FALSE, echo=FALSE, cache=TRUE}
+```{r bigcompare, fig.width=5, fig.height=5, warning=FALSE, message=FALSE, echo=TRUE, cache=TRUE}
 library(MASS)
 n <- nrow(xm)
 k <- 5
@@ -417,7 +417,7 @@ presentation.
 ### Compare MSPE's of Full, LASSO, Ridge, EN and stepwise
 
 
-```{r bigcompare2, fig.width=5, fig.height=5, warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE}
+```{r bigcompare2, fig.width=5, fig.height=5, warning=FALSE, message=FALSE, cache=TRUE, echo=TRUE}
 ii <- (1:n) %% k + 1
 set.seed(123)
 N <- 50

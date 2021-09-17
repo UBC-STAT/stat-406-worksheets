@@ -385,7 +385,7 @@ conditional distribution of **X** in each class). Class-wise pre-standardization
 
 To illustrate the last point, consider this toy synthetic example we discussed in class:
 
-```{r knntrouble, fig.width=6, fig.height=6, message=FALSE, warning=FALSE, echo=FALSE}
+```{r knntrouble, fig.width=6, fig.height=6, message=FALSE, warning=FALSE, echo=TRUE}
 # create example
 set.seed(123)
 x <- matrix(runif(250 * 2, min = -1, max = 1), 250, 2)

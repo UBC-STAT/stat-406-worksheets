@@ -48,7 +48,7 @@ the procedure many times (100, say) and looking
 at the estimated mean squared prediction errors
 obtained each time for each model. 
 
-```{r testrain, fig.width=5, fig.height=5, echo=FALSE}
+```{r testrain, fig.width=5, fig.height=5}
 x <- read.csv("data/rutgers-lib-30861_CSV-1.csv")
 set.seed(123)
 Nsplits <- 100
