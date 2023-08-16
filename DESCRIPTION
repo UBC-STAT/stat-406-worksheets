@@ -1,14 +1,14 @@
 Package: Stat406worksheets
 Title: Worksheets for use with UBC Stat 406
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: 
     person(given = "Daniel", middle = "J."
            family = "McDonald",
            role = c("aut", "cre"),
            email = "daniel@stat.ubc.ca")
-    person(given = "Matias", family = Salibán-Barrera,
+    person(given = "Matías", family = Salibián-Barrera,
            role = "aut")
-Description: What the package does (one paragraph).
+Description: This is project is a online supplement for Stat 406 taught at UBC.
 License: CC BY 4.0
 Imports:
     adabag,

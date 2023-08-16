@@ -1,6 +1,6 @@
 --- 
 title: "UBC Stat 406 Worksheets"
-author: "Daniel J. McDonald and Matías Salibán-Barrera"
+author: "Daniel J. McDonald and Matías Salibián-Barrera"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::bs4_book
