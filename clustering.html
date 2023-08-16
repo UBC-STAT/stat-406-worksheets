@@ -5,9 +5,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>21 Clustering | UBC Stat 406 Worksheets</title>
-<meta name="author" content="Daniel J. McDonald and Matías Salibán-Barrera">
+<meta name="author" content="Daniel J. McDonald and Matías Salibián-Barrera">
 <meta name="description" content="A large class of unsupervised learning methods is collectively called clustering. The objective can be described as identifying different groups of observations that are closer to each other...">
-<meta name="generator" content="bookdown 0.24 with bs4_book()">
+<meta name="generator" content="bookdown 0.35 with bs4_book()">
 <meta property="og:title" content="21 Clustering | UBC Stat 406 Worksheets">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://ubc-stat.github.io/stat-406-worksheets/clustering.html">
@@ -17,8 +17,33 @@
 <meta name="twitter:description" content="A large class of unsupervised learning methods is collectively called clustering. The objective can be described as identifying different groups of observations that are closer to each other...">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.0/transition.js"></script><script src="libs/bs3compat-0.3.0/tabs.js"></script><script src="libs/bs3compat-0.3.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.5.1/transition.js"></script><script src="libs/bs3compat-0.5.1/tabs.js"></script><script src="libs/bs3compat-0.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -81,7 +106,7 @@
         </div>
       </nav>
 </div>
-  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="clustering" class="section level1">
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="clustering" class="section level1" number="21">
 <h1>
 <span class="header-section-number">21</span> Clustering<a class="anchor" aria-label="anchor" href="#clustering"><i class="fas fa-link"></i></a>
 </h1>
@@ -106,7 +131,7 @@ to have a distribution in a specific (generally parametric) family.
 Some of these model-based methods treat the group labels as
 missing (unobserved) responses, and rely on the assumed model to
 infer those missing labels.</p>
-<div id="k-means-k-means-k-medoids" class="section level2">
+<div id="k-means-k-means-k-medoids" class="section level2" number="21.1">
 <h2>
 <span class="header-section-number">21.1</span> K-means, K-means++, K-medoids<a class="anchor" aria-label="anchor" href="#k-means-k-means-k-medoids"><i class="fas fa-link"></i></a>
 </h2>
@@ -116,13 +141,13 @@ its variants <em>K-means++</em> and K-medoids, a.k.a. <em>pam</em>,
 partition around medoids). The specifics of the K-means
 algorithm were discussed in class. Here we will illustrate its use
 on a few examples.</p>
-<div id="un-votes-example." class="section level3">
+<div id="un-votes-example." class="section level3" number="21.1.1">
 <h3>
 <span class="header-section-number">21.1.1</span> UN votes example.<a class="anchor" aria-label="anchor" href="#un-votes-example."><i class="fas fa-link"></i></a>
 </h3>
 <p>These data contain the historical voting patterns
 of United Nations members. More details can be
-found here at <span class="citation">(Voeten, Strezhnev, and Bailey <a href="references.html#ref-DVN/LEJUQZ_2009" role="doc-biblioref">2009</a>)</span>.
+found here at <span class="citation">(<a href="references.html#ref-DVN/LEJUQZ_2009" role="doc-biblioref">Voeten, Strezhnev, and Bailey 2009</a>)</span>.
 The UN was founded in 1946 and it contains 193 member states.
 The data include only “important” votes, as classified
 by the U.S. State Department. The votes for each country
@@ -142,83 +167,83 @@ and its columns contain the corresponding vote of each country
 We first read the data, and limit ourselves to resolutions where
 every country voted without missing votes:</p>
 <div class="sourceCode" id="cb327"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"data/unvotes.csv"</span>, sep <span class="op">=</span> <span class="st">","</span>, row.names <span class="op">=</span> <span class="fl">1</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">X2</span> <span class="op">&lt;-</span> <span class="va">X</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/stats/complete.cases.html">complete.cases</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>, <span class="op">]</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"data/unvotes.csv"</span>, sep <span class="op">=</span> <span class="st">","</span>, row.names <span class="op">=</span> <span class="fl">1</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">X2</span> <span class="op">&lt;-</span> <span class="va">X</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/stats/complete.cases.html">complete.cases</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>, <span class="op">]</span></span></code></pre></div>
 <p>We now compute a K-means partition using the function <code>kmeans</code>
 with <em>K = 5</em>, and look at the resulting groups:</p>
 <div class="sourceCode" id="cb328"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/kmeans.html">kmeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">X2</span><span class="op">)</span>, centers <span class="op">=</span> <span class="fl">5</span>, iter.max <span class="op">=</span> <span class="fl">20</span>, nstart <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">b</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;  1  2  3  4  5 </span>
-<span class="co">#&gt; 26  2 15  9 25</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/kmeans.html">kmeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">X2</span><span class="op">)</span>, centers <span class="op">=</span> <span class="fl">5</span>, iter.max <span class="op">=</span> <span class="fl">20</span>, nstart <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">b</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  1  2  3  4  5 </span></span>
+<span><span class="co">#&gt; 26  2 15  9 25</span></span></code></pre></div>
 <p>If we run <code>kmeans</code> again, we might get a different partition:</p>
 <div class="sourceCode" id="cb329"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/kmeans.html">kmeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">X2</span><span class="op">)</span>, centers <span class="op">=</span> <span class="fl">5</span>, iter.max <span class="op">=</span> <span class="fl">20</span>, nstart <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">b</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;  1  2  3  4  5 </span>
-<span class="co">#&gt; 27 13 12  5 20</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/kmeans.html">kmeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">X2</span><span class="op">)</span>, centers <span class="op">=</span> <span class="fl">5</span>, iter.max <span class="op">=</span> <span class="fl">20</span>, nstart <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">b</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  1  2  3  4  5 </span></span>
+<span><span class="co">#&gt; 27 13 12  5 20</span></span></code></pre></div>
 <p>It is better to consider a large number of random starts and
 take the <strong>best</strong> found solution (what does <em>best</em> mean in this
 context? in other words, how does the algorithm decide which one is
 the solution it should return?)</p>
 <div class="sourceCode" id="cb330"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Take the best solution out of 1000 random starts</span>
-<span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/kmeans.html">kmeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">X2</span><span class="op">)</span>, centers <span class="op">=</span> <span class="fl">5</span>, iter.max <span class="op">=</span> <span class="fl">20</span>, nstart <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/split.html">split</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">X2</span><span class="op">)</span>, <span class="va">b</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span>
-<span class="co">#&gt; $`1`</span>
-<span class="co">#&gt;  [1] "Bolivia"             "Botswana"            "Burkina.Faso"       </span>
-<span class="co">#&gt;  [4] "Ecuador"             "Ethiopia"            "Ghana"              </span>
-<span class="co">#&gt;  [7] "Guyana"              "Jamaica"             "Jordan"             </span>
-<span class="co">#&gt; [10] "Kenya"               "Mali"                "Nepal"              </span>
-<span class="co">#&gt; [13] "Nigeria"             "Philippines"         "Singapore"          </span>
-<span class="co">#&gt; [16] "Sri.Lanka"           "Tanzania"            "Thailand"           </span>
-<span class="co">#&gt; [19] "Togo"                "Trinidad.and.Tobago" "Zambia"             </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`2`</span>
-<span class="co">#&gt;  [1] "Argentina"  "Bahamas"    "Brazil"     "Chile"      "Colombia"  </span>
-<span class="co">#&gt;  [6] "Costa.Rica" "Mexico"     "Panama"     "Paraguay"   "Peru"      </span>
-<span class="co">#&gt; [11] "Uruguay"   </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`3`</span>
-<span class="co">#&gt;  [1] "Australia"   "Austria"     "Belgium"     "Bulgaria"    "Canada"     </span>
-<span class="co">#&gt;  [6] "Cyprus"      "Denmark"     "Finland"     "France"      "Greece"     </span>
-<span class="co">#&gt; [11] "Hungary"     "Iceland"     "Ireland"     "Italy"       "Japan"      </span>
-<span class="co">#&gt; [16] "Luxembourg"  "Malta"       "Netherlands" "New.Zealand" "Norway"     </span>
-<span class="co">#&gt; [21] "Poland"      "Portugal"    "Spain"       "Sweden"      "UK"         </span>
-<span class="co">#&gt; [26] "Ukraine"    </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`4`</span>
-<span class="co">#&gt; [1] "Israel" "USA"   </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`5`</span>
-<span class="co">#&gt;  [1] "Algeria"              "Bangladesh"           "Belarus"             </span>
-<span class="co">#&gt;  [4] "Brunei.Darussalam"    "China"                "Cuba"                </span>
-<span class="co">#&gt;  [7] "Egypt"                "India"                "Indonesia"           </span>
-<span class="co">#&gt; [10] "Kuwait"               "Libya"                "Malaysia"            </span>
-<span class="co">#&gt; [13] "Pakistan"             "Russian.Federation"   "Sudan"               </span>
-<span class="co">#&gt; [16] "Syrian.Arab.Republic" "Venezuela"</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Take the best solution out of 1000 random starts</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/kmeans.html">kmeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">X2</span><span class="op">)</span>, centers <span class="op">=</span> <span class="fl">5</span>, iter.max <span class="op">=</span> <span class="fl">20</span>, nstart <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/split.html">split</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">X2</span><span class="op">)</span>, <span class="va">b</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $`1`</span></span>
+<span><span class="co">#&gt;  [1] "Bolivia"             "Botswana"            "Burkina.Faso"       </span></span>
+<span><span class="co">#&gt;  [4] "Ecuador"             "Ethiopia"            "Ghana"              </span></span>
+<span><span class="co">#&gt;  [7] "Guyana"              "Jamaica"             "Jordan"             </span></span>
+<span><span class="co">#&gt; [10] "Kenya"               "Mali"                "Nepal"              </span></span>
+<span><span class="co">#&gt; [13] "Nigeria"             "Philippines"         "Singapore"          </span></span>
+<span><span class="co">#&gt; [16] "Sri.Lanka"           "Tanzania"            "Thailand"           </span></span>
+<span><span class="co">#&gt; [19] "Togo"                "Trinidad.and.Tobago" "Zambia"             </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`2`</span></span>
+<span><span class="co">#&gt;  [1] "Argentina"  "Bahamas"    "Brazil"     "Chile"      "Colombia"  </span></span>
+<span><span class="co">#&gt;  [6] "Costa.Rica" "Mexico"     "Panama"     "Paraguay"   "Peru"      </span></span>
+<span><span class="co">#&gt; [11] "Uruguay"   </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`3`</span></span>
+<span><span class="co">#&gt;  [1] "Australia"   "Austria"     "Belgium"     "Bulgaria"    "Canada"     </span></span>
+<span><span class="co">#&gt;  [6] "Cyprus"      "Denmark"     "Finland"     "France"      "Greece"     </span></span>
+<span><span class="co">#&gt; [11] "Hungary"     "Iceland"     "Ireland"     "Italy"       "Japan"      </span></span>
+<span><span class="co">#&gt; [16] "Luxembourg"  "Malta"       "Netherlands" "New.Zealand" "Norway"     </span></span>
+<span><span class="co">#&gt; [21] "Poland"      "Portugal"    "Spain"       "Sweden"      "UK"         </span></span>
+<span><span class="co">#&gt; [26] "Ukraine"    </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`4`</span></span>
+<span><span class="co">#&gt; [1] "Israel" "USA"   </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`5`</span></span>
+<span><span class="co">#&gt;  [1] "Algeria"              "Bangladesh"           "Belarus"             </span></span>
+<span><span class="co">#&gt;  [4] "Brunei.Darussalam"    "China"                "Cuba"                </span></span>
+<span><span class="co">#&gt;  [7] "Egypt"                "India"                "Indonesia"           </span></span>
+<span><span class="co">#&gt; [10] "Kuwait"               "Libya"                "Malaysia"            </span></span>
+<span><span class="co">#&gt; [13] "Pakistan"             "Russian.Federation"   "Sudan"               </span></span>
+<span><span class="co">#&gt; [16] "Syrian.Arab.Republic" "Venezuela"</span></span></code></pre></div>
 <p>It may be better to look at the groups on a map:</p>
 <div class="sourceCode" id="cb331"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/AndySouth/rworldmap/">rworldmap</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://vincentarelbundock.github.io/countrycode/">countrycode</a></span><span class="op">)</span>
-<span class="va">these</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://vincentarelbundock.github.io/countrycode/reference/countrycode.html">countrycode</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">X2</span><span class="op">)</span>, <span class="st">"country.name"</span>, <span class="st">"iso3c"</span><span class="op">)</span>
-<span class="va">malDF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>country <span class="op">=</span> <span class="va">these</span>, cluster <span class="op">=</span> <span class="va">b</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span>
-<span class="co"># malDF is a data.frame with the ISO3 country names plus a variable to merge to</span>
-<span class="co"># the map data</span>
-
-<span class="co"># This line will join your malDF data.frame to the country map data</span>
-<span class="va">malMap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rworldmap/man/joinCountryData2Map.html">joinCountryData2Map</a></span><span class="op">(</span><span class="va">malDF</span>, joinCode <span class="op">=</span> <span class="st">"ISO3"</span>, nameJoinColumn <span class="op">=</span> <span class="st">"country"</span><span class="op">)</span>
-<span class="co">#&gt; 77 codes from your data successfully matched countries in the map</span>
-<span class="co">#&gt; 0 codes from your data failed to match with a country code in the map</span>
-<span class="co">#&gt; 166 codes from the map weren't represented in your data</span>
-<span class="co"># colors()[grep('blue', colors())] fill the space on the graphical device</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mai <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, xaxs <span class="op">=</span> <span class="st">"i"</span>, yaxs <span class="op">=</span> <span class="st">"i"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/rworldmap/man/mapCountryData.html">mapCountryData</a></span><span class="op">(</span><span class="va">malMap</span>, nameColumnToPlot <span class="op">=</span> <span class="st">"cluster"</span>, catMethod <span class="op">=</span> <span class="st">"categorical"</span>, missingCountryCol <span class="op">=</span> <span class="st">"white"</span>,
-    addLegend <span class="op">=</span> <span class="cn">FALSE</span>, mapTitle <span class="op">=</span> <span class="st">""</span>, colourPalette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"darkgreen"</span>, <span class="st">"hotpink"</span>, <span class="st">"tomato"</span>,
-        <span class="st">"blueviolet"</span>, <span class="st">"yellow"</span><span class="op">)</span>, oceanCol <span class="op">=</span> <span class="st">"dodgerblue"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/AndySouth/rworldmap/">rworldmap</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://vincentarelbundock.github.io/countrycode/">countrycode</a></span><span class="op">)</span></span>
+<span><span class="va">these</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://vincentarelbundock.github.io/countrycode/reference/countrycode.html">countrycode</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">X2</span><span class="op">)</span>, <span class="st">"country.name"</span>, <span class="st">"iso3c"</span><span class="op">)</span></span>
+<span><span class="va">malDF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>country <span class="op">=</span> <span class="va">these</span>, cluster <span class="op">=</span> <span class="va">b</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span>
+<span><span class="co"># malDF is a data.frame with the ISO3 country names plus a variable to merge to</span></span>
+<span><span class="co"># the map data</span></span>
+<span></span>
+<span><span class="co"># This line will join your malDF data.frame to the country map data</span></span>
+<span><span class="va">malMap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rworldmap/man/joinCountryData2Map.html">joinCountryData2Map</a></span><span class="op">(</span><span class="va">malDF</span>, joinCode <span class="op">=</span> <span class="st">"ISO3"</span>, nameJoinColumn <span class="op">=</span> <span class="st">"country"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 77 codes from your data successfully matched countries in the map</span></span>
+<span><span class="co">#&gt; 0 codes from your data failed to match with a country code in the map</span></span>
+<span><span class="co">#&gt; 166 codes from the map weren't represented in your data</span></span>
+<span><span class="co"># colors()[grep('blue', colors())] fill the space on the graphical device</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mai <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, xaxs <span class="op">=</span> <span class="st">"i"</span>, yaxs <span class="op">=</span> <span class="st">"i"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/rworldmap/man/mapCountryData.html">mapCountryData</a></span><span class="op">(</span><span class="va">malMap</span>, nameColumnToPlot <span class="op">=</span> <span class="st">"cluster"</span>, catMethod <span class="op">=</span> <span class="st">"categorical"</span>, missingCountryCol <span class="op">=</span> <span class="st">"white"</span>,</span>
+<span>    addLegend <span class="op">=</span> <span class="cn">FALSE</span>, mapTitle <span class="op">=</span> <span class="st">""</span>, colourPalette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"darkgreen"</span>, <span class="st">"hotpink"</span>, <span class="st">"tomato"</span>,</span>
+<span>        <span class="st">"blueviolet"</span>, <span class="st">"yellow"</span><span class="op">)</span>, oceanCol <span class="op">=</span> <span class="st">"dodgerblue"</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="52-kmeans_files/figure-html/kmeans.map1-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>We can compare this partition with the one we obtain using PAM (K-medoids),
 which is implemented in the function <code>pam</code> of the package <code>cluster</code>. Recall
@@ -229,65 +254,65 @@ explore other distances, particulary in light of the categorical
 nature of the data. Furthermore, to obtain clusters that may
 be easier to interpret we use <code>K = 3</code>:</p>
 <div class="sourceCode" id="cb332"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://svn.r-project.org/R-packages/trunk/cluster/">cluster</a></span><span class="op">)</span>
-<span class="co"># Use Euclidean distances</span>
-<span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/dist.html">dist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span>
-<span class="co"># what happens with missing values?</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/cluster/man/pam.html">pam</a></span><span class="op">(</span><span class="va">d</span>, k <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://svn.r-project.org/R-packages/trunk/cluster/">cluster</a></span><span class="op">)</span></span>
+<span><span class="co"># Use Euclidean distances</span></span>
+<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/dist.html">dist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># what happens with missing values?</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/cluster/man/pam.html">pam</a></span><span class="op">(</span><span class="va">d</span>, k <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <p>Compare the resulting groups with those of <em>K-means</em>:</p>
 <div class="sourceCode" id="cb333"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/kmeans.html">kmeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">X2</span><span class="op">)</span>, centers <span class="op">=</span> <span class="fl">3</span>, iter.max <span class="op">=</span> <span class="fl">20</span>, nstart <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">clustering</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;  1  2  3 </span>
-<span class="co">#&gt; 26 24 27</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">b</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;  1  2  3 </span>
-<span class="co">#&gt; 16 28 33</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/kmeans.html">kmeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">X2</span><span class="op">)</span>, centers <span class="op">=</span> <span class="fl">3</span>, iter.max <span class="op">=</span> <span class="fl">20</span>, nstart <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">clustering</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  1  2  3 </span></span>
+<span><span class="co">#&gt; 26 24 27</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">b</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  1  2  3 </span></span>
+<span><span class="co">#&gt; 16 28 33</span></span></code></pre></div>
 <p>An better visualization is done using the map. interesting
 We plot the 3 groups found by <code>pam</code> on the map, followed by those
 found by K-means:</p>
 <div class="sourceCode" id="cb334"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">these</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://vincentarelbundock.github.io/countrycode/reference/countrycode.html">countrycode</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>, <span class="st">"country.name"</span>, <span class="st">"iso3c"</span><span class="op">)</span>
-<span class="va">malDF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>country <span class="op">=</span> <span class="va">these</span>, cluster <span class="op">=</span> <span class="va">a</span><span class="op">$</span><span class="va">clustering</span><span class="op">)</span>
-<span class="va">malMap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rworldmap/man/joinCountryData2Map.html">joinCountryData2Map</a></span><span class="op">(</span><span class="va">malDF</span>, joinCode <span class="op">=</span> <span class="st">"ISO3"</span>, nameJoinColumn <span class="op">=</span> <span class="st">"country"</span><span class="op">)</span>
-<span class="co">#&gt; 77 codes from your data successfully matched countries in the map</span>
-<span class="co">#&gt; 0 codes from your data failed to match with a country code in the map</span>
-<span class="co">#&gt; 166 codes from the map weren't represented in your data</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mai <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, xaxs <span class="op">=</span> <span class="st">"i"</span>, yaxs <span class="op">=</span> <span class="st">"i"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/rworldmap/man/mapCountryData.html">mapCountryData</a></span><span class="op">(</span><span class="va">malMap</span>, nameColumnToPlot <span class="op">=</span> <span class="st">"cluster"</span>, catMethod <span class="op">=</span> <span class="st">"categorical"</span>, missingCountryCol <span class="op">=</span> <span class="st">"white"</span>,
-    addLegend <span class="op">=</span> <span class="cn">FALSE</span>, mapTitle <span class="op">=</span> <span class="st">""</span>, colourPalette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"darkgreen"</span>, <span class="st">"hotpink"</span>, <span class="st">"tomato"</span>,
-        <span class="st">"blueviolet"</span>, <span class="st">"yellow"</span><span class="op">)</span>, oceanCol <span class="op">=</span> <span class="st">"dodgerblue"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">these</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://vincentarelbundock.github.io/countrycode/reference/countrycode.html">countrycode</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>, <span class="st">"country.name"</span>, <span class="st">"iso3c"</span><span class="op">)</span></span>
+<span><span class="va">malDF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>country <span class="op">=</span> <span class="va">these</span>, cluster <span class="op">=</span> <span class="va">a</span><span class="op">$</span><span class="va">clustering</span><span class="op">)</span></span>
+<span><span class="va">malMap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rworldmap/man/joinCountryData2Map.html">joinCountryData2Map</a></span><span class="op">(</span><span class="va">malDF</span>, joinCode <span class="op">=</span> <span class="st">"ISO3"</span>, nameJoinColumn <span class="op">=</span> <span class="st">"country"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 77 codes from your data successfully matched countries in the map</span></span>
+<span><span class="co">#&gt; 0 codes from your data failed to match with a country code in the map</span></span>
+<span><span class="co">#&gt; 166 codes from the map weren't represented in your data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mai <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, xaxs <span class="op">=</span> <span class="st">"i"</span>, yaxs <span class="op">=</span> <span class="st">"i"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/rworldmap/man/mapCountryData.html">mapCountryData</a></span><span class="op">(</span><span class="va">malMap</span>, nameColumnToPlot <span class="op">=</span> <span class="st">"cluster"</span>, catMethod <span class="op">=</span> <span class="st">"categorical"</span>, missingCountryCol <span class="op">=</span> <span class="st">"white"</span>,</span>
+<span>    addLegend <span class="op">=</span> <span class="cn">FALSE</span>, mapTitle <span class="op">=</span> <span class="st">""</span>, colourPalette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"darkgreen"</span>, <span class="st">"hotpink"</span>, <span class="st">"tomato"</span>,</span>
+<span>        <span class="st">"blueviolet"</span>, <span class="st">"yellow"</span><span class="op">)</span>, oceanCol <span class="op">=</span> <span class="st">"dodgerblue"</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="52-kmeans_files/figure-html/un.pam.map-1.png" width="90%" style="display: block; margin: auto;"></div>
 <div class="sourceCode" id="cb335"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">these</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://vincentarelbundock.github.io/countrycode/reference/countrycode.html">countrycode</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">X2</span><span class="op">)</span>, <span class="st">"country.name"</span>, <span class="st">"iso3c"</span><span class="op">)</span>
-<span class="va">malDF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>country <span class="op">=</span> <span class="va">these</span>, cluster <span class="op">=</span> <span class="va">b</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span>
-<span class="va">malMap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rworldmap/man/joinCountryData2Map.html">joinCountryData2Map</a></span><span class="op">(</span><span class="va">malDF</span>, joinCode <span class="op">=</span> <span class="st">"ISO3"</span>, nameJoinColumn <span class="op">=</span> <span class="st">"country"</span><span class="op">)</span>
-<span class="co">#&gt; 77 codes from your data successfully matched countries in the map</span>
-<span class="co">#&gt; 0 codes from your data failed to match with a country code in the map</span>
-<span class="co">#&gt; 166 codes from the map weren't represented in your data</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mai <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, xaxs <span class="op">=</span> <span class="st">"i"</span>, yaxs <span class="op">=</span> <span class="st">"i"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/rworldmap/man/mapCountryData.html">mapCountryData</a></span><span class="op">(</span><span class="va">malMap</span>, nameColumnToPlot <span class="op">=</span> <span class="st">"cluster"</span>, catMethod <span class="op">=</span> <span class="st">"categorical"</span>, missingCountryCol <span class="op">=</span> <span class="st">"white"</span>,
-    addLegend <span class="op">=</span> <span class="cn">FALSE</span>, mapTitle <span class="op">=</span> <span class="st">""</span>, colourPalette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"yellow"</span>, <span class="st">"tomato"</span>, <span class="st">"blueviolet"</span><span class="op">)</span>,
-    oceanCol <span class="op">=</span> <span class="st">"dodgerblue"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">these</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://vincentarelbundock.github.io/countrycode/reference/countrycode.html">countrycode</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">X2</span><span class="op">)</span>, <span class="st">"country.name"</span>, <span class="st">"iso3c"</span><span class="op">)</span></span>
+<span><span class="va">malDF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>country <span class="op">=</span> <span class="va">these</span>, cluster <span class="op">=</span> <span class="va">b</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span>
+<span><span class="va">malMap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rworldmap/man/joinCountryData2Map.html">joinCountryData2Map</a></span><span class="op">(</span><span class="va">malDF</span>, joinCode <span class="op">=</span> <span class="st">"ISO3"</span>, nameJoinColumn <span class="op">=</span> <span class="st">"country"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 77 codes from your data successfully matched countries in the map</span></span>
+<span><span class="co">#&gt; 0 codes from your data failed to match with a country code in the map</span></span>
+<span><span class="co">#&gt; 166 codes from the map weren't represented in your data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mai <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, xaxs <span class="op">=</span> <span class="st">"i"</span>, yaxs <span class="op">=</span> <span class="st">"i"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/rworldmap/man/mapCountryData.html">mapCountryData</a></span><span class="op">(</span><span class="va">malMap</span>, nameColumnToPlot <span class="op">=</span> <span class="st">"cluster"</span>, catMethod <span class="op">=</span> <span class="st">"categorical"</span>, missingCountryCol <span class="op">=</span> <span class="st">"white"</span>,</span>
+<span>    addLegend <span class="op">=</span> <span class="cn">FALSE</span>, mapTitle <span class="op">=</span> <span class="st">""</span>, colourPalette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"yellow"</span>, <span class="st">"tomato"</span>, <span class="st">"blueviolet"</span><span class="op">)</span>,</span>
+<span>    oceanCol <span class="op">=</span> <span class="st">"dodgerblue"</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="52-kmeans_files/figure-html/un.pam.map-2.png" width="90%" style="display: block; margin: auto;"></div>
 <p>What if we use the L_1 norm instead?</p>
 <div class="sourceCode" id="cb336"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/dist.html">dist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">"manhattan"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/cluster/man/pam.html">pam</a></span><span class="op">(</span><span class="va">d</span>, k <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
-<span class="va">these</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://vincentarelbundock.github.io/countrycode/reference/countrycode.html">countrycode</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>, <span class="st">"country.name"</span>, <span class="st">"iso3c"</span><span class="op">)</span>
-<span class="va">malDF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>country <span class="op">=</span> <span class="va">these</span>, cluster <span class="op">=</span> <span class="va">a</span><span class="op">$</span><span class="va">clustering</span><span class="op">)</span>
-<span class="va">malMap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rworldmap/man/joinCountryData2Map.html">joinCountryData2Map</a></span><span class="op">(</span><span class="va">malDF</span>, joinCode <span class="op">=</span> <span class="st">"ISO3"</span>, nameJoinColumn <span class="op">=</span> <span class="st">"country"</span><span class="op">)</span>
-<span class="co">#&gt; 77 codes from your data successfully matched countries in the map</span>
-<span class="co">#&gt; 0 codes from your data failed to match with a country code in the map</span>
-<span class="co">#&gt; 166 codes from the map weren't represented in your data</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mai <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, xaxs <span class="op">=</span> <span class="st">"i"</span>, yaxs <span class="op">=</span> <span class="st">"i"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/rworldmap/man/mapCountryData.html">mapCountryData</a></span><span class="op">(</span><span class="va">malMap</span>, nameColumnToPlot <span class="op">=</span> <span class="st">"cluster"</span>, catMethod <span class="op">=</span> <span class="st">"categorical"</span>, missingCountryCol <span class="op">=</span> <span class="st">"white"</span>,
-    addLegend <span class="op">=</span> <span class="cn">FALSE</span>, mapTitle <span class="op">=</span> <span class="st">""</span>, colourPalette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"darkgreen"</span>, <span class="st">"hotpink"</span>, <span class="st">"tomato"</span>,
-        <span class="st">"blueviolet"</span>, <span class="st">"yellow"</span><span class="op">)</span>, oceanCol <span class="op">=</span> <span class="st">"dodgerblue"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/dist.html">dist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">"manhattan"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/cluster/man/pam.html">pam</a></span><span class="op">(</span><span class="va">d</span>, k <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">these</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://vincentarelbundock.github.io/countrycode/reference/countrycode.html">countrycode</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>, <span class="st">"country.name"</span>, <span class="st">"iso3c"</span><span class="op">)</span></span>
+<span><span class="va">malDF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>country <span class="op">=</span> <span class="va">these</span>, cluster <span class="op">=</span> <span class="va">a</span><span class="op">$</span><span class="va">clustering</span><span class="op">)</span></span>
+<span><span class="va">malMap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rworldmap/man/joinCountryData2Map.html">joinCountryData2Map</a></span><span class="op">(</span><span class="va">malDF</span>, joinCode <span class="op">=</span> <span class="st">"ISO3"</span>, nameJoinColumn <span class="op">=</span> <span class="st">"country"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 77 codes from your data successfully matched countries in the map</span></span>
+<span><span class="co">#&gt; 0 codes from your data failed to match with a country code in the map</span></span>
+<span><span class="co">#&gt; 166 codes from the map weren't represented in your data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mai <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, xaxs <span class="op">=</span> <span class="st">"i"</span>, yaxs <span class="op">=</span> <span class="st">"i"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/rworldmap/man/mapCountryData.html">mapCountryData</a></span><span class="op">(</span><span class="va">malMap</span>, nameColumnToPlot <span class="op">=</span> <span class="st">"cluster"</span>, catMethod <span class="op">=</span> <span class="st">"categorical"</span>, missingCountryCol <span class="op">=</span> <span class="st">"white"</span>,</span>
+<span>    addLegend <span class="op">=</span> <span class="cn">FALSE</span>, mapTitle <span class="op">=</span> <span class="st">""</span>, colourPalette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"darkgreen"</span>, <span class="st">"hotpink"</span>, <span class="st">"tomato"</span>,</span>
+<span>        <span class="st">"blueviolet"</span>, <span class="st">"yellow"</span><span class="op">)</span>, oceanCol <span class="op">=</span> <span class="st">"dodgerblue"</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="52-kmeans_files/figure-html/un.pam.inf-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>As mentioned before, since the data set does not include a <em>true label</em>, the
 comparison between the different results is somewhat subjective, and it often
@@ -295,7 +320,7 @@ relies on the knowledge of the subject matter experts. In our example above, thi
 would mean asking the opinion of a political scientist as to whether these
 groupings correspond to known international political blocks or alignments.</p>
 </div>
-<div id="breweries" class="section level3">
+<div id="breweries" class="section level3" number="21.1.2">
 <h3>
 <span class="header-section-number">21.1.2</span> Breweries<a class="anchor" aria-label="anchor" href="#breweries"><i class="fas fa-link"></i></a>
 </h3>
@@ -306,28 +331,28 @@ questions, the <em>judges</em> reported a score on a 6-point scale
 ranging from 1: “not true at all” to 6: “very true”. The data
 are in the file <code>breweries.dat</code>:</p>
 <div class="sourceCode" id="cb337"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/breweries.dat"</span>, header <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/breweries.dat"</span>, header <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
 <p>For illustration purposes we use the <span class="math inline">\(L_1\)</span> distance and the
 PAM clustering method.</p>
 <div class="sourceCode" id="cb338"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/dist.html">dist</a></span><span class="op">(</span><span class="va">x</span>, method <span class="op">=</span> <span class="st">"manhattan"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/cluster/man/pam.html">pam</a></span><span class="op">(</span><span class="va">d</span>, k <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">clustering</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 1 2 3 </span>
-<span class="co">#&gt; 3 3 3</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/dist.html">dist</a></span><span class="op">(</span><span class="va">x</span>, method <span class="op">=</span> <span class="st">"manhattan"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/cluster/man/pam.html">pam</a></span><span class="op">(</span><span class="va">d</span>, k <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">clustering</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 1 2 3 </span></span>
+<span><span class="co">#&gt; 3 3 3</span></span></code></pre></div>
 <p>To visualize the strength of these cluster partition we use
 the silhouette plot discussed in class:</p>
 <div class="sourceCode" id="cb339"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="52-kmeans_files/figure-html/brew.plot-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Since other distances may produce different partitions, an interesting
 exercise would be to compare the above clusters with those found using
 the Euclidean or <span class="math inline">\(L_\infty\)</span> norms, for example.</p>
 </div>
-<div id="cancer-example" class="section level3">
+<div id="cancer-example" class="section level3" number="21.1.3">
 <h3>
 <span class="header-section-number">21.1.3</span> Cancer example<a class="anchor" aria-label="anchor" href="#cancer-example"><i class="fas fa-link"></i></a>
 </h3>
@@ -342,58 +367,58 @@ available on-line:
 As discussed in class this exercise can (perhaps more interestingly) be formulated
 in terms of <em>feature selection</em>. We load the data and use K-means to find 8 clusters:</p>
 <div class="sourceCode" id="cb340"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">nci</span>, package <span class="op">=</span> <span class="st">"ElemStatLearn"</span><span class="op">)</span>
-<span class="va">ncit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">nci</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">31</span><span class="op">)</span>
-<span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/kmeans.html">kmeans</a></span><span class="op">(</span><span class="va">ncit</span>, centers <span class="op">=</span> <span class="fl">8</span>, iter.max <span class="op">=</span> <span class="fl">5000</span>, nstart <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;  1  2  3  4  5  6  7  8 </span>
-<span class="co">#&gt;  3  4  5  8 14  6  9 15</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">nci</span>, package <span class="op">=</span> <span class="st">"ElemStatLearn"</span><span class="op">)</span></span>
+<span><span class="va">ncit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">nci</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">31</span><span class="op">)</span></span>
+<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/kmeans.html">kmeans</a></span><span class="op">(</span><span class="va">ncit</span>, centers <span class="op">=</span> <span class="fl">8</span>, iter.max <span class="op">=</span> <span class="fl">5000</span>, nstart <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">a</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  1  2  3  4  5  6  7  8 </span></span>
+<span><span class="co">#&gt;  3  4  5  8 14  6  9 15</span></span></code></pre></div>
 <p>Note that in this application we do know the group to which each
 observation belongs (its cancer type). We can look at the cancer types that
 have been grouped together in each of the 8 clusters:</p>
 <div class="sourceCode" id="cb341"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/split.html">split</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">nci</span><span class="op">)</span>, <span class="va">a</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span>, <span class="va">table</span><span class="op">)</span>
-<span class="co">#&gt; $`1`</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; K562A-repro K562B-repro    LEUKEMIA </span>
-<span class="co">#&gt;           1           1           1 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`2`</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;      BREAST MCF7A-repro MCF7D-repro </span>
-<span class="co">#&gt;           2           1           1 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`3`</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; LEUKEMIA </span>
-<span class="co">#&gt;        5 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`4`</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; BREAST    CNS  RENAL </span>
-<span class="co">#&gt;      2      5      1 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`5`</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;    COLON    NSCLC  OVARIAN PROSTATE </span>
-<span class="co">#&gt;        1        6        5        2 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`6`</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; COLON </span>
-<span class="co">#&gt;     6 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`7`</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   BREAST MELANOMA </span>
-<span class="co">#&gt;        2        7 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $`8`</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   BREAST MELANOMA    NSCLC  OVARIAN    RENAL  UNKNOWN </span>
-<span class="co">#&gt;        1        1        3        1        8        1</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/split.html">split</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">nci</span><span class="op">)</span>, <span class="va">a</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span>, <span class="va">table</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $`1`</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; K562A-repro K562B-repro    LEUKEMIA </span></span>
+<span><span class="co">#&gt;           1           1           1 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`2`</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      BREAST MCF7A-repro MCF7D-repro </span></span>
+<span><span class="co">#&gt;           2           1           1 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`3`</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; LEUKEMIA </span></span>
+<span><span class="co">#&gt;        5 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`4`</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; BREAST    CNS  RENAL </span></span>
+<span><span class="co">#&gt;      2      5      1 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`5`</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;    COLON    NSCLC  OVARIAN PROSTATE </span></span>
+<span><span class="co">#&gt;        1        6        5        2 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`6`</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; COLON </span></span>
+<span><span class="co">#&gt;     6 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`7`</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   BREAST MELANOMA </span></span>
+<span><span class="co">#&gt;        2        7 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`8`</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   BREAST MELANOMA    NSCLC  OVARIAN    RENAL  UNKNOWN </span></span>
+<span><span class="co">#&gt;        1        1        3        1        8        1</span></span></code></pre></div>
 <p>Note that clusters 3, 4, 6 and 7 are dominated by one type of cancer.
 Similarly, almost all melanoma and renal samples are in clusters 7 and 8,
 respectively, while all CNS samples are in cluster 4. Cluster 5 is
@@ -461,7 +486,7 @@ to compare these results with those using different numbers of clusters.</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-09-17.</p>
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibián-Barrera. It was last built on 2023-08-16.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
@@ -474,7 +499,7 @@ to compare these results with those using different numbers of clusters.</p>
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

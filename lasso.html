@@ -5,9 +5,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>6 LASSO | UBC Stat 406 Worksheets</title>
-<meta name="author" content="Daniel J. McDonald and Matías Salibán-Barrera">
+<meta name="author" content="Daniel J. McDonald and Matías Salibián-Barrera">
 <meta name="description" content="A different approach to perform some kind of variable selection that may be more stable than stepwise methods is to use an L1 regularization term (instead of the L2 one used in ridge regression)....">
-<meta name="generator" content="bookdown 0.24 with bs4_book()">
+<meta name="generator" content="bookdown 0.35 with bs4_book()">
 <meta property="og:title" content="6 LASSO | UBC Stat 406 Worksheets">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://ubc-stat.github.io/stat-406-worksheets/lasso.html">
@@ -17,8 +17,33 @@
 <meta name="twitter:description" content="A different approach to perform some kind of variable selection that may be more stable than stepwise methods is to use an L1 regularization term (instead of the L2 one used in ridge regression)....">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.0/transition.js"></script><script src="libs/bs3compat-0.3.0/tabs.js"></script><script src="libs/bs3compat-0.3.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.5.1/transition.js"></script><script src="libs/bs3compat-0.5.1/tabs.js"></script><script src="libs/bs3compat-0.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -81,7 +106,7 @@
         </div>
       </nav>
 </div>
-  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="lasso" class="section level1">
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="lasso" class="section level1" number="6">
 <h1>
 <span class="header-section-number">6</span> LASSO<a class="anchor" aria-label="anchor" href="#lasso"><i class="fas fa-link"></i></a>
 </h1>
@@ -119,52 +144,52 @@ compute the same estimators, but they do so in different ways.</p>
 <p>We first compute the path of LASSO solutions for the <code>credit</code> data
 used in previous lectures:</p>
 <div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/Credit.csv"</span>, sep <span class="op">=</span> <span class="st">","</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="co"># use non-factor variables</span>
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">11</span><span class="op">)</span><span class="op">]</span>
-<span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">Balance</span><span class="op">)</span>
-<span class="va">xm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>, <span class="op">-</span><span class="fl">7</span><span class="op">]</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://glmnet.stanford.edu">glmnet</a></span><span class="op">)</span>
-<span class="co"># alpha = 1 - LASSO</span>
-<span class="va">lambdas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">10</span>, length <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span>
-<span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/glmnet.html">glmnet</a></span><span class="op">(</span>
-  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html">rev</a></span><span class="op">(</span><span class="va">lambdas</span><span class="op">)</span>,
-  family <span class="op">=</span> <span class="st">"gaussian"</span>, alpha <span class="op">=</span> <span class="fl">1</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/Credit.csv"</span>, sep <span class="op">=</span> <span class="st">","</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co"># use non-factor variables</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">11</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">Balance</span><span class="op">)</span></span>
+<span><span class="va">xm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>, <span class="op">-</span><span class="fl">7</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://glmnet.stanford.edu">glmnet</a></span><span class="op">)</span></span>
+<span><span class="co"># alpha = 1 - LASSO</span></span>
+<span><span class="va">lambdas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">10</span>, length <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/glmnet.html">glmnet</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html">rev</a></span><span class="op">(</span><span class="va">lambdas</span><span class="op">)</span>,</span>
+<span>  family <span class="op">=</span> <span class="st">"gaussian"</span>, alpha <span class="op">=</span> <span class="fl">1</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>The <code>plot</code> method can be used to show the path of solutions, just as
 we did for ridge regression:</p>
 <div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">a</span>, xvar <span class="op">=</span> <span class="st">"lambda"</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, lwd <span class="op">=</span> <span class="fl">6</span>, cex.axis <span class="op">=</span> <span class="fl">1.5</span>, cex.lab <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">a</span>, xvar <span class="op">=</span> <span class="st">"lambda"</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, lwd <span class="op">=</span> <span class="fl">6</span>, cex.axis <span class="op">=</span> <span class="fl">1.5</span>, cex.lab <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/creditlasso3-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Using <code><a href="https://rdrr.io/pkg/lars/man/lars.html">lars::lars()</a></code> we obtain:</p>
 <div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www-stat.stanford.edu/~hastie/Papers/#LARS">lars</a></span><span class="op">)</span>
-<span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lars/man/lars.html">lars</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, type <span class="op">=</span> <span class="st">"lasso"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">b</span>, lwd <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://doi.org/10.1214/009053604000000067">lars</a></span><span class="op">)</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lars/man/lars.html">lars</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, type <span class="op">=</span> <span class="st">"lasso"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">b</span>, lwd <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/creditlars1-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>With <code>lars</code> the returned object is a matrix of regression estimators, one
 for each value of the penalty constant where a new coefficient “enters” the
 model:</p>
 <div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># see the variables</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span>
-<span class="co">#&gt;         Income      Limit   Rating     Cards        Age Education</span>
-<span class="co">#&gt; [1,]  0.000000 0.00000000 0.000000  0.000000  0.0000000  0.000000</span>
-<span class="co">#&gt; [2,]  0.000000 0.00000000 1.835963  0.000000  0.0000000  0.000000</span>
-<span class="co">#&gt; [3,]  0.000000 0.01226464 2.018929  0.000000  0.0000000  0.000000</span>
-<span class="co">#&gt; [4,] -4.703898 0.05638653 2.433088  0.000000  0.0000000  0.000000</span>
-<span class="co">#&gt; [5,] -5.802948 0.06600083 2.545810  0.000000 -0.3234748  0.000000</span>
-<span class="co">#&gt; [6,] -6.772905 0.10049065 2.257218  6.369873 -0.6349138  0.000000</span>
-<span class="co">#&gt; [7,] -7.558037 0.12585115 2.063101 11.591558 -0.8923978  1.998283</span>
-<span class="va">b</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; lars(x = xm, y = y, type = "lasso", intercept = TRUE)</span>
-<span class="co">#&gt; R-squared: 0.878 </span>
-<span class="co">#&gt; Sequence of LASSO moves:</span>
-<span class="co">#&gt;      Rating Limit Income Age Cards Education</span>
-<span class="co">#&gt; Var       3     2      1   5     4         6</span>
-<span class="co">#&gt; Step      1     2      3   4     5         6</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># see the variables</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span></span>
+<span><span class="co">#&gt;         Income      Limit   Rating     Cards        Age Education</span></span>
+<span><span class="co">#&gt; [1,]  0.000000 0.00000000 0.000000  0.000000  0.0000000  0.000000</span></span>
+<span><span class="co">#&gt; [2,]  0.000000 0.00000000 1.835963  0.000000  0.0000000  0.000000</span></span>
+<span><span class="co">#&gt; [3,]  0.000000 0.01226464 2.018929  0.000000  0.0000000  0.000000</span></span>
+<span><span class="co">#&gt; [4,] -4.703898 0.05638653 2.433088  0.000000  0.0000000  0.000000</span></span>
+<span><span class="co">#&gt; [5,] -5.802948 0.06600083 2.545810  0.000000 -0.3234748  0.000000</span></span>
+<span><span class="co">#&gt; [6,] -6.772905 0.10049065 2.257218  6.369873 -0.6349138  0.000000</span></span>
+<span><span class="co">#&gt; [7,] -7.558037 0.12585115 2.063101 11.591558 -0.8923978  1.998283</span></span>
+<span><span class="va">b</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; lars(x = xm, y = y, type = "lasso", intercept = TRUE)</span></span>
+<span><span class="co">#&gt; R-squared: 0.878 </span></span>
+<span><span class="co">#&gt; Sequence of LASSO moves:</span></span>
+<span><span class="co">#&gt;      Rating Limit Income Age Cards Education</span></span>
+<span><span class="co">#&gt; Var       3     2      1   5     4         6</span></span>
+<span><span class="co">#&gt; Step      1     2      3   4     5         6</span></span></code></pre></div>
 <p>The presentation below exploits the fact that the LASSO regression estimators
 are piecewise linear between values of the regularization parameter where
 a variable enters or drops the model.</p>
@@ -173,92 +198,92 @@ are possible) we can use K-fold CV to estimate the MSPE of a few of them
 (for a grid of values of the penalty parameter, for example), and
 choose the one with smallest estimated MSPE:</p>
 <div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># select one solution</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">tmp.la</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lars/man/cv.lars.html">cv.lars</a></span><span class="op">(</span>
-  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span>, type <span class="op">=</span> <span class="st">"lasso"</span>, K <span class="op">=</span> <span class="fl">5</span>,
-  index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># select one solution</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">tmp.la</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lars/man/cv.lars.html">cv.lars</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span>, type <span class="op">=</span> <span class="st">"lasso"</span>, K <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/creditlars3-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Given their random nature, it is always a good idea to run K-fold CV experiments
 more than once:</p>
 <div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span>
-<span class="va">tmp.la</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lars/man/cv.lars.html">cv.lars</a></span><span class="op">(</span>
-  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span>, type <span class="op">=</span> <span class="st">"lasso"</span>, K <span class="op">=</span> <span class="fl">5</span>,
-  index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span></span>
+<span><span class="va">tmp.la</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lars/man/cv.lars.html">cv.lars</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span>, type <span class="op">=</span> <span class="st">"lasso"</span>, K <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/creditlars4-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>We now repeat the same steps as above but using the implementation
 in <code>glmnet</code>:</p>
 <div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># run 5-fold CV with glmnet()</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>
-  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">1</span>,
-  family <span class="op">=</span> <span class="st">"gaussian"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">tmp</span>, lwd <span class="op">=</span> <span class="fl">6</span>, cex.axis <span class="op">=</span> <span class="fl">1.5</span>, cex.lab <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># run 5-fold CV with glmnet()</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  family <span class="op">=</span> <span class="st">"gaussian"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">tmp</span>, lwd <span class="op">=</span> <span class="fl">6</span>, cex.axis <span class="op">=</span> <span class="fl">1.5</span>, cex.lab <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/creditcv-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>We ran CV again:</p>
 <div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span>
-<span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>
-  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">1</span>,
-  family <span class="op">=</span> <span class="st">"gaussian"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">tmp</span>, lwd <span class="op">=</span> <span class="fl">6</span>, cex.axis <span class="op">=</span> <span class="fl">1.5</span>, cex.lab <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span></span>
+<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  family <span class="op">=</span> <span class="st">"gaussian"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">tmp</span>, lwd <span class="op">=</span> <span class="fl">6</span>, cex.axis <span class="op">=</span> <span class="fl">1.5</span>, cex.lab <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/creditcv2-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Zoom in the CV plot to check the 1-SE rule:</p>
 <div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">tmp</span>, lwd <span class="op">=</span> <span class="fl">6</span>, cex.axis <span class="op">=</span> <span class="fl">1.5</span>, cex.lab <span class="op">=</span> <span class="fl">1.2</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">22000</span>, <span class="fl">33000</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">tmp</span>, lwd <span class="op">=</span> <span class="fl">6</span>, cex.axis <span class="op">=</span> <span class="fl">1.5</span>, cex.lab <span class="op">=</span> <span class="fl">1.2</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">22000</span>, <span class="fl">33000</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/creditcv4-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>The returned object includes the “optimal” value of the
 penalization parameter, which can be used to
 find the corresponding estimates for the regression
 coefficients, using the method <code>coef</code>:</p>
 <div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># optimal lambda</span>
-<span class="va">tmp</span><span class="op">$</span><span class="va">lambda.min</span>
-<span class="co">#&gt; [1] 0.04978707</span>
-<span class="co"># coefficients for the optimal lambda</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">tmp</span>, s <span class="op">=</span> <span class="va">tmp</span><span class="op">$</span><span class="va">lambda.min</span><span class="op">)</span>
-<span class="co">#&gt; 7 x 1 sparse Matrix of class "dgCMatrix"</span>
-<span class="co">#&gt;                       s1</span>
-<span class="co">#&gt; (Intercept) -481.9460966</span>
-<span class="co">#&gt; Income        -7.5489897</span>
-<span class="co">#&gt; Limit          0.1141714</span>
-<span class="co">#&gt; Rating         2.2352534</span>
-<span class="co">#&gt; Cards         10.7283522</span>
-<span class="co">#&gt; Age           -0.8914429</span>
-<span class="co">#&gt; Education      2.0194979</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># optimal lambda</span></span>
+<span><span class="va">tmp</span><span class="op">$</span><span class="va">lambda.min</span></span>
+<span><span class="co">#&gt; [1] 0.04978707</span></span>
+<span><span class="co"># coefficients for the optimal lambda</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">tmp</span>, s <span class="op">=</span> <span class="va">tmp</span><span class="op">$</span><span class="va">lambda.min</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 7 x 1 sparse Matrix of class "dgCMatrix"</span></span>
+<span><span class="co">#&gt;                       s1</span></span>
+<span><span class="co">#&gt; (Intercept) -481.9460966</span></span>
+<span><span class="co">#&gt; Income        -7.5489897</span></span>
+<span><span class="co">#&gt; Limit          0.1141714</span></span>
+<span><span class="co">#&gt; Rating         2.2352534</span></span>
+<span><span class="co">#&gt; Cards         10.7283522</span></span>
+<span><span class="co">#&gt; Age           -0.8914429</span></span>
+<span><span class="co">#&gt; Education      2.0194979</span></span></code></pre></div>
 <p>We can also use <code>coef</code> to compute the coefficients at
 any value of the penalty parameter. For example we
 show below the coefficients corresponding
 to penalty values of exp(4) and exp(4.5):</p>
 <div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># coefficients for other values of lambda</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">tmp</span>, s <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; 7 x 1 sparse Matrix of class "dgCMatrix"</span>
-<span class="co">#&gt;                        s1</span>
-<span class="co">#&gt; (Intercept) -262.35053476</span>
-<span class="co">#&gt; Income        -0.63094341</span>
-<span class="co">#&gt; Limit          0.02749778</span>
-<span class="co">#&gt; Rating         1.91772580</span>
-<span class="co">#&gt; Cards          .         </span>
-<span class="co">#&gt; Age            .         </span>
-<span class="co">#&gt; Education      .</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">tmp</span>, s <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="fl">4.5</span><span class="op">)</span><span class="op">)</span> <span class="co"># note no. of zeroes...</span>
-<span class="co">#&gt; 7 x 1 sparse Matrix of class "dgCMatrix"</span>
-<span class="co">#&gt;                        s1</span>
-<span class="co">#&gt; (Intercept) -175.98151842</span>
-<span class="co">#&gt; Income         .         </span>
-<span class="co">#&gt; Limit          0.01492881</span>
-<span class="co">#&gt; Rating         1.76170516</span>
-<span class="co">#&gt; Cards          .         </span>
-<span class="co">#&gt; Age            .         </span>
-<span class="co">#&gt; Education      .</span></code></pre></div>
-<div id="compare-mspes-of-ridge-lasso-on-the-credit-data" class="section level2">
+<code class="sourceCode R"><span><span class="co"># coefficients for other values of lambda</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">tmp</span>, s <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 7 x 1 sparse Matrix of class "dgCMatrix"</span></span>
+<span><span class="co">#&gt;                        s1</span></span>
+<span><span class="co">#&gt; (Intercept) -262.35053476</span></span>
+<span><span class="co">#&gt; Income        -0.63094341</span></span>
+<span><span class="co">#&gt; Limit          0.02749778</span></span>
+<span><span class="co">#&gt; Rating         1.91772580</span></span>
+<span><span class="co">#&gt; Cards          .         </span></span>
+<span><span class="co">#&gt; Age            .         </span></span>
+<span><span class="co">#&gt; Education      .</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">tmp</span>, s <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="fl">4.5</span><span class="op">)</span><span class="op">)</span> <span class="co"># note no. of zeroes...</span></span>
+<span><span class="co">#&gt; 7 x 1 sparse Matrix of class "dgCMatrix"</span></span>
+<span><span class="co">#&gt;                        s1</span></span>
+<span><span class="co">#&gt; (Intercept) -175.98151842</span></span>
+<span><span class="co">#&gt; Income         .         </span></span>
+<span><span class="co">#&gt; Limit          0.01492881</span></span>
+<span><span class="co">#&gt; Rating         1.76170516</span></span>
+<span><span class="co">#&gt; Cards          .         </span></span>
+<span><span class="co">#&gt; Age            .         </span></span>
+<span><span class="co">#&gt; Education      .</span></span></code></pre></div>
+<div id="compare-mspes-of-ridge-lasso-on-the-credit-data" class="section level2" number="6.1">
 <h2>
 <span class="header-section-number">6.1</span> Compare MSPEs of Ridge &amp; LASSO on the credit data<a class="anchor" aria-label="anchor" href="#compare-mspes-of-ridge-lasso-on-the-credit-data"><i class="fas fa-link"></i></a>
 </h2>
@@ -266,38 +291,38 @@ to penalty values of exp(4) and exp(4.5):</p>
 estimate (and compare) the MSPEs of the different
 estimators / predictors:</p>
 <div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span>
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">xm</span><span class="op">)</span>
-<span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">5</span>
-<span class="va">ii</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span><span class="op">%%</span><span class="va">k</span> <span class="op">+</span> <span class="fl">1</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">50</span>
-<span class="va">mspe.la</span> <span class="op">&lt;-</span> <span class="va">mspe.st</span> <span class="op">&lt;-</span> <span class="va">mspe.ri</span> <span class="op">&lt;-</span> <span class="va">mspe.f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">N</span><span class="op">)</span>
-<span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">ii</span><span class="op">)</span>
-    <span class="va">pr.la</span> <span class="op">&lt;-</span> <span class="va">pr.f</span> <span class="op">&lt;-</span> <span class="va">pr.ri</span> <span class="op">&lt;-</span> <span class="va">pr.st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n</span><span class="op">)</span>
-    <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">k</span><span class="op">)</span> <span class="op">{</span>
-        <span class="va">tmp.ri</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span><span class="op">]</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>,
-            nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0</span>, family <span class="op">=</span> <span class="st">"gaussian"</span><span class="op">)</span>
-        <span class="va">tmp.la</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span><span class="op">]</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>,
-            nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">1</span>, family <span class="op">=</span> <span class="st">"gaussian"</span><span class="op">)</span>
-        <span class="va">null</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Balance</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">x</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
-        <span class="va">full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Balance</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">x</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
-        <span class="va">tmp.st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html">stepAIC</a></span><span class="op">(</span><span class="va">null</span>, scope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="va">null</span>, upper <span class="op">=</span> <span class="va">full</span><span class="op">)</span>, trace <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
-        <span class="va">pr.ri</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp.ri</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span>, newx <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
-        <span class="va">pr.la</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp.la</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span>, newx <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
-        <span class="va">pr.st</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp.st</span>, newdata <span class="op">=</span> <span class="va">x</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
-        <span class="va">pr.f</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">full</span>, newdata <span class="op">=</span> <span class="va">x</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
-    <span class="op">}</span>
-    <span class="va">mspe.ri</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">Balance</span> <span class="op">-</span> <span class="va">pr.ri</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
-    <span class="va">mspe.la</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">Balance</span> <span class="op">-</span> <span class="va">pr.la</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
-    <span class="va">mspe.st</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">Balance</span> <span class="op">-</span> <span class="va">pr.st</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
-    <span class="va">mspe.f</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">Balance</span> <span class="op">-</span> <span class="va">pr.f</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="va">mspe.la</span>, <span class="va">mspe.ri</span>, <span class="va">mspe.st</span>, <span class="va">mspe.f</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"LASSO"</span>, <span class="st">"Ridge"</span>, <span class="st">"Stepwise"</span>,
-    <span class="st">"Full"</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"steelblue"</span>, <span class="st">"gray80"</span>, <span class="st">"tomato"</span>, <span class="st">"springgreen"</span><span class="op">)</span>, cex.axis <span class="op">=</span> <span class="fl">1</span>,
-    cex.lab <span class="op">=</span> <span class="fl">1</span>, cex.main <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/plotmath.html">hat</a></span><span class="op">(</span><span class="va">MSPE</span><span class="op">)</span><span class="op">)</span>, side <span class="op">=</span> <span class="fl">2</span>, line <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">xm</span><span class="op">)</span></span>
+<span><span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
+<span><span class="va">ii</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span><span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span><span class="va">k</span> <span class="op">+</span> <span class="fl">1</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
+<span><span class="va">mspe.la</span> <span class="op">&lt;-</span> <span class="va">mspe.st</span> <span class="op">&lt;-</span> <span class="va">mspe.ri</span> <span class="op">&lt;-</span> <span class="va">mspe.f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">N</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">ii</span><span class="op">)</span></span>
+<span>    <span class="va">pr.la</span> <span class="op">&lt;-</span> <span class="va">pr.f</span> <span class="op">&lt;-</span> <span class="va">pr.ri</span> <span class="op">&lt;-</span> <span class="va">pr.st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n</span><span class="op">)</span></span>
+<span>    <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">k</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="va">tmp.ri</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span><span class="op">]</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>,</span>
+<span>            nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0</span>, family <span class="op">=</span> <span class="st">"gaussian"</span><span class="op">)</span></span>
+<span>        <span class="va">tmp.la</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span><span class="op">]</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>,</span>
+<span>            nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">1</span>, family <span class="op">=</span> <span class="st">"gaussian"</span><span class="op">)</span></span>
+<span>        <span class="va">null</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Balance</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">x</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span></span>
+<span>        <span class="va">full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Balance</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">x</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span></span>
+<span>        <span class="va">tmp.st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html">stepAIC</a></span><span class="op">(</span><span class="va">null</span>, scope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="va">null</span>, upper <span class="op">=</span> <span class="va">full</span><span class="op">)</span>, trace <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span>        <span class="va">pr.ri</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp.ri</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span>, newx <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span></span>
+<span>        <span class="va">pr.la</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp.la</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span>, newx <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span></span>
+<span>        <span class="va">pr.st</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp.st</span>, newdata <span class="op">=</span> <span class="va">x</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span></span>
+<span>        <span class="va">pr.f</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">full</span>, newdata <span class="op">=</span> <span class="va">x</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span></span>
+<span>    <span class="op">}</span></span>
+<span>    <span class="va">mspe.ri</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">Balance</span> <span class="op">-</span> <span class="va">pr.ri</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span>    <span class="va">mspe.la</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">Balance</span> <span class="op">-</span> <span class="va">pr.la</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span>    <span class="va">mspe.st</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">Balance</span> <span class="op">-</span> <span class="va">pr.st</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span>    <span class="va">mspe.f</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">Balance</span> <span class="op">-</span> <span class="va">pr.f</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="va">mspe.la</span>, <span class="va">mspe.ri</span>, <span class="va">mspe.st</span>, <span class="va">mspe.f</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"LASSO"</span>, <span class="st">"Ridge"</span>, <span class="st">"Stepwise"</span>,</span>
+<span>    <span class="st">"Full"</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"steelblue"</span>, <span class="st">"gray80"</span>, <span class="st">"tomato"</span>, <span class="st">"springgreen"</span><span class="op">)</span>, cex.axis <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    cex.lab <span class="op">=</span> <span class="fl">1</span>, cex.main <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html">hat</a></span><span class="op">(</span><span class="va">MSPE</span><span class="op">)</span><span class="op">)</span>, side <span class="op">=</span> <span class="fl">2</span>, line <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/mspecredit-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>We see that in this example LASSO does not seem to provide better
 predictions than Ridge Regression. However, it does yield a
@@ -305,7 +330,7 @@ sequence of explanatory variables that can be interpreted as
 based on “importance” for the linear regression model (see
 above).</p>
 </div>
-<div id="comparing-lasso-with-ridge-regression-on-the-air-pollution-data" class="section level2">
+<div id="comparing-lasso-with-ridge-regression-on-the-air-pollution-data" class="section level2" number="6.2">
 <h2>
 <span class="header-section-number">6.2</span> Comparing LASSO with Ridge Regression on the air pollution data<a class="anchor" aria-label="anchor" href="#comparing-lasso-with-ridge-regression-on-the-air-pollution-data"><i class="fas fa-link"></i></a>
 </h2>
@@ -320,61 +345,61 @@ general estimated using K-fold cross validation).</p>
 Ridge Regression fit (what makes the calculation
 below <strong>only approximately</strong> optimal?).</p>
 <div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">airp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/rutgers-lib-30861_CSV-1.csv"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span>
-<span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="va">airp</span><span class="op">$</span><span class="va">MORT</span><span class="op">)</span>
-<span class="va">xm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">airp</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">airp</span><span class="op">)</span> <span class="op">!=</span> <span class="st">"MORT"</span><span class="op">]</span><span class="op">)</span>
-<span class="va">lambdas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">10</span>, length <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span>
-<span class="co"># Ridge Regression</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span>
-<span class="va">air.l2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>
-  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0</span>,
-  family <span class="op">=</span> <span class="st">"gaussian"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">air.l2</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">airp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/rutgers-lib-30861_CSV-1.csv"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="va">airp</span><span class="op">$</span><span class="va">MORT</span><span class="op">)</span></span>
+<span><span class="va">xm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">airp</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">airp</span><span class="op">)</span> <span class="op">!=</span> <span class="st">"MORT"</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">lambdas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">10</span>, length <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># Ridge Regression</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span></span>
+<span><span class="va">air.l2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  family <span class="op">=</span> <span class="st">"gaussian"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">air.l2</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/comparing.airp-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>The plot above is included for illustration purposes only.
 Similarly, we now compute an approximately optimal LASSO fit,
 and look at the curve of estimated MSPEs:</p>
 <div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># LASSO</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span>
-<span class="va">air.l1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>
-  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">1</span>,
-  family <span class="op">=</span> <span class="st">"gaussian"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">air.l1</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># LASSO</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span></span>
+<span><span class="va">air.l1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  family <span class="op">=</span> <span class="st">"gaussian"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">air.l1</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/airp.lasso-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>It is interesting to compare the corresponding estimated regression coefficients,
 so we put them side by side in two columns:</p>
 <div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">air.l2</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>,
-  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">air.l1</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>
-<span class="op">)</span>
-<span class="co">#&gt; 16 x 2 sparse Matrix of class "dgCMatrix"</span>
-<span class="co">#&gt;                   s1       s1</span>
-<span class="co">#&gt; (Intercept) 1129.267 1070.341</span>
-<span class="co">#&gt; PREC           1.493    1.420</span>
-<span class="co">#&gt; JANT          -0.999   -1.124</span>
-<span class="co">#&gt; JULT          -1.054   -0.877</span>
-<span class="co">#&gt; OVR65         -2.260    .    </span>
-<span class="co">#&gt; POPN          -1.621    .    </span>
-<span class="co">#&gt; EDUC          -8.280  -10.800</span>
-<span class="co">#&gt; HOUS          -1.164   -0.380</span>
-<span class="co">#&gt; DENS           0.005    0.003</span>
-<span class="co">#&gt; NONW           2.895    3.825</span>
-<span class="co">#&gt; WWDRK         -0.464    .    </span>
-<span class="co">#&gt; POOR           0.653    .    </span>
-<span class="co">#&gt; HC            -0.030    .    </span>
-<span class="co">#&gt; NOX            0.056    .    </span>
-<span class="co">#&gt; SO.            0.237    0.226</span>
-<span class="co">#&gt; HUMID          0.388    .</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">air.l2</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">air.l1</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; 16 x 2 sparse Matrix of class "dgCMatrix"</span></span>
+<span><span class="co">#&gt;                   s1       s1</span></span>
+<span><span class="co">#&gt; (Intercept) 1129.267 1070.341</span></span>
+<span><span class="co">#&gt; PREC           1.493    1.420</span></span>
+<span><span class="co">#&gt; JANT          -0.999   -1.124</span></span>
+<span><span class="co">#&gt; JULT          -1.054   -0.877</span></span>
+<span><span class="co">#&gt; OVR65         -2.260    .    </span></span>
+<span><span class="co">#&gt; POPN          -1.621    .    </span></span>
+<span><span class="co">#&gt; EDUC          -8.280  -10.800</span></span>
+<span><span class="co">#&gt; HOUS          -1.164   -0.380</span></span>
+<span><span class="co">#&gt; DENS           0.005    0.003</span></span>
+<span><span class="co">#&gt; NONW           2.895    3.825</span></span>
+<span><span class="co">#&gt; WWDRK         -0.464    .    </span></span>
+<span><span class="co">#&gt; POOR           0.653    .    </span></span>
+<span><span class="co">#&gt; HC            -0.030    .    </span></span>
+<span><span class="co">#&gt; NOX            0.056    .    </span></span>
+<span><span class="co">#&gt; SO.            0.237    0.226</span></span>
+<span><span class="co">#&gt; HUMID          0.388    .</span></span></code></pre></div>
 <p>Note how several of them are relatively similar, but LASSO includes fewer of them.
 A possible explanation for this is the particular correlation structure among the
 explanatory variables. More specifically, when groups of
 correlated covariates are present,
 LASSO tends to choose only one of them, whereas Ridge Regression will tend
-to keep all of them. For a formal statement see <span class="citation">(Zou and Hastie <a href="references.html#ref-ZouHastie2005" role="doc-biblioref">2005</a>, Lemma 2)</span>.</p>
+to keep all of them. For a formal statement see <span class="citation">(<a href="references.html#ref-ZouHastie2005" role="doc-biblioref">Zou and Hastie 2005</a>, Lemma 2)</span>.</p>
 <p>It is important to note here that the above observations regarding the Ridge Regression
 and LASSO fits trained on the air pollution data should be made on a more
 reliable (more stable, less variable) choice of penalty parameter. For example,
@@ -389,11 +414,11 @@ grouped (“clustered”) according to their pairwise correlations in order to
 improve the interpretability of the plot. We will see later in this course
 the particular clustering method used here (hierarchical clustering).</p>
 <div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.sthda.com/english/wiki/ggcorrplot">ggcorrplot</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/ggcorrplot/man/ggcorrplot.html">ggcorrplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">xm</span><span class="op">)</span>, hc.order <span class="op">=</span> <span class="cn">TRUE</span>, outline.col <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.sthda.com/english/wiki/ggcorrplot-visualization-of-a-correlation-matrix-using-ggplot2">ggcorrplot</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/ggcorrplot/man/ggcorrplot.html">ggcorrplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">xm</span><span class="op">)</span>, hc.order <span class="op">=</span> <span class="cn">TRUE</span>, outline.col <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/airp.correlations-1.png" width="90%" style="display: block; margin: auto;"></div>
 </div>
-<div id="compare-mspe-of-ridge-and-lasso-on-air-pollution-data" class="section level2">
+<div id="compare-mspe-of-ridge-and-lasso-on-air-pollution-data" class="section level2" number="6.3">
 <h2>
 <span class="header-section-number">6.3</span> Compare MSPE of Ridge and LASSO on air pollution data<a class="anchor" aria-label="anchor" href="#compare-mspe-of-ridge-and-lasso-on-air-pollution-data"><i class="fas fa-link"></i></a>
 </h2>
@@ -403,46 +428,46 @@ we have considered so far: a full linear model, a model selected via stepwise + 
 ridge regression and LASSO. As usual, we use 50 runs of 5-fold CV, and obtain
 the following boxplots:</p>
 <div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span>
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">xm</span><span class="op">)</span>
-<span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">5</span>
-<span class="va">ii</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op">%%</span> <span class="va">k</span> <span class="op">+</span> <span class="fl">1</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">50</span>
-<span class="va">mspe.la</span> <span class="op">&lt;-</span> <span class="va">mspe.st</span> <span class="op">&lt;-</span> <span class="va">mspe.ri</span> <span class="op">&lt;-</span> <span class="va">mspe.f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">N</span><span class="op">)</span>
-<span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">ii</span><span class="op">)</span>
-  <span class="va">pr.la</span> <span class="op">&lt;-</span> <span class="va">pr.f</span> <span class="op">&lt;-</span> <span class="va">pr.ri</span> <span class="op">&lt;-</span> <span class="va">pr.st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n</span><span class="op">)</span>
-  <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">k</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">tmp.ri</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>
-      x <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span><span class="op">]</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>,
-      nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0</span>, family <span class="op">=</span> <span class="st">"gaussian"</span>
-    <span class="op">)</span>
-    <span class="va">tmp.la</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>
-      x <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span><span class="op">]</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>,
-      nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">1</span>, family <span class="op">=</span> <span class="st">"gaussian"</span>
-    <span class="op">)</span>
-    <span class="va">null</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">MORT</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">airp</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
-    <span class="va">full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">MORT</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">airp</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
-    <span class="va">tmp.st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html">stepAIC</a></span><span class="op">(</span><span class="va">null</span>, scope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="va">null</span>, upper <span class="op">=</span> <span class="va">full</span><span class="op">)</span>, trace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-    <span class="va">pr.ri</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp.ri</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span>, newx <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
-    <span class="va">pr.la</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp.la</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span>, newx <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
-    <span class="va">pr.st</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp.st</span>, newdata <span class="op">=</span> <span class="va">airp</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
-    <span class="va">pr.f</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">full</span>, newdata <span class="op">=</span> <span class="va">airp</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
-  <span class="op">}</span>
-  <span class="va">mspe.ri</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">airp</span><span class="op">$</span><span class="va">MORT</span> <span class="op">-</span> <span class="va">pr.ri</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
-  <span class="va">mspe.la</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">airp</span><span class="op">$</span><span class="va">MORT</span> <span class="op">-</span> <span class="va">pr.la</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
-  <span class="va">mspe.st</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">airp</span><span class="op">$</span><span class="va">MORT</span> <span class="op">-</span> <span class="va">pr.st</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
-  <span class="va">mspe.f</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">airp</span><span class="op">$</span><span class="va">MORT</span> <span class="op">-</span> <span class="va">pr.f</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="va">mspe.la</span>, <span class="va">mspe.ri</span>, <span class="va">mspe.st</span>, <span class="va">mspe.f</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"LASSO"</span>, <span class="st">"Ridge"</span>, <span class="st">"Stepwise"</span>, <span class="st">"Full"</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"steelblue"</span>, <span class="st">"gray80"</span>, <span class="st">"tomato"</span>, <span class="st">"springgreen"</span><span class="op">)</span>, cex.axis <span class="op">=</span> <span class="fl">1</span>, cex.lab <span class="op">=</span> <span class="fl">1</span>, cex.main <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/plotmath.html">hat</a></span><span class="op">(</span><span class="va">MSPE</span><span class="op">)</span><span class="op">)</span>, side <span class="op">=</span> <span class="fl">2</span>, line <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">xm</span><span class="op">)</span></span>
+<span><span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
+<span><span class="va">ii</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="va">k</span> <span class="op">+</span> <span class="fl">1</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
+<span><span class="va">mspe.la</span> <span class="op">&lt;-</span> <span class="va">mspe.st</span> <span class="op">&lt;-</span> <span class="va">mspe.ri</span> <span class="op">&lt;-</span> <span class="va">mspe.f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">N</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">ii</span><span class="op">)</span></span>
+<span>  <span class="va">pr.la</span> <span class="op">&lt;-</span> <span class="va">pr.f</span> <span class="op">&lt;-</span> <span class="va">pr.ri</span> <span class="op">&lt;-</span> <span class="va">pr.st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n</span><span class="op">)</span></span>
+<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">k</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">tmp.ri</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span></span>
+<span>      x <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span><span class="op">]</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>,</span>
+<span>      nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0</span>, family <span class="op">=</span> <span class="st">"gaussian"</span></span>
+<span>    <span class="op">)</span></span>
+<span>    <span class="va">tmp.la</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span></span>
+<span>      x <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span><span class="op">]</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>,</span>
+<span>      nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">1</span>, family <span class="op">=</span> <span class="st">"gaussian"</span></span>
+<span>    <span class="op">)</span></span>
+<span>    <span class="va">null</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">MORT</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">airp</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span></span>
+<span>    <span class="va">full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">MORT</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">airp</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span></span>
+<span>    <span class="va">tmp.st</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html">stepAIC</a></span><span class="op">(</span><span class="va">null</span>, scope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="va">null</span>, upper <span class="op">=</span> <span class="va">full</span><span class="op">)</span>, trace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>    <span class="va">pr.ri</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp.ri</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span>, newx <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span></span>
+<span>    <span class="va">pr.la</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp.la</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span>, newx <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span></span>
+<span>    <span class="va">pr.st</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp.st</span>, newdata <span class="op">=</span> <span class="va">airp</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span></span>
+<span>    <span class="va">pr.f</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">full</span>, newdata <span class="op">=</span> <span class="va">airp</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="va">mspe.ri</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">airp</span><span class="op">$</span><span class="va">MORT</span> <span class="op">-</span> <span class="va">pr.ri</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span>  <span class="va">mspe.la</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">airp</span><span class="op">$</span><span class="va">MORT</span> <span class="op">-</span> <span class="va">pr.la</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span>  <span class="va">mspe.st</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">airp</span><span class="op">$</span><span class="va">MORT</span> <span class="op">-</span> <span class="va">pr.st</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span>  <span class="va">mspe.f</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">airp</span><span class="op">$</span><span class="va">MORT</span> <span class="op">-</span> <span class="va">pr.f</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="va">mspe.la</span>, <span class="va">mspe.ri</span>, <span class="va">mspe.st</span>, <span class="va">mspe.f</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"LASSO"</span>, <span class="st">"Ridge"</span>, <span class="st">"Stepwise"</span>, <span class="st">"Full"</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"steelblue"</span>, <span class="st">"gray80"</span>, <span class="st">"tomato"</span>, <span class="st">"springgreen"</span><span class="op">)</span>, cex.axis <span class="op">=</span> <span class="fl">1</span>, cex.lab <span class="op">=</span> <span class="fl">1</span>, cex.main <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html">hat</a></span><span class="op">(</span><span class="va">MSPE</span><span class="op">)</span><span class="op">)</span>, side <span class="op">=</span> <span class="fl">2</span>, line <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/bigcompare-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>We see that there is a marginal advantage of LASSO, but it is rather minor, and
 the three methods we have seen so far improve by similar margins
 on the predictions obtained by using a full linear regression model.</p>
 </div>
-<div id="less-desirable-properties-of-lasso" class="section level2">
+<div id="less-desirable-properties-of-lasso" class="section level2" number="6.4">
 <h2>
 <span class="header-section-number">6.4</span> Less desirable properties of LASSO<a class="anchor" aria-label="anchor" href="#less-desirable-properties-of-lasso"><i class="fas fa-link"></i></a>
 </h2>
@@ -453,9 +478,9 @@ not be fully satisfactory. In particular:</p>
 <li>The LASSO sampling distribution is not the same as the one we would obtain with the standard least squares estimator if we knew which features to include and which ones to exclude from the model (in orther words, the LASSO does not have an “oracle” property).</li>
 <li>When groups of correlated explanatory variables are present the LASSO tends to include only one variable (randomly) from the group, relegate the others to the end of the sequence.</li>
 </ul>
-<p>For precise statements and theoretical results regarding the three points above, see <span class="citation">(Zou and Hastie <a href="references.html#ref-ZouHastie2005" role="doc-biblioref">2005</a>; Zou <a href="references.html#ref-Zou2006" role="doc-biblioref">2006</a>)</span>.</p>
+<p>For precise statements and theoretical results regarding the three points above, see <span class="citation">(<a href="references.html#ref-ZouHastie2005" role="doc-biblioref">Zou and Hastie 2005</a>; <a href="references.html#ref-Zou2006" role="doc-biblioref">Zou 2006</a>)</span>.</p>
 </div>
-<div id="elastic-net" class="section level2">
+<div id="elastic-net" class="section level2" number="6.5">
 <h2>
 <span class="header-section-number">6.5</span> Elastic net<a class="anchor" aria-label="anchor" href="#elastic-net"><i class="fas fa-link"></i></a>
 </h2>
@@ -467,36 +492,36 @@ one (<code>alpha</code>) is kept fixed. To compare different
 Elastic Net fits we run <code>cv.glmnet</code> with 4 values of
 <code>alpha</code>: 0.05, 0.1, 0.5 and 0.75.</p>
 <div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># EN</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span>
-<span class="va">air.en.75</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>
-  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0.75</span>,
-  family <span class="op">=</span> <span class="st">"gaussian"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span>
-<span class="va">air.en.05</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>
-  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0.05</span>,
-  family <span class="op">=</span> <span class="st">"gaussian"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span>
-<span class="va">air.en.1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>
-  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0.1</span>,
-  family <span class="op">=</span> <span class="st">"gaussian"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span>
-<span class="va">air.en.5</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>
-  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>,
-  family <span class="op">=</span> <span class="st">"gaussian"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">air.en.05</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># EN</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span></span>
+<span><span class="va">air.en.75</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0.75</span>,</span>
+<span>  family <span class="op">=</span> <span class="st">"gaussian"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span></span>
+<span><span class="va">air.en.05</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  family <span class="op">=</span> <span class="st">"gaussian"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span></span>
+<span><span class="va">air.en.1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>  family <span class="op">=</span> <span class="st">"gaussian"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">23</span><span class="op">)</span></span>
+<span><span class="va">air.en.5</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">xm</span>, y <span class="op">=</span> <span class="va">y</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>, nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  family <span class="op">=</span> <span class="st">"gaussian"</span>, intercept <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">air.en.05</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/airp.en-1.png" width="90%" style="display: block; margin: auto;"></div>
 <div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">air.en.5</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">air.en.5</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/airp.en-2.png" width="90%" style="display: block; margin: auto;"></div>
 <div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">air.en.75</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">air.en.75</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/airp.en-3.png" width="90%" style="display: block; margin: auto;"></div>
-<div id="run-en-on-airpollution-data-compare-fits" class="section level3">
+<div id="run-en-on-airpollution-data-compare-fits" class="section level3" number="6.5.1">
 <h3>
 <span class="header-section-number">6.5.1</span> Run EN on airpollution data, compare fits<a class="anchor" aria-label="anchor" href="#run-en-on-airpollution-data-compare-fits"><i class="fas fa-link"></i></a>
 </h3>
@@ -504,67 +529,67 @@ Elastic Net fits we run <code>cv.glmnet</code> with 4 values of
 obtained with the different methods discussed so far to
 alleviate potential problems caused by correlated covariates.</p>
 <div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">air.l2</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>,
-  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">air.l1</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>,
-  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">air.en.05</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>,
-  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">air.en.1</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>,
-  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">air.en.5</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>,
-  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">air.en.75</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Ridge"</span>, <span class="st">"LASSO"</span>, <span class="st">"EN-05"</span>, <span class="st">"EN-10"</span>, <span class="st">"EN-50"</span>, <span class="st">"EN-75"</span><span class="op">)</span>
-<span class="va">a</span>
-<span class="co">#&gt; 16 x 6 sparse Matrix of class "dgCMatrix"</span>
-<span class="co">#&gt;                Ridge    LASSO    EN-05    EN-10    EN-50    EN-75</span>
-<span class="co">#&gt; (Intercept) 1129.267 1070.341 1116.791 1112.228 1101.074 1099.067</span>
-<span class="co">#&gt; PREC           1.493    1.420    1.479    1.481    1.498    1.495</span>
-<span class="co">#&gt; JANT          -0.999   -1.124   -0.968   -0.990   -1.124   -1.153</span>
-<span class="co">#&gt; JULT          -1.054   -0.877   -1.036   -1.041   -1.156   -1.182</span>
-<span class="co">#&gt; OVR65         -2.260    .       -1.099   -0.265    .        .    </span>
-<span class="co">#&gt; POPN          -1.621    .        .        .        .        .    </span>
-<span class="co">#&gt; EDUC          -8.280  -10.800   -8.277   -8.413   -9.585  -10.147</span>
-<span class="co">#&gt; HOUS          -1.164   -0.380   -1.136   -1.102   -0.705   -0.575</span>
-<span class="co">#&gt; DENS           0.005    0.003    0.005    0.005    0.004    0.004</span>
-<span class="co">#&gt; NONW           2.895    3.825    3.187    3.454    3.816    3.895</span>
-<span class="co">#&gt; WWDRK         -0.464    .       -0.422   -0.391   -0.141   -0.052</span>
-<span class="co">#&gt; POOR           0.653    .        0.268    .        .        .    </span>
-<span class="co">#&gt; HC            -0.030    .       -0.006   -0.003    .        .    </span>
-<span class="co">#&gt; NOX            0.056    .        0.000    .        .        .    </span>
-<span class="co">#&gt; SO.            0.237    0.226    0.242    0.241    0.233    0.230</span>
-<span class="co">#&gt; HUMID          0.388    .        0.290    0.241    0.061    0.005</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">air.l2</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">air.l1</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">air.en.05</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">air.en.1</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">air.en.5</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">air.en.75</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Ridge"</span>, <span class="st">"LASSO"</span>, <span class="st">"EN-05"</span>, <span class="st">"EN-10"</span>, <span class="st">"EN-50"</span>, <span class="st">"EN-75"</span><span class="op">)</span></span>
+<span><span class="va">a</span></span>
+<span><span class="co">#&gt; 16 x 6 sparse Matrix of class "dgCMatrix"</span></span>
+<span><span class="co">#&gt;                Ridge    LASSO    EN-05    EN-10    EN-50    EN-75</span></span>
+<span><span class="co">#&gt; (Intercept) 1129.267 1070.341 1116.791 1112.228 1101.074 1099.067</span></span>
+<span><span class="co">#&gt; PREC           1.493    1.420    1.479    1.481    1.498    1.495</span></span>
+<span><span class="co">#&gt; JANT          -0.999   -1.124   -0.968   -0.990   -1.124   -1.153</span></span>
+<span><span class="co">#&gt; JULT          -1.054   -0.877   -1.036   -1.041   -1.156   -1.182</span></span>
+<span><span class="co">#&gt; OVR65         -2.260    .       -1.099   -0.265    .        .    </span></span>
+<span><span class="co">#&gt; POPN          -1.621    .        .        .        .        .    </span></span>
+<span><span class="co">#&gt; EDUC          -8.280  -10.800   -8.277   -8.413   -9.585  -10.147</span></span>
+<span><span class="co">#&gt; HOUS          -1.164   -0.380   -1.136   -1.102   -0.705   -0.575</span></span>
+<span><span class="co">#&gt; DENS           0.005    0.003    0.005    0.005    0.004    0.004</span></span>
+<span><span class="co">#&gt; NONW           2.895    3.825    3.187    3.454    3.816    3.895</span></span>
+<span><span class="co">#&gt; WWDRK         -0.464    .       -0.422   -0.391   -0.141   -0.052</span></span>
+<span><span class="co">#&gt; POOR           0.653    .        0.268    .        .        .    </span></span>
+<span><span class="co">#&gt; HC            -0.030    .       -0.006   -0.003    .        .    </span></span>
+<span><span class="co">#&gt; NOX            0.056    .        0.000    .        .        .    </span></span>
+<span><span class="co">#&gt; SO.            0.237    0.226    0.242    0.241    0.233    0.230</span></span>
+<span><span class="co">#&gt; HUMID          0.388    .        0.290    0.241    0.061    0.005</span></span></code></pre></div>
 <p>The same comment made above regarding the need of a
 more stable choice of “optimal” fits (for each of these
 methods) applies here. Again, here we limit ourselves to one
 run of 5-fold CV purely based on simplifying the
 presentation.</p>
 </div>
-<div id="compare-mspes-of-full-lasso-ridge-en-and-stepwise" class="section level3">
+<div id="compare-mspes-of-full-lasso-ridge-en-and-stepwise" class="section level3" number="6.5.2">
 <h3>
 <span class="header-section-number">6.5.2</span> Compare MSPE’s of Full, LASSO, Ridge, EN and stepwise<a class="anchor" aria-label="anchor" href="#compare-mspes-of-full-lasso-ridge-en-and-stepwise"><i class="fas fa-link"></i></a>
 </h3>
 <div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ii</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op">%%</span> <span class="va">k</span> <span class="op">+</span> <span class="fl">1</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">50</span>
-<span class="va">mspe.en</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">N</span><span class="op">)</span>
-<span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">ii</span><span class="op">)</span>
-  <span class="va">pr.en</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n</span><span class="op">)</span>
-  <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">k</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">tmp.en</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>
-      x <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span><span class="op">]</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>,
-      nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0.75</span>, family <span class="op">=</span> <span class="st">"gaussian"</span>
-    <span class="op">)</span>
-    <span class="va">pr.en</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp.en</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span>, newx <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span>
-  <span class="op">}</span>
-  <span class="va">mspe.en</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">airp</span><span class="op">$</span><span class="va">MORT</span> <span class="op">-</span> <span class="va">pr.en</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="va">mspe.en</span>, <span class="va">mspe.la</span>, <span class="va">mspe.ri</span>, <span class="va">mspe.st</span>, <span class="va">mspe.f</span>,
-  names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"EN"</span>, <span class="st">"LASSO"</span>, <span class="st">"Ridge"</span>, <span class="st">"Stepwise"</span>, <span class="st">"Full"</span><span class="op">)</span>,
-  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"hotpink"</span>, <span class="st">"steelblue"</span>, <span class="st">"gray80"</span>, <span class="st">"tomato"</span>, <span class="st">"springgreen"</span><span class="op">)</span>,
-  cex.axis <span class="op">=</span> <span class="fl">1</span>, cex.lab <span class="op">=</span> <span class="fl">1</span>, cex.main <span class="op">=</span> <span class="fl">2</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/plotmath.html">hat</a></span><span class="op">(</span><span class="va">MSPE</span><span class="op">)</span><span class="op">)</span>, side <span class="op">=</span> <span class="fl">2</span>, line <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ii</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="va">k</span> <span class="op">+</span> <span class="fl">1</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
+<span><span class="va">mspe.en</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">N</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">ii</span><span class="op">)</span></span>
+<span>  <span class="va">pr.en</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n</span><span class="op">)</span></span>
+<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">k</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">tmp.en</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span></span>
+<span>      x <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span>, <span class="op">]</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">[</span><span class="va">ii</span> <span class="op">!=</span> <span class="va">j</span><span class="op">]</span>, lambda <span class="op">=</span> <span class="va">lambdas</span>,</span>
+<span>      nfolds <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0.75</span>, family <span class="op">=</span> <span class="st">"gaussian"</span></span>
+<span>    <span class="op">)</span></span>
+<span>    <span class="va">pr.en</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp.en</span>, s <span class="op">=</span> <span class="st">"lambda.min"</span>, newx <span class="op">=</span> <span class="va">xm</span><span class="op">[</span><span class="va">ii</span> <span class="op">==</span> <span class="va">j</span>, <span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="va">mspe.en</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">airp</span><span class="op">$</span><span class="va">MORT</span> <span class="op">-</span> <span class="va">pr.en</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="va">mspe.en</span>, <span class="va">mspe.la</span>, <span class="va">mspe.ri</span>, <span class="va">mspe.st</span>, <span class="va">mspe.f</span>,</span>
+<span>  names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"EN"</span>, <span class="st">"LASSO"</span>, <span class="st">"Ridge"</span>, <span class="st">"Stepwise"</span>, <span class="st">"Full"</span><span class="op">)</span>,</span>
+<span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"hotpink"</span>, <span class="st">"steelblue"</span>, <span class="st">"gray80"</span>, <span class="st">"tomato"</span>, <span class="st">"springgreen"</span><span class="op">)</span>,</span>
+<span>  cex.axis <span class="op">=</span> <span class="fl">1</span>, cex.lab <span class="op">=</span> <span class="fl">1</span>, cex.main <span class="op">=</span> <span class="fl">2</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html">hat</a></span><span class="op">(</span><span class="va">MSPE</span><span class="op">)</span><span class="op">)</span>, side <span class="op">=</span> <span class="fl">2</span>, line <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="21-lasso-elnet_files/figure-html/bigcompare2-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>We see that in this example Elastic Net with <code>alpha = 0.75</code> (which is not far from
 the LASSO) provides slightly better estimated MSPEs.</p>
@@ -606,7 +631,7 @@ the LASSO) provides slightly better estimated MSPEs.</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-09-17.</p>
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibián-Barrera. It was last built on 2023-08-16.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
@@ -619,7 +644,7 @@ the LASSO) provides slightly better estimated MSPEs.</p>
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

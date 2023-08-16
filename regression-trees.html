@@ -5,9 +5,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>9 Regression trees | UBC Stat 406 Worksheets</title>
-<meta name="author" content="Daniel J. McDonald and Matías Salibán-Barrera">
+<meta name="author" content="Daniel J. McDonald and Matías Salibián-Barrera">
 <meta name="description" content="Trees provide a non-parametric regression estimator that is able to overcome a serious limitation of “classical non-parametric” estimators (like those based on splines, or kernels) when several...">
-<meta name="generator" content="bookdown 0.24 with bs4_book()">
+<meta name="generator" content="bookdown 0.35 with bs4_book()">
 <meta property="og:title" content="9 Regression trees | UBC Stat 406 Worksheets">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://ubc-stat.github.io/stat-406-worksheets/regression-trees.html">
@@ -17,8 +17,33 @@
 <meta name="twitter:description" content="Trees provide a non-parametric regression estimator that is able to overcome a serious limitation of “classical non-parametric” estimators (like those based on splines, or kernels) when several...">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.0/transition.js"></script><script src="libs/bs3compat-0.3.0/tabs.js"></script><script src="libs/bs3compat-0.3.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.5.1/transition.js"></script><script src="libs/bs3compat-0.5.1/tabs.js"></script><script src="libs/bs3compat-0.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -81,7 +106,7 @@
         </div>
       </nav>
 </div>
-  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="regression-trees" class="section level1">
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="regression-trees" class="section level1" number="9">
 <h1>
 <span class="header-section-number">9</span> Regression trees<a class="anchor" aria-label="anchor" href="#regression-trees"><i class="fas fa-link"></i></a>
 </h1>
@@ -95,7 +120,7 @@ non-parametric methods (this is also known as the “curse of dimensionality”)
 and then describe how to compute regression trees in <code>R</code> using the
 <code>rpart</code> package (although other implementations exist).
 Details were discussed in class.</p>
-<div id="curse-of-dimensionality" class="section level2">
+<div id="curse-of-dimensionality" class="section level2" number="9.1">
 <h2>
 <span class="header-section-number">9.1</span> Curse of dimensionality<a class="anchor" aria-label="anchor" href="#curse-of-dimensionality"><i class="fas fa-link"></i></a>
 </h2>
@@ -108,13 +133,13 @@ observations falling between 0.25 and 0.75 will be <em>n/2</em>,
 in this case <em>50</em>. This is easy verified with a simple
 numerical experiment:</p>
 <div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># X ~ U(0,1)</span>
-<span class="co"># how many points do you expect within 0.25 of 1/2?</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span>
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span>
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>
-<span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span> <span class="co"># half the width of the dist'n</span>
-<span class="co">#&gt; [1] 50</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># X ~ U(0,1)</span></span>
+<span><span class="co"># how many points do you expect within 0.25 of 1/2?</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
+<span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span> <span class="co"># half the width of the dist'n</span></span>
+<span><span class="co">#&gt; [1] 50</span></span></code></pre></div>
 <p>(wow! what are the chances?)</p>
 <p>Consider now a sample of 100 observations, each with
 5 variables (5-dimensional observations),
@@ -124,12 +149,12 @@ uniformly distributed in the 5-dimensional unit cube
 x [0.25, 0.75] = [0.25, 0.75]^5? A simple experiment shows
 that this number is probably rather small:</p>
 <div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">5</span>
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">p</span><span class="op">)</span>, <span class="va">n</span>, <span class="va">p</span><span class="op">)</span>
-<span class="co"># how many points in the hypercube (0.25, 0.75)^p ?</span>
-<span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">a</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/all.html">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">a</span> <span class="op">-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span>
-<span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 4</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">p</span><span class="op">)</span>, <span class="va">n</span>, <span class="va">p</span><span class="op">)</span></span>
+<span><span class="co"># how many points in the hypercube (0.25, 0.75)^p ?</span></span>
+<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">a</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/all.html">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">a</span> <span class="op">-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 4</span></span></code></pre></div>
 <p>In fact, the expected number of observations
 in that central hypercube is exactly <em>n / 2^5</em>,
 which is approximately <em>3</em> when <em>n = 100</em>.</p>
@@ -140,13 +165,13 @@ Easy calculations show that this number is <em>50 / (1/2)^p</em>,
 which, for <em>p = 5</em> is <em>1600</em>. Again, we can verify
 this with a simple experiment:</p>
 <div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># how many obs do we need to have 50 in the hypercube?</span>
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">50</span> <span class="op">/</span> <span class="op">(</span><span class="fl">0.5</span><span class="op">^</span><span class="va">p</span><span class="op">)</span>
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">p</span><span class="op">)</span>, <span class="va">n</span>, <span class="va">p</span><span class="op">)</span>
-<span class="co"># how many points in the hypercube (0.25, 0.75)^p ?</span>
-<span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">a</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/all.html">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">a</span> <span class="op">-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span>
-<span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 57</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># how many obs do we need to have 50 in the hypercube?</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">50</span> <span class="op">/</span> <span class="op">(</span><span class="fl">0.5</span><span class="op">^</span><span class="va">p</span><span class="op">)</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">p</span><span class="op">)</span>, <span class="va">n</span>, <span class="va">p</span><span class="op">)</span></span>
+<span><span class="co"># how many points in the hypercube (0.25, 0.75)^p ?</span></span>
+<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">a</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/all.html">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">a</span> <span class="op">-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 57</span></span></code></pre></div>
 <p>So we see that if the dimension of our problem increases
 from <em>p = 1</em> to <em>p = 5</em>, the number of observations we
 need to maintain an expectation of having about 50 points
@@ -174,7 +199,7 @@ easily found to be <em>1 / (2 (n/50)^(1/p))</em>, which for
 <p>In this sense it is fair to say that in moderate to high dimensions
 <em>local neighbourhoods</em> are either empty or not really <em>local</em>.</p>
 </div>
-<div id="regression-trees-as-constrained-non-parametric-regression" class="section level2">
+<div id="regression-trees-as-constrained-non-parametric-regression" class="section level2" number="9.2">
 <h2>
 <span class="header-section-number">9.2</span> Regression trees as constrained non-parametric regression<a class="anchor" aria-label="anchor" href="#regression-trees-as-constrained-non-parametric-regression"><i class="fas fa-link"></i></a>
 </h2>
@@ -202,15 +227,15 @@ by trees and other regression estimators, instead of using
 K-fold CV, we start by randomly splitting the
 available data into a training and a test set:</p>
 <div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bethatkinson/rpart">rpart</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">Boston</span>, package <span class="op">=</span> <span class="st">"MASS"</span><span class="op">)</span>
-<span class="co"># split data into a training and</span>
-<span class="co"># a test set</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span>
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span>
-<span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span>
-<span class="va">dat.te</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>
-<span class="va">dat.tr</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="op">-</span><span class="va">ii</span>, <span class="op">]</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bethatkinson/rpart">rpart</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">Boston</span>, package <span class="op">=</span> <span class="st">"MASS"</span><span class="op">)</span></span>
+<span><span class="co"># split data into a training and</span></span>
+<span><span class="co"># a test set</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span></span>
+<span><span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">dat.te</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span></span>
+<span><span class="va">dat.tr</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="op">-</span><span class="va">ii</span>, <span class="op">]</span></span></code></pre></div>
 <p>We now build a regression tree using the function <code>rpart</code> and leave most of
 its arguments to their
 default values. We specify the response and explanatory variables using
@@ -219,19 +244,19 @@ want to train a regression tree (as opposed to a classification one, for example
 Finally, we use the corresponding <code>plot</code> method to display the tree
 structure:</p>
 <div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">bos.t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span>, method <span class="op">=</span> <span class="st">"anova"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">bos.t</span>, uniform <span class="op">=</span> <span class="cn">FALSE</span>, margin <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="va">bos.t</span>, pretty <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">bos.t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span>, method <span class="op">=</span> <span class="st">"anova"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">bos.t</span>, uniform <span class="op">=</span> <span class="cn">FALSE</span>, margin <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="va">bos.t</span>, pretty <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="24-trees_files/figure-html/tree3-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>A few questions for you:</p>
 <ul>
-<li>Why did we set the pseudo-random generation seed (<code><a href="https://rdrr.io/r/base/Random.html">set.seed(123)</a></code>)
+<li>Why did we set the pseudo-random generation seed (<code>set.seed(123)</code>)
 before calling <code>rpart</code>? Is there anything random about building these trees?</li>
 <li>What does the <code>uniform</code> argument for <code>plot.rpart</code> do? What does <code>text</code> do here?</li>
 </ul>
 </div>
-<div id="compare-predictions" class="section level2">
+<div id="compare-predictions" class="section level2" number="9.3">
 <h2>
 <span class="header-section-number">9.3</span> Compare predictions<a class="anchor" aria-label="anchor" href="#compare-predictions"><i class="fas fa-link"></i></a>
 </h2>
@@ -241,38 +266,38 @@ explanatory variables, another one constructed using stepwise
 variable selections methods, and the “optimal” LASSO.</p>
 <p>First, we estimate the MSPE of the regression tree using the test set:</p>
 <div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># predictions on the test set</span>
-<span class="va">pr.t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">bos.t</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.t</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 16.07227</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># predictions on the test set</span></span>
+<span><span class="va">pr.t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">bos.t</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.t</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 16.07227</span></span></code></pre></div>
 <p>For a full linear model, the estimated MSPE using the test set is:</p>
 <div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># full linear model</span>
-<span class="va">bos.lm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">)</span>
-<span class="va">pr.lm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">bos.lm</span>, newdata <span class="op">=</span> <span class="va">dat.te</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.lm</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 23.25844</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># full linear model</span></span>
+<span><span class="va">bos.lm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">)</span></span>
+<span><span class="va">pr.lm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">bos.lm</span>, newdata <span class="op">=</span> <span class="va">dat.te</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.lm</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 23.25844</span></span></code></pre></div>
 <p>The estimated MSPE of a linear model constructed via stepwise is:</p>
 <div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span>
-<span class="va">null</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">)</span>
-<span class="va">full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">)</span>
-<span class="va">bos.aic</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html">stepAIC</a></span><span class="op">(</span><span class="va">null</span>, scope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="va">null</span>, upper <span class="op">=</span> <span class="va">full</span><span class="op">)</span>, trace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="va">pr.aic</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">bos.aic</span>, newdata <span class="op">=</span> <span class="va">dat.te</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.aic</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 22.99864</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span></span>
+<span><span class="va">null</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">)</span></span>
+<span><span class="va">full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">)</span></span>
+<span><span class="va">bos.aic</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html">stepAIC</a></span><span class="op">(</span><span class="va">null</span>, scope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="va">null</span>, upper <span class="op">=</span> <span class="va">full</span><span class="op">)</span>, trace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">pr.aic</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">bos.aic</span>, newdata <span class="op">=</span> <span class="va">dat.te</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.aic</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 22.99864</span></span></code></pre></div>
 <p>Finally, the estimated MSPE of the “optimal” LASSO fit is:</p>
 <div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># LASSO?</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://glmnet.stanford.edu">glmnet</a></span><span class="op">)</span>
-<span class="va">x.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">[</span>, <span class="op">-</span><span class="fl">14</span><span class="op">]</span><span class="op">)</span>
-<span class="va">y.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">$</span><span class="va">medv</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">bos.la</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x.tr</span>, y <span class="op">=</span> <span class="va">y.tr</span>, alpha <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="va">x.te</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">dat.te</span><span class="op">[</span>, <span class="op">-</span><span class="fl">14</span><span class="op">]</span><span class="op">)</span>
-<span class="va">pr.la</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">bos.la</span>, s <span class="op">=</span> <span class="st">"lambda.1se"</span>, newx <span class="op">=</span> <span class="va">x.te</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.la</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 26.58914</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># LASSO?</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://glmnet.stanford.edu">glmnet</a></span><span class="op">)</span></span>
+<span><span class="va">x.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">[</span>, <span class="op">-</span><span class="fl">14</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">y.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">$</span><span class="va">medv</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">bos.la</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html">cv.glmnet</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x.tr</span>, y <span class="op">=</span> <span class="va">y.tr</span>, alpha <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">x.te</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">dat.te</span><span class="op">[</span>, <span class="op">-</span><span class="fl">14</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">pr.la</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">bos.la</span>, s <span class="op">=</span> <span class="st">"lambda.1se"</span>, newx <span class="op">=</span> <span class="va">x.te</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.la</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 26.58914</span></span></code></pre></div>
 <p>Note that the regression tree appears to have the best MSPE, although
 we cannot really assess whether the observed differences are beyond
 the uncertainty associated with our MSPE estimators. In other words,
@@ -311,7 +336,7 @@ training and K-fold CV to estimate the different MSPEs.</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-09-17.</p>
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibián-Barrera. It was last built on 2023-08-16.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
@@ -324,7 +349,7 @@ training and K-fold CV to estimate the different MSPEs.</p>
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

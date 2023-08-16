@@ -444,6 +444,7 @@ table(u1, x.te$V1)
 #>   8   0   4 157
 mean(u1 != x.te$V1)
 #> [1] 0.02684564
+
 u5 <- knn(train = x.tr[, -1], cl = x.tr[, 1], test = x.te[, -1], k = 5)
 table(u5, x.te$V1)
 #>    
@@ -453,6 +454,7 @@ table(u5, x.te$V1)
 #>   8   0   4 159
 mean(u5 != x.te$V1)
 #> [1] 0.02516779
+
 u10 <- knn(train = x.tr[, -1], cl = x.tr[, 1], test = x.te[, -1], k = 10)
 table(u10, x.te$V1)
 #>    
@@ -462,6 +464,7 @@ table(u10, x.te$V1)
 #>   8   0   2 151
 mean(u10 != x.te$V1)
 #> [1] 0.0352349
+
 u50 <- knn(train = x.tr[, -1], cl = x.tr[, 1], test = x.te[, -1], k = 50)
 table(u50, x.te$V1)
 #>    
@@ -533,6 +536,7 @@ arrows(x2[26, 1], x2[26, 2] + .1, x2[e, 1], x2[e, 2] - .1, lwd = 5, col = "red")
 <img src="31-qda-knn_files/figure-html/knntrouble-1.png" width="90%" style="display: block; margin: auto;" />
 
 ```r
+
 # pdf('knn-challenge.pdf', bg='transparent')
 # plot(x2, pch=la, cex=1.5, col='gray30', xlab='', ylab='')
 # points(x2[26,1], x2[26, 2], pch='A', col='red', cex=1.9)

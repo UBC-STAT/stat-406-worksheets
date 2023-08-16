@@ -5,9 +5,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>10 Pruning regression trees with rpart | UBC Stat 406 Worksheets</title>
-<meta name="author" content="Daniel J. McDonald and Matías Salibán-Barrera">
+<meta name="author" content="Daniel J. McDonald and Matías Salibián-Barrera">
 <meta name="description" content="Important note: As discussed in class, the K-fold CV methodology implemented in the package rpart seems to consider a sequence of trees (or, equivalently, of complexity parameters) based on the...">
-<meta name="generator" content="bookdown 0.24 with bs4_book()">
+<meta name="generator" content="bookdown 0.35 with bs4_book()">
 <meta property="og:title" content="10 Pruning regression trees with rpart | UBC Stat 406 Worksheets">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://ubc-stat.github.io/stat-406-worksheets/pruning-regression-trees-with-rpart.html">
@@ -17,8 +17,33 @@
 <meta name="twitter:description" content="Important note: As discussed in class, the K-fold CV methodology implemented in the package rpart seems to consider a sequence of trees (or, equivalently, of complexity parameters) based on the...">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.0/transition.js"></script><script src="libs/bs3compat-0.3.0/tabs.js"></script><script src="libs/bs3compat-0.3.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.5.1/transition.js"></script><script src="libs/bs3compat-0.5.1/tabs.js"></script><script src="libs/bs3compat-0.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -81,7 +106,7 @@
         </div>
       </nav>
 </div>
-  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="pruning-regression-trees-with-rpart" class="section level1">
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="pruning-regression-trees-with-rpart" class="section level1" number="10">
 <h1>
 <span class="header-section-number">10</span> Pruning regression trees with <code>rpart</code><a class="anchor" aria-label="anchor" href="#pruning-regression-trees-with-rpart"><i class="fas fa-link"></i></a>
 </h1>
@@ -109,31 +134,31 @@ picture of the evolution of MSPE for different subtrees, we set the smallest
 complexity parameter to be considered by the cross-validation
 experiment to a very low value (here we use <code>1e-8</code>).</p>
 <div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bethatkinson/rpart">rpart</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">Boston</span>, package <span class="op">=</span> <span class="st">"MASS"</span><span class="op">)</span>
-<span class="co"># split data into a training and</span>
-<span class="co"># a test set</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span>
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span>
-<span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span>
-<span class="va">dat.te</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>
-<span class="va">dat.tr</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="op">-</span><span class="va">ii</span>, <span class="op">]</span>
-
-<span class="va">myc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.control.html">rpart.control</a></span><span class="op">(</span>minsplit <span class="op">=</span> <span class="fl">2</span>, cp <span class="op">=</span> <span class="fl">1e-5</span>, xval <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span>
-<span class="va">bos.to</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>,
-  data <span class="op">=</span> <span class="va">dat.tr</span>, method <span class="op">=</span> <span class="st">"anova"</span>,
-  control <span class="op">=</span> <span class="va">myc</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">bos.to</span>, compress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># type='proportional')</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bethatkinson/rpart">rpart</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">Boston</span>, package <span class="op">=</span> <span class="st">"MASS"</span><span class="op">)</span></span>
+<span><span class="co"># split data into a training and</span></span>
+<span><span class="co"># a test set</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span></span>
+<span><span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">dat.te</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span></span>
+<span><span class="va">dat.tr</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="op">-</span><span class="va">ii</span>, <span class="op">]</span></span>
+<span></span>
+<span><span class="va">myc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.control.html">rpart.control</a></span><span class="op">(</span>minsplit <span class="op">=</span> <span class="fl">2</span>, cp <span class="op">=</span> <span class="fl">1e-5</span>, xval <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span></span>
+<span><span class="va">bos.to</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">dat.tr</span>, method <span class="op">=</span> <span class="st">"anova"</span>,</span>
+<span>  control <span class="op">=</span> <span class="va">myc</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">bos.to</span>, compress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># type='proportional')</span></span></code></pre></div>
 <div class="inline-figure"><img src="25-more-trees_files/figure-html/prune-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Not surprisingly, the predictions of this large tree are
 not very good:</p>
 <div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># predictions are poor, unsurprisingly</span>
-<span class="va">pr.to</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">bos.to</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.to</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 19.22826</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># predictions are poor, unsurprisingly</span></span>
+<span><span class="va">pr.to</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">bos.to</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.to</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 19.22826</span></span></code></pre></div>
 <p>To prune we explore the <em>CP table</em> returned in the
 <code>rpart</code> object to find the value of the complexity
 parameter with optimal estimated prediction error. The estimated
@@ -144,235 +169,235 @@ the value of <code>CP</code> that yields a corresponding pruned tree with smalle
 estimated prediction error. The function <code>printcp</code> shows the
 CP table corresponding to an <code>rpart</code> object:</p>
 <div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/rpart/man/printcp.html">printcp</a></span><span class="op">(</span><span class="va">bos.to</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Regression tree:</span>
-<span class="co">#&gt; rpart(formula = medv ~ ., data = dat.tr, method = "anova", control = myc)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Variables actually used in tree construction:</span>
-<span class="co">#&gt;  [1] age     black   chas    crim    dis     indus   lstat   nox     ptratio</span>
-<span class="co">#&gt; [10] rad     rm      tax     zn     </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Root node error: 32946/380 = 86.7</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; n= 380 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;             CP nsplit  rel error  xerror     xstd</span>
-<span class="co">#&gt; 1   4.7150e-01      0 1.00000000 1.00363 0.094075</span>
-<span class="co">#&gt; 2   1.5701e-01      1 0.52850063 0.60388 0.063381</span>
-<span class="co">#&gt; 3   7.9798e-02      2 0.37149536 0.40412 0.050267</span>
-<span class="co">#&gt; 4   5.7540e-02      3 0.29169700 0.34109 0.048146</span>
-<span class="co">#&gt; 5   3.4802e-02      4 0.23415748 0.35907 0.054713</span>
-<span class="co">#&gt; 6   2.0424e-02      5 0.19935554 0.27486 0.041559</span>
-<span class="co">#&gt; 7   1.9408e-02      6 0.17893128 0.26826 0.041522</span>
-<span class="co">#&gt; 8   1.6414e-02      7 0.15952348 0.27163 0.041861</span>
-<span class="co">#&gt; 9   1.1118e-02      8 0.14310945 0.26680 0.041809</span>
-<span class="co">#&gt; 10  9.6449e-03      9 0.13199106 0.26576 0.048628</span>
-<span class="co">#&gt; 11  7.7292e-03     10 0.12234619 0.26166 0.047488</span>
-<span class="co">#&gt; 12  6.5545e-03     11 0.11461702 0.26243 0.047476</span>
-<span class="co">#&gt; 13  5.7344e-03     12 0.10806249 0.24154 0.044548</span>
-<span class="co">#&gt; 14  5.3955e-03     14 0.09659371 0.24499 0.043512</span>
-<span class="co">#&gt; 15  4.6018e-03     15 0.09119826 0.24284 0.043821</span>
-<span class="co">#&gt; 16  3.7390e-03     16 0.08659643 0.24439 0.044009</span>
-<span class="co">#&gt; 17  3.2170e-03     17 0.08285743 0.24188 0.044019</span>
-<span class="co">#&gt; 18  2.5445e-03     18 0.07964044 0.23957 0.043896</span>
-<span class="co">#&gt; 19  2.3205e-03     20 0.07455137 0.24288 0.043992</span>
-<span class="co">#&gt; 20  2.1485e-03     21 0.07223089 0.23905 0.043463</span>
-<span class="co">#&gt; 21  2.1316e-03     22 0.07008242 0.24546 0.044444</span>
-<span class="co">#&gt; 22  2.0477e-03     23 0.06795084 0.24556 0.044447</span>
-<span class="co">#&gt; 23  2.0283e-03     24 0.06590313 0.24493 0.044439</span>
-<span class="co">#&gt; 24  1.9878e-03     25 0.06387482 0.24448 0.044442</span>
-<span class="co">#&gt; 25  1.9781e-03     26 0.06188702 0.24495 0.044438</span>
-<span class="co">#&gt; 26  1.9686e-03     27 0.05990894 0.24495 0.044438</span>
-<span class="co">#&gt; 27  1.6400e-03     28 0.05794032 0.24296 0.044425</span>
-<span class="co">#&gt; 28  1.6357e-03     29 0.05630030 0.24257 0.044401</span>
-<span class="co">#&gt; 29  1.6212e-03     30 0.05466464 0.24257 0.044401</span>
-<span class="co">#&gt; 30  1.5386e-03     31 0.05304346 0.24272 0.044402</span>
-<span class="co">#&gt; 31  1.4205e-03     32 0.05150482 0.24609 0.044437</span>
-<span class="co">#&gt; 32  1.3390e-03     33 0.05008431 0.24671 0.044485</span>
-<span class="co">#&gt; 33  1.2731e-03     34 0.04874534 0.24823 0.044688</span>
-<span class="co">#&gt; 34  1.2294e-03     35 0.04747228 0.24985 0.044671</span>
-<span class="co">#&gt; 35  1.1693e-03     36 0.04624285 0.25214 0.044656</span>
-<span class="co">#&gt; 36  1.1587e-03     37 0.04507358 0.25609 0.044764</span>
-<span class="co">#&gt; 37  1.1306e-03     38 0.04391487 0.25484 0.044738</span>
-<span class="co">#&gt; 38  1.1235e-03     39 0.04278422 0.25484 0.044738</span>
-<span class="co">#&gt; 39  1.1117e-03     40 0.04166071 0.25420 0.044733</span>
-<span class="co">#&gt; 40  1.0183e-03     41 0.04054904 0.25240 0.044720</span>
-<span class="co">#&gt; 41  1.0016e-03     42 0.03953071 0.25440 0.044772</span>
-<span class="co">#&gt; 42  9.8001e-04     43 0.03852907 0.25480 0.044799</span>
-<span class="co">#&gt; 43  9.5959e-04     45 0.03656906 0.25607 0.044791</span>
-<span class="co">#&gt; 44  9.5612e-04     47 0.03464987 0.25828 0.044779</span>
-<span class="co">#&gt; 45  8.9091e-04     48 0.03369375 0.26231 0.045282</span>
-<span class="co">#&gt; 46  8.8600e-04     49 0.03280284 0.25879 0.044930</span>
-<span class="co">#&gt; 47  8.7103e-04     50 0.03191684 0.25836 0.044925</span>
-<span class="co">#&gt; 48  8.4075e-04     51 0.03104580 0.25901 0.044895</span>
-<span class="co">#&gt; 49  8.3105e-04     52 0.03020505 0.25848 0.044897</span>
-<span class="co">#&gt; 50  8.2287e-04     53 0.02937400 0.25882 0.044924</span>
-<span class="co">#&gt; 51  8.2159e-04     54 0.02855113 0.25893 0.044922</span>
-<span class="co">#&gt; 52  7.9802e-04     55 0.02772954 0.25984 0.044889</span>
-<span class="co">#&gt; 53  7.7379e-04     56 0.02693152 0.26006 0.044887</span>
-<span class="co">#&gt; 54  7.6674e-04     57 0.02615772 0.26006 0.044887</span>
-<span class="co">#&gt; 55  7.4051e-04     58 0.02539098 0.26070 0.044591</span>
-<span class="co">#&gt; 56  6.5174e-04     59 0.02465047 0.26100 0.044598</span>
-<span class="co">#&gt; 57  6.4506e-04     60 0.02399873 0.26196 0.044601</span>
-<span class="co">#&gt; 58  6.1748e-04     61 0.02335367 0.26243 0.044616</span>
-<span class="co">#&gt; 59  5.7918e-04     62 0.02273620 0.26455 0.044635</span>
-<span class="co">#&gt; 60  5.6590e-04     63 0.02215702 0.26531 0.044647</span>
-<span class="co">#&gt; 61  5.3958e-04     64 0.02159112 0.26456 0.044653</span>
-<span class="co">#&gt; 62  5.2778e-04     65 0.02105154 0.26771 0.045102</span>
-<span class="co">#&gt; 63  5.2595e-04     66 0.02052376 0.26878 0.045150</span>
-<span class="co">#&gt; 64  4.9608e-04     67 0.01999781 0.26887 0.045148</span>
-<span class="co">#&gt; 65  4.9581e-04     68 0.01950173 0.26876 0.045137</span>
-<span class="co">#&gt; 66  4.6477e-04     69 0.01900592 0.26899 0.045164</span>
-<span class="co">#&gt; 67  4.5562e-04     70 0.01854115 0.26883 0.045164</span>
-<span class="co">#&gt; 68  4.3208e-04     72 0.01762991 0.26818 0.045157</span>
-<span class="co">#&gt; 69  4.2934e-04     74 0.01676575 0.26768 0.045149</span>
-<span class="co">#&gt; 70  4.0512e-04     76 0.01590708 0.26831 0.045173</span>
-<span class="co">#&gt; 71  4.0437e-04     77 0.01550196 0.26865 0.045176</span>
-<span class="co">#&gt; 72  3.8959e-04     78 0.01509758 0.26928 0.045191</span>
-<span class="co">#&gt; 73  3.3745e-04     79 0.01470799 0.27223 0.045179</span>
-<span class="co">#&gt; 74  3.2839e-04     80 0.01437054 0.27232 0.045055</span>
-<span class="co">#&gt; 75  3.2113e-04     81 0.01404215 0.27316 0.045075</span>
-<span class="co">#&gt; 76  3.1358e-04     82 0.01372102 0.27216 0.044977</span>
-<span class="co">#&gt; 77  3.0960e-04     83 0.01340743 0.27273 0.045001</span>
-<span class="co">#&gt; 78  2.8639e-04     84 0.01309783 0.27342 0.045009</span>
-<span class="co">#&gt; 79  2.7607e-04     85 0.01281145 0.27447 0.045074</span>
-<span class="co">#&gt; 80  2.7189e-04     87 0.01225931 0.27379 0.045071</span>
-<span class="co">#&gt; 81  2.6958e-04     88 0.01198742 0.27385 0.045067</span>
-<span class="co">#&gt; 82  2.6552e-04     89 0.01171784 0.27361 0.045096</span>
-<span class="co">#&gt; 83  2.6115e-04     90 0.01145232 0.27350 0.045093</span>
-<span class="co">#&gt; 84  2.5749e-04     91 0.01119117 0.27350 0.045093</span>
-<span class="co">#&gt; 85  2.5578e-04     92 0.01093368 0.27280 0.045100</span>
-<span class="co">#&gt; 86  2.5257e-04     93 0.01067790 0.27277 0.045101</span>
-<span class="co">#&gt; 87  2.2556e-04     94 0.01042532 0.27385 0.045136</span>
-<span class="co">#&gt; 88  2.2386e-04     95 0.01019976 0.27266 0.045131</span>
-<span class="co">#&gt; 89  2.1854e-04     96 0.00997590 0.27266 0.045130</span>
-<span class="co">#&gt; 90  2.1012e-04     97 0.00975736 0.27363 0.045146</span>
-<span class="co">#&gt; 91  2.0946e-04     98 0.00954723 0.27444 0.045161</span>
-<span class="co">#&gt; 92  2.0776e-04     99 0.00933778 0.27444 0.045161</span>
-<span class="co">#&gt; 93  2.0488e-04    100 0.00913001 0.27230 0.044975</span>
-<span class="co">#&gt; 94  2.0296e-04    101 0.00892513 0.27225 0.044975</span>
-<span class="co">#&gt; 95  2.0035e-04    102 0.00872217 0.27223 0.044976</span>
-<span class="co">#&gt; 96  1.9446e-04    103 0.00852182 0.27232 0.044975</span>
-<span class="co">#&gt; 97  1.9166e-04    104 0.00832736 0.27133 0.044929</span>
-<span class="co">#&gt; 98  1.8824e-04    105 0.00813570 0.27103 0.044910</span>
-<span class="co">#&gt; 99  1.8713e-04    106 0.00794747 0.27072 0.044913</span>
-<span class="co">#&gt; 100 1.7808e-04    107 0.00776033 0.26983 0.044895</span>
-<span class="co">#&gt; 101 1.7610e-04    108 0.00758225 0.27000 0.044893</span>
-<span class="co">#&gt; 102 1.7325e-04    109 0.00740615 0.26984 0.044895</span>
-<span class="co">#&gt; 103 1.7018e-04    110 0.00723291 0.26968 0.044896</span>
-<span class="co">#&gt; 104 1.6527e-04    111 0.00706273 0.27027 0.044898</span>
-<span class="co">#&gt; 105 1.5789e-04    112 0.00689746 0.27057 0.044895</span>
-<span class="co">#&gt; 106 1.5735e-04    113 0.00673957 0.27046 0.044898</span>
-<span class="co">#&gt; 107 1.4751e-04    114 0.00658222 0.27066 0.044897</span>
-<span class="co">#&gt; 108 1.4632e-04    115 0.00643470 0.27055 0.044899</span>
-<span class="co">#&gt; 109 1.3986e-04    116 0.00628839 0.27039 0.044902</span>
-<span class="co">#&gt; 110 1.3925e-04    117 0.00614852 0.27111 0.044899</span>
-<span class="co">#&gt; 111 1.3479e-04    120 0.00573078 0.27113 0.044898</span>
-<span class="co">#&gt; 112 1.3357e-04    121 0.00559599 0.27084 0.044895</span>
-<span class="co">#&gt; 113 1.3245e-04    122 0.00546242 0.27097 0.044894</span>
-<span class="co">#&gt; 114 1.3171e-04    123 0.00532997 0.27101 0.044893</span>
-<span class="co">#&gt; 115 1.2728e-04    124 0.00519826 0.27137 0.044889</span>
-<span class="co">#&gt; 116 1.2691e-04    125 0.00507098 0.27085 0.044877</span>
-<span class="co">#&gt; 117 1.2493e-04    126 0.00494407 0.27066 0.044880</span>
-<span class="co">#&gt; 118 1.1699e-04    127 0.00481913 0.27148 0.044907</span>
-<span class="co">#&gt; 119 1.1655e-04    129 0.00458516 0.27168 0.044909</span>
-<span class="co">#&gt; 120 1.1542e-04    130 0.00446861 0.27209 0.044907</span>
-<span class="co">#&gt; 121 1.0244e-04    131 0.00435319 0.27047 0.044874</span>
-<span class="co">#&gt; 122 1.0244e-04    132 0.00425075 0.27085 0.044872</span>
-<span class="co">#&gt; 123 1.0205e-04    133 0.00414831 0.27085 0.044872</span>
-<span class="co">#&gt; 124 9.8401e-05    134 0.00404627 0.27127 0.044871</span>
-<span class="co">#&gt; 125 9.7938e-05    135 0.00394786 0.27064 0.044858</span>
-<span class="co">#&gt; 126 9.7938e-05    136 0.00384993 0.27069 0.044857</span>
-<span class="co">#&gt; 127 9.7128e-05    137 0.00375199 0.27069 0.044857</span>
-<span class="co">#&gt; 128 9.4118e-05    138 0.00365486 0.27006 0.044763</span>
-<span class="co">#&gt; 129 9.3663e-05    139 0.00356074 0.26991 0.044771</span>
-<span class="co">#&gt; 130 9.3243e-05    140 0.00346708 0.26991 0.044771</span>
-<span class="co">#&gt; 131 8.2635e-05    141 0.00337384 0.27063 0.044771</span>
-<span class="co">#&gt; 132 8.2635e-05    142 0.00329120 0.26996 0.044773</span>
-<span class="co">#&gt; 133 7.3547e-05    143 0.00320857 0.27017 0.044774</span>
-<span class="co">#&gt; 134 7.3049e-05    144 0.00313502 0.27061 0.044796</span>
-<span class="co">#&gt; 135 6.8395e-05    145 0.00306197 0.27067 0.044795</span>
-<span class="co">#&gt; 136 6.6928e-05    146 0.00299358 0.27005 0.044771</span>
-<span class="co">#&gt; 137 6.6928e-05    147 0.00292665 0.27005 0.044773</span>
-<span class="co">#&gt; 138 6.5562e-05    148 0.00285972 0.27007 0.044773</span>
-<span class="co">#&gt; 139 5.8916e-05    149 0.00279416 0.27023 0.044772</span>
-<span class="co">#&gt; 140 5.6726e-05    151 0.00267633 0.27085 0.044768</span>
-<span class="co">#&gt; 141 5.6471e-05    152 0.00261960 0.27079 0.044774</span>
-<span class="co">#&gt; 142 5.5090e-05    153 0.00256313 0.27079 0.044774</span>
-<span class="co">#&gt; 143 5.4263e-05    155 0.00245295 0.27081 0.044773</span>
-<span class="co">#&gt; 144 5.1296e-05    156 0.00239869 0.27094 0.044772</span>
-<span class="co">#&gt; 145 5.1296e-05    157 0.00234739 0.27146 0.044770</span>
-<span class="co">#&gt; 146 5.1053e-05    158 0.00229610 0.27146 0.044770</span>
-<span class="co">#&gt; 147 5.1003e-05    159 0.00224504 0.27146 0.044770</span>
-<span class="co">#&gt; 148 4.9576e-05    160 0.00219404 0.27117 0.044769</span>
-<span class="co">#&gt; 149 4.9308e-05    161 0.00214446 0.27118 0.044768</span>
-<span class="co">#&gt; 150 4.8615e-05    162 0.00209516 0.27114 0.044769</span>
-<span class="co">#&gt; 151 4.8615e-05    163 0.00204654 0.27154 0.044767</span>
-<span class="co">#&gt; 152 4.5354e-05    164 0.00199793 0.27154 0.044767</span>
-<span class="co">#&gt; 153 4.2544e-05    165 0.00195257 0.27175 0.044768</span>
-<span class="co">#&gt; 154 4.2519e-05    166 0.00191003 0.27179 0.044772</span>
-<span class="co">#&gt; 155 4.1488e-05    167 0.00186751 0.27179 0.044772</span>
-<span class="co">#&gt; 156 4.0759e-05    169 0.00178453 0.27173 0.044772</span>
-<span class="co">#&gt; 157 4.0675e-05    172 0.00166226 0.27164 0.044773</span>
-<span class="co">#&gt; 158 4.0141e-05    173 0.00162158 0.27112 0.044756</span>
-<span class="co">#&gt; 159 3.9661e-05    174 0.00158144 0.27111 0.044756</span>
-<span class="co">#&gt; 160 3.9133e-05    175 0.00154178 0.27111 0.044756</span>
-<span class="co">#&gt; 161 3.8851e-05    176 0.00150265 0.27118 0.044755</span>
-<span class="co">#&gt; 162 3.6878e-05    177 0.00146380 0.27161 0.044763</span>
-<span class="co">#&gt; 163 3.6524e-05    178 0.00142692 0.27163 0.044763</span>
-<span class="co">#&gt; 164 3.4197e-05    179 0.00139039 0.27160 0.044763</span>
-<span class="co">#&gt; 165 3.2895e-05    180 0.00135620 0.27153 0.044756</span>
-<span class="co">#&gt; 166 3.2781e-05    181 0.00132330 0.27172 0.044754</span>
-<span class="co">#&gt; 167 3.2438e-05    182 0.00129052 0.27183 0.044753</span>
-<span class="co">#&gt; 168 2.9746e-05    184 0.00122564 0.27187 0.044752</span>
-<span class="co">#&gt; 169 2.9503e-05    185 0.00119590 0.27228 0.044763</span>
-<span class="co">#&gt; 170 2.9381e-05    186 0.00116639 0.27228 0.044763</span>
-<span class="co">#&gt; 171 2.9381e-05    187 0.00113701 0.27228 0.044763</span>
-<span class="co">#&gt; 172 2.9139e-05    188 0.00110763 0.27228 0.044763</span>
-<span class="co">#&gt; 173 2.8420e-05    189 0.00107849 0.27255 0.044764</span>
-<span class="co">#&gt; 174 2.6761e-05    190 0.00105007 0.27232 0.044759</span>
-<span class="co">#&gt; 175 2.4484e-05    191 0.00102331 0.27260 0.044758</span>
-<span class="co">#&gt; 176 2.4282e-05    192 0.00099883 0.27181 0.044537</span>
-<span class="co">#&gt; 177 2.3311e-05    193 0.00097455 0.27213 0.044538</span>
-<span class="co">#&gt; 178 2.3083e-05    194 0.00095124 0.27216 0.044537</span>
-<span class="co">#&gt; 179 2.2309e-05    195 0.00092815 0.27216 0.044537</span>
-<span class="co">#&gt; 180 2.1930e-05    196 0.00090584 0.27171 0.044505</span>
-<span class="co">#&gt; 181 2.1854e-05    198 0.00086198 0.27169 0.044508</span>
-<span class="co">#&gt; 182 2.1854e-05    199 0.00084013 0.27169 0.044508</span>
-<span class="co">#&gt; 183 2.1409e-05    201 0.00079642 0.27169 0.044508</span>
-<span class="co">#&gt; 184 2.0325e-05    202 0.00077501 0.27181 0.044510</span>
-<span class="co">#&gt; 185 2.0235e-05    203 0.00075469 0.27120 0.044502</span>
-<span class="co">#&gt; 186 2.0235e-05    204 0.00073445 0.27120 0.044502</span>
-<span class="co">#&gt; 187 2.0235e-05    205 0.00071422 0.27120 0.044502</span>
-<span class="co">#&gt; 188 2.0235e-05    206 0.00069398 0.27120 0.044502</span>
-<span class="co">#&gt; 189 1.8439e-05    207 0.00067375 0.27120 0.044502</span>
-<span class="co">#&gt; 190 1.8363e-05    208 0.00065531 0.27111 0.044501</span>
-<span class="co">#&gt; 191 1.8363e-05    210 0.00061858 0.27113 0.044501</span>
-<span class="co">#&gt; 192 1.8363e-05    211 0.00060022 0.27113 0.044501</span>
-<span class="co">#&gt; 193 1.8262e-05    212 0.00058185 0.27113 0.044501</span>
-<span class="co">#&gt; 194 1.7099e-05    213 0.00056359 0.27096 0.044498</span>
-<span class="co">#&gt; 195 1.7099e-05    214 0.00054649 0.27094 0.044499</span>
-<span class="co">#&gt; 196 1.6390e-05    215 0.00052940 0.27108 0.044499</span>
-<span class="co">#&gt; 197 1.6390e-05    216 0.00051300 0.27106 0.044500</span>
-<span class="co">#&gt; 198 1.4620e-05    217 0.00049661 0.27091 0.044504</span>
-<span class="co">#&gt; 199 1.4620e-05    218 0.00048199 0.27104 0.044503</span>
-<span class="co">#&gt; 200 1.4610e-05    219 0.00046737 0.27104 0.044503</span>
-<span class="co">#&gt; 201 1.3380e-05    220 0.00045276 0.27124 0.044505</span>
-<span class="co">#&gt; 202 1.3380e-05    221 0.00043938 0.27143 0.044517</span>
-<span class="co">#&gt; 203 1.2950e-05    222 0.00042600 0.27144 0.044517</span>
-<span class="co">#&gt; 204 1.2950e-05    223 0.00041305 0.27144 0.044517</span>
-<span class="co">#&gt; 205 1.1382e-05    224 0.00040010 0.27168 0.044520</span>
-<span class="co">#&gt; 206 1.1382e-05    225 0.00038872 0.27179 0.044520</span>
-<span class="co">#&gt; 207 1.0927e-05    226 0.00037734 0.27176 0.044520</span>
-<span class="co">#&gt; 208 1.0118e-05    227 0.00036641 0.27189 0.044526</span>
-<span class="co">#&gt; 209 1.0118e-05    228 0.00035629 0.27189 0.044526</span>
-<span class="co">#&gt; 210 1.0000e-05    229 0.00034618 0.27189 0.044526</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/rpart/man/printcp.html">printcp</a></span><span class="op">(</span><span class="va">bos.to</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Regression tree:</span></span>
+<span><span class="co">#&gt; rpart(formula = medv ~ ., data = dat.tr, method = "anova", control = myc)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Variables actually used in tree construction:</span></span>
+<span><span class="co">#&gt;  [1] age     black   chas    crim    dis     indus   lstat   nox     ptratio</span></span>
+<span><span class="co">#&gt; [10] rad     rm      tax     zn     </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Root node error: 32946/380 = 86.7</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; n= 380 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;             CP nsplit  rel error  xerror     xstd</span></span>
+<span><span class="co">#&gt; 1   4.7150e-01      0 1.00000000 1.00363 0.094075</span></span>
+<span><span class="co">#&gt; 2   1.5701e-01      1 0.52850063 0.60388 0.063381</span></span>
+<span><span class="co">#&gt; 3   7.9798e-02      2 0.37149536 0.40412 0.050267</span></span>
+<span><span class="co">#&gt; 4   5.7540e-02      3 0.29169700 0.34109 0.048146</span></span>
+<span><span class="co">#&gt; 5   3.4802e-02      4 0.23415748 0.35907 0.054713</span></span>
+<span><span class="co">#&gt; 6   2.0424e-02      5 0.19935554 0.27486 0.041559</span></span>
+<span><span class="co">#&gt; 7   1.9408e-02      6 0.17893128 0.26826 0.041522</span></span>
+<span><span class="co">#&gt; 8   1.6414e-02      7 0.15952348 0.27163 0.041861</span></span>
+<span><span class="co">#&gt; 9   1.1118e-02      8 0.14310945 0.26680 0.041809</span></span>
+<span><span class="co">#&gt; 10  9.6449e-03      9 0.13199106 0.26576 0.048628</span></span>
+<span><span class="co">#&gt; 11  7.7292e-03     10 0.12234619 0.26166 0.047488</span></span>
+<span><span class="co">#&gt; 12  6.5545e-03     11 0.11461702 0.26243 0.047476</span></span>
+<span><span class="co">#&gt; 13  5.7344e-03     12 0.10806249 0.24154 0.044548</span></span>
+<span><span class="co">#&gt; 14  5.3955e-03     14 0.09659371 0.24499 0.043512</span></span>
+<span><span class="co">#&gt; 15  4.6018e-03     15 0.09119826 0.24284 0.043821</span></span>
+<span><span class="co">#&gt; 16  3.7390e-03     16 0.08659643 0.24439 0.044009</span></span>
+<span><span class="co">#&gt; 17  3.2170e-03     17 0.08285743 0.24188 0.044019</span></span>
+<span><span class="co">#&gt; 18  2.5445e-03     18 0.07964044 0.23957 0.043896</span></span>
+<span><span class="co">#&gt; 19  2.3205e-03     20 0.07455137 0.24288 0.043992</span></span>
+<span><span class="co">#&gt; 20  2.1485e-03     21 0.07223089 0.23905 0.043463</span></span>
+<span><span class="co">#&gt; 21  2.1316e-03     22 0.07008242 0.24546 0.044444</span></span>
+<span><span class="co">#&gt; 22  2.0477e-03     23 0.06795084 0.24556 0.044447</span></span>
+<span><span class="co">#&gt; 23  2.0283e-03     24 0.06590313 0.24493 0.044439</span></span>
+<span><span class="co">#&gt; 24  1.9878e-03     25 0.06387482 0.24448 0.044442</span></span>
+<span><span class="co">#&gt; 25  1.9781e-03     26 0.06188702 0.24495 0.044438</span></span>
+<span><span class="co">#&gt; 26  1.9686e-03     27 0.05990894 0.24495 0.044438</span></span>
+<span><span class="co">#&gt; 27  1.6400e-03     28 0.05794032 0.24296 0.044425</span></span>
+<span><span class="co">#&gt; 28  1.6357e-03     29 0.05630030 0.24257 0.044401</span></span>
+<span><span class="co">#&gt; 29  1.6212e-03     30 0.05466464 0.24257 0.044401</span></span>
+<span><span class="co">#&gt; 30  1.5386e-03     31 0.05304346 0.24272 0.044402</span></span>
+<span><span class="co">#&gt; 31  1.4205e-03     32 0.05150482 0.24609 0.044437</span></span>
+<span><span class="co">#&gt; 32  1.3390e-03     33 0.05008431 0.24671 0.044485</span></span>
+<span><span class="co">#&gt; 33  1.2731e-03     34 0.04874534 0.24823 0.044688</span></span>
+<span><span class="co">#&gt; 34  1.2294e-03     35 0.04747228 0.24985 0.044671</span></span>
+<span><span class="co">#&gt; 35  1.1693e-03     36 0.04624285 0.25214 0.044656</span></span>
+<span><span class="co">#&gt; 36  1.1587e-03     37 0.04507358 0.25609 0.044764</span></span>
+<span><span class="co">#&gt; 37  1.1306e-03     38 0.04391487 0.25484 0.044738</span></span>
+<span><span class="co">#&gt; 38  1.1235e-03     39 0.04278422 0.25484 0.044738</span></span>
+<span><span class="co">#&gt; 39  1.1117e-03     40 0.04166071 0.25420 0.044733</span></span>
+<span><span class="co">#&gt; 40  1.0183e-03     41 0.04054904 0.25240 0.044720</span></span>
+<span><span class="co">#&gt; 41  1.0016e-03     42 0.03953071 0.25440 0.044772</span></span>
+<span><span class="co">#&gt; 42  9.8001e-04     43 0.03852907 0.25480 0.044799</span></span>
+<span><span class="co">#&gt; 43  9.5959e-04     45 0.03656906 0.25607 0.044791</span></span>
+<span><span class="co">#&gt; 44  9.5612e-04     47 0.03464987 0.25828 0.044779</span></span>
+<span><span class="co">#&gt; 45  8.9091e-04     48 0.03369375 0.26231 0.045282</span></span>
+<span><span class="co">#&gt; 46  8.8600e-04     49 0.03280284 0.25879 0.044930</span></span>
+<span><span class="co">#&gt; 47  8.7103e-04     50 0.03191684 0.25836 0.044925</span></span>
+<span><span class="co">#&gt; 48  8.4075e-04     51 0.03104580 0.25901 0.044895</span></span>
+<span><span class="co">#&gt; 49  8.3105e-04     52 0.03020505 0.25848 0.044897</span></span>
+<span><span class="co">#&gt; 50  8.2287e-04     53 0.02937400 0.25882 0.044924</span></span>
+<span><span class="co">#&gt; 51  8.2159e-04     54 0.02855113 0.25893 0.044922</span></span>
+<span><span class="co">#&gt; 52  7.9802e-04     55 0.02772954 0.25984 0.044889</span></span>
+<span><span class="co">#&gt; 53  7.7379e-04     56 0.02693152 0.26006 0.044887</span></span>
+<span><span class="co">#&gt; 54  7.6674e-04     57 0.02615772 0.26006 0.044887</span></span>
+<span><span class="co">#&gt; 55  7.4051e-04     58 0.02539098 0.26070 0.044591</span></span>
+<span><span class="co">#&gt; 56  6.5174e-04     59 0.02465047 0.26100 0.044598</span></span>
+<span><span class="co">#&gt; 57  6.4506e-04     60 0.02399873 0.26196 0.044601</span></span>
+<span><span class="co">#&gt; 58  6.1748e-04     61 0.02335367 0.26243 0.044616</span></span>
+<span><span class="co">#&gt; 59  5.7918e-04     62 0.02273620 0.26455 0.044635</span></span>
+<span><span class="co">#&gt; 60  5.6590e-04     63 0.02215702 0.26531 0.044647</span></span>
+<span><span class="co">#&gt; 61  5.3958e-04     64 0.02159112 0.26456 0.044653</span></span>
+<span><span class="co">#&gt; 62  5.2778e-04     65 0.02105154 0.26771 0.045102</span></span>
+<span><span class="co">#&gt; 63  5.2595e-04     66 0.02052376 0.26878 0.045150</span></span>
+<span><span class="co">#&gt; 64  4.9608e-04     67 0.01999781 0.26887 0.045148</span></span>
+<span><span class="co">#&gt; 65  4.9581e-04     68 0.01950173 0.26876 0.045137</span></span>
+<span><span class="co">#&gt; 66  4.6477e-04     69 0.01900592 0.26899 0.045164</span></span>
+<span><span class="co">#&gt; 67  4.5562e-04     70 0.01854115 0.26883 0.045164</span></span>
+<span><span class="co">#&gt; 68  4.3208e-04     72 0.01762991 0.26818 0.045157</span></span>
+<span><span class="co">#&gt; 69  4.2934e-04     74 0.01676575 0.26768 0.045149</span></span>
+<span><span class="co">#&gt; 70  4.0512e-04     76 0.01590708 0.26831 0.045173</span></span>
+<span><span class="co">#&gt; 71  4.0437e-04     77 0.01550196 0.26865 0.045176</span></span>
+<span><span class="co">#&gt; 72  3.8959e-04     78 0.01509758 0.26928 0.045191</span></span>
+<span><span class="co">#&gt; 73  3.3745e-04     79 0.01470799 0.27223 0.045179</span></span>
+<span><span class="co">#&gt; 74  3.2839e-04     80 0.01437054 0.27232 0.045055</span></span>
+<span><span class="co">#&gt; 75  3.2113e-04     81 0.01404215 0.27316 0.045075</span></span>
+<span><span class="co">#&gt; 76  3.1358e-04     82 0.01372102 0.27216 0.044977</span></span>
+<span><span class="co">#&gt; 77  3.0960e-04     83 0.01340743 0.27273 0.045001</span></span>
+<span><span class="co">#&gt; 78  2.8639e-04     84 0.01309783 0.27342 0.045009</span></span>
+<span><span class="co">#&gt; 79  2.7607e-04     85 0.01281145 0.27447 0.045074</span></span>
+<span><span class="co">#&gt; 80  2.7189e-04     87 0.01225931 0.27379 0.045071</span></span>
+<span><span class="co">#&gt; 81  2.6958e-04     88 0.01198742 0.27385 0.045067</span></span>
+<span><span class="co">#&gt; 82  2.6552e-04     89 0.01171784 0.27361 0.045096</span></span>
+<span><span class="co">#&gt; 83  2.6115e-04     90 0.01145232 0.27350 0.045093</span></span>
+<span><span class="co">#&gt; 84  2.5749e-04     91 0.01119117 0.27350 0.045093</span></span>
+<span><span class="co">#&gt; 85  2.5578e-04     92 0.01093368 0.27280 0.045100</span></span>
+<span><span class="co">#&gt; 86  2.5257e-04     93 0.01067790 0.27277 0.045101</span></span>
+<span><span class="co">#&gt; 87  2.2556e-04     94 0.01042532 0.27385 0.045136</span></span>
+<span><span class="co">#&gt; 88  2.2386e-04     95 0.01019976 0.27266 0.045131</span></span>
+<span><span class="co">#&gt; 89  2.1854e-04     96 0.00997590 0.27266 0.045130</span></span>
+<span><span class="co">#&gt; 90  2.1012e-04     97 0.00975736 0.27363 0.045146</span></span>
+<span><span class="co">#&gt; 91  2.0946e-04     98 0.00954723 0.27444 0.045161</span></span>
+<span><span class="co">#&gt; 92  2.0776e-04     99 0.00933778 0.27444 0.045161</span></span>
+<span><span class="co">#&gt; 93  2.0488e-04    100 0.00913001 0.27230 0.044975</span></span>
+<span><span class="co">#&gt; 94  2.0296e-04    101 0.00892513 0.27225 0.044975</span></span>
+<span><span class="co">#&gt; 95  2.0035e-04    102 0.00872217 0.27223 0.044976</span></span>
+<span><span class="co">#&gt; 96  1.9446e-04    103 0.00852182 0.27232 0.044975</span></span>
+<span><span class="co">#&gt; 97  1.9166e-04    104 0.00832736 0.27133 0.044929</span></span>
+<span><span class="co">#&gt; 98  1.8824e-04    105 0.00813570 0.27103 0.044910</span></span>
+<span><span class="co">#&gt; 99  1.8713e-04    106 0.00794747 0.27072 0.044913</span></span>
+<span><span class="co">#&gt; 100 1.7808e-04    107 0.00776033 0.26983 0.044895</span></span>
+<span><span class="co">#&gt; 101 1.7610e-04    108 0.00758225 0.27000 0.044893</span></span>
+<span><span class="co">#&gt; 102 1.7325e-04    109 0.00740615 0.26984 0.044895</span></span>
+<span><span class="co">#&gt; 103 1.7018e-04    110 0.00723291 0.26968 0.044896</span></span>
+<span><span class="co">#&gt; 104 1.6527e-04    111 0.00706273 0.27027 0.044898</span></span>
+<span><span class="co">#&gt; 105 1.5789e-04    112 0.00689746 0.27057 0.044895</span></span>
+<span><span class="co">#&gt; 106 1.5735e-04    113 0.00673957 0.27046 0.044898</span></span>
+<span><span class="co">#&gt; 107 1.4751e-04    114 0.00658222 0.27066 0.044897</span></span>
+<span><span class="co">#&gt; 108 1.4632e-04    115 0.00643470 0.27055 0.044899</span></span>
+<span><span class="co">#&gt; 109 1.3986e-04    116 0.00628839 0.27039 0.044902</span></span>
+<span><span class="co">#&gt; 110 1.3925e-04    117 0.00614852 0.27111 0.044899</span></span>
+<span><span class="co">#&gt; 111 1.3479e-04    120 0.00573078 0.27113 0.044898</span></span>
+<span><span class="co">#&gt; 112 1.3357e-04    121 0.00559599 0.27084 0.044895</span></span>
+<span><span class="co">#&gt; 113 1.3245e-04    122 0.00546242 0.27097 0.044894</span></span>
+<span><span class="co">#&gt; 114 1.3171e-04    123 0.00532997 0.27101 0.044893</span></span>
+<span><span class="co">#&gt; 115 1.2728e-04    124 0.00519826 0.27137 0.044889</span></span>
+<span><span class="co">#&gt; 116 1.2691e-04    125 0.00507098 0.27085 0.044877</span></span>
+<span><span class="co">#&gt; 117 1.2493e-04    126 0.00494407 0.27066 0.044880</span></span>
+<span><span class="co">#&gt; 118 1.1699e-04    127 0.00481913 0.27148 0.044907</span></span>
+<span><span class="co">#&gt; 119 1.1655e-04    129 0.00458516 0.27168 0.044909</span></span>
+<span><span class="co">#&gt; 120 1.1542e-04    130 0.00446861 0.27209 0.044907</span></span>
+<span><span class="co">#&gt; 121 1.0244e-04    131 0.00435319 0.27047 0.044874</span></span>
+<span><span class="co">#&gt; 122 1.0244e-04    132 0.00425075 0.27085 0.044872</span></span>
+<span><span class="co">#&gt; 123 1.0205e-04    133 0.00414831 0.27085 0.044872</span></span>
+<span><span class="co">#&gt; 124 9.8401e-05    134 0.00404627 0.27127 0.044871</span></span>
+<span><span class="co">#&gt; 125 9.7938e-05    135 0.00394786 0.27064 0.044858</span></span>
+<span><span class="co">#&gt; 126 9.7938e-05    136 0.00384993 0.27069 0.044857</span></span>
+<span><span class="co">#&gt; 127 9.7128e-05    137 0.00375199 0.27069 0.044857</span></span>
+<span><span class="co">#&gt; 128 9.4118e-05    138 0.00365486 0.27006 0.044763</span></span>
+<span><span class="co">#&gt; 129 9.3663e-05    139 0.00356074 0.26991 0.044771</span></span>
+<span><span class="co">#&gt; 130 9.3243e-05    140 0.00346708 0.26991 0.044771</span></span>
+<span><span class="co">#&gt; 131 8.2635e-05    141 0.00337384 0.27063 0.044771</span></span>
+<span><span class="co">#&gt; 132 8.2635e-05    142 0.00329120 0.26996 0.044773</span></span>
+<span><span class="co">#&gt; 133 7.3547e-05    143 0.00320857 0.27017 0.044774</span></span>
+<span><span class="co">#&gt; 134 7.3049e-05    144 0.00313502 0.27061 0.044796</span></span>
+<span><span class="co">#&gt; 135 6.8395e-05    145 0.00306197 0.27067 0.044795</span></span>
+<span><span class="co">#&gt; 136 6.6928e-05    146 0.00299358 0.27005 0.044771</span></span>
+<span><span class="co">#&gt; 137 6.6928e-05    147 0.00292665 0.27005 0.044773</span></span>
+<span><span class="co">#&gt; 138 6.5562e-05    148 0.00285972 0.27007 0.044773</span></span>
+<span><span class="co">#&gt; 139 5.8916e-05    149 0.00279416 0.27023 0.044772</span></span>
+<span><span class="co">#&gt; 140 5.6726e-05    151 0.00267633 0.27085 0.044768</span></span>
+<span><span class="co">#&gt; 141 5.6471e-05    152 0.00261960 0.27079 0.044774</span></span>
+<span><span class="co">#&gt; 142 5.5090e-05    153 0.00256313 0.27079 0.044774</span></span>
+<span><span class="co">#&gt; 143 5.4263e-05    155 0.00245295 0.27081 0.044773</span></span>
+<span><span class="co">#&gt; 144 5.1296e-05    156 0.00239869 0.27094 0.044772</span></span>
+<span><span class="co">#&gt; 145 5.1296e-05    157 0.00234739 0.27146 0.044770</span></span>
+<span><span class="co">#&gt; 146 5.1053e-05    158 0.00229610 0.27146 0.044770</span></span>
+<span><span class="co">#&gt; 147 5.1003e-05    159 0.00224504 0.27146 0.044770</span></span>
+<span><span class="co">#&gt; 148 4.9576e-05    160 0.00219404 0.27117 0.044769</span></span>
+<span><span class="co">#&gt; 149 4.9308e-05    161 0.00214446 0.27118 0.044768</span></span>
+<span><span class="co">#&gt; 150 4.8615e-05    162 0.00209516 0.27114 0.044769</span></span>
+<span><span class="co">#&gt; 151 4.8615e-05    163 0.00204654 0.27154 0.044767</span></span>
+<span><span class="co">#&gt; 152 4.5354e-05    164 0.00199793 0.27154 0.044767</span></span>
+<span><span class="co">#&gt; 153 4.2544e-05    165 0.00195257 0.27175 0.044768</span></span>
+<span><span class="co">#&gt; 154 4.2519e-05    166 0.00191003 0.27179 0.044772</span></span>
+<span><span class="co">#&gt; 155 4.1488e-05    167 0.00186751 0.27179 0.044772</span></span>
+<span><span class="co">#&gt; 156 4.0759e-05    169 0.00178453 0.27173 0.044772</span></span>
+<span><span class="co">#&gt; 157 4.0675e-05    172 0.00166226 0.27164 0.044773</span></span>
+<span><span class="co">#&gt; 158 4.0141e-05    173 0.00162158 0.27112 0.044756</span></span>
+<span><span class="co">#&gt; 159 3.9661e-05    174 0.00158144 0.27111 0.044756</span></span>
+<span><span class="co">#&gt; 160 3.9133e-05    175 0.00154178 0.27111 0.044756</span></span>
+<span><span class="co">#&gt; 161 3.8851e-05    176 0.00150265 0.27118 0.044755</span></span>
+<span><span class="co">#&gt; 162 3.6878e-05    177 0.00146380 0.27161 0.044763</span></span>
+<span><span class="co">#&gt; 163 3.6524e-05    178 0.00142692 0.27163 0.044763</span></span>
+<span><span class="co">#&gt; 164 3.4197e-05    179 0.00139039 0.27160 0.044763</span></span>
+<span><span class="co">#&gt; 165 3.2895e-05    180 0.00135620 0.27153 0.044756</span></span>
+<span><span class="co">#&gt; 166 3.2781e-05    181 0.00132330 0.27172 0.044754</span></span>
+<span><span class="co">#&gt; 167 3.2438e-05    182 0.00129052 0.27183 0.044753</span></span>
+<span><span class="co">#&gt; 168 2.9746e-05    184 0.00122564 0.27187 0.044752</span></span>
+<span><span class="co">#&gt; 169 2.9503e-05    185 0.00119590 0.27228 0.044763</span></span>
+<span><span class="co">#&gt; 170 2.9381e-05    186 0.00116639 0.27228 0.044763</span></span>
+<span><span class="co">#&gt; 171 2.9381e-05    187 0.00113701 0.27228 0.044763</span></span>
+<span><span class="co">#&gt; 172 2.9139e-05    188 0.00110763 0.27228 0.044763</span></span>
+<span><span class="co">#&gt; 173 2.8420e-05    189 0.00107849 0.27255 0.044764</span></span>
+<span><span class="co">#&gt; 174 2.6761e-05    190 0.00105007 0.27232 0.044759</span></span>
+<span><span class="co">#&gt; 175 2.4484e-05    191 0.00102331 0.27260 0.044758</span></span>
+<span><span class="co">#&gt; 176 2.4282e-05    192 0.00099883 0.27181 0.044537</span></span>
+<span><span class="co">#&gt; 177 2.3311e-05    193 0.00097455 0.27213 0.044538</span></span>
+<span><span class="co">#&gt; 178 2.3083e-05    194 0.00095124 0.27216 0.044537</span></span>
+<span><span class="co">#&gt; 179 2.2309e-05    195 0.00092815 0.27216 0.044537</span></span>
+<span><span class="co">#&gt; 180 2.1930e-05    196 0.00090584 0.27171 0.044505</span></span>
+<span><span class="co">#&gt; 181 2.1854e-05    198 0.00086198 0.27169 0.044508</span></span>
+<span><span class="co">#&gt; 182 2.1854e-05    199 0.00084013 0.27169 0.044508</span></span>
+<span><span class="co">#&gt; 183 2.1409e-05    201 0.00079642 0.27169 0.044508</span></span>
+<span><span class="co">#&gt; 184 2.0325e-05    202 0.00077501 0.27181 0.044510</span></span>
+<span><span class="co">#&gt; 185 2.0235e-05    203 0.00075469 0.27120 0.044502</span></span>
+<span><span class="co">#&gt; 186 2.0235e-05    204 0.00073445 0.27120 0.044502</span></span>
+<span><span class="co">#&gt; 187 2.0235e-05    205 0.00071422 0.27120 0.044502</span></span>
+<span><span class="co">#&gt; 188 2.0235e-05    206 0.00069398 0.27120 0.044502</span></span>
+<span><span class="co">#&gt; 189 1.8439e-05    207 0.00067375 0.27120 0.044502</span></span>
+<span><span class="co">#&gt; 190 1.8363e-05    208 0.00065531 0.27111 0.044501</span></span>
+<span><span class="co">#&gt; 191 1.8363e-05    210 0.00061858 0.27113 0.044501</span></span>
+<span><span class="co">#&gt; 192 1.8363e-05    211 0.00060022 0.27113 0.044501</span></span>
+<span><span class="co">#&gt; 193 1.8262e-05    212 0.00058185 0.27113 0.044501</span></span>
+<span><span class="co">#&gt; 194 1.7099e-05    213 0.00056359 0.27096 0.044498</span></span>
+<span><span class="co">#&gt; 195 1.7099e-05    214 0.00054649 0.27094 0.044499</span></span>
+<span><span class="co">#&gt; 196 1.6390e-05    215 0.00052940 0.27108 0.044499</span></span>
+<span><span class="co">#&gt; 197 1.6390e-05    216 0.00051300 0.27106 0.044500</span></span>
+<span><span class="co">#&gt; 198 1.4620e-05    217 0.00049661 0.27091 0.044504</span></span>
+<span><span class="co">#&gt; 199 1.4620e-05    218 0.00048199 0.27104 0.044503</span></span>
+<span><span class="co">#&gt; 200 1.4610e-05    219 0.00046737 0.27104 0.044503</span></span>
+<span><span class="co">#&gt; 201 1.3380e-05    220 0.00045276 0.27124 0.044505</span></span>
+<span><span class="co">#&gt; 202 1.3380e-05    221 0.00043938 0.27143 0.044517</span></span>
+<span><span class="co">#&gt; 203 1.2950e-05    222 0.00042600 0.27144 0.044517</span></span>
+<span><span class="co">#&gt; 204 1.2950e-05    223 0.00041305 0.27144 0.044517</span></span>
+<span><span class="co">#&gt; 205 1.1382e-05    224 0.00040010 0.27168 0.044520</span></span>
+<span><span class="co">#&gt; 206 1.1382e-05    225 0.00038872 0.27179 0.044520</span></span>
+<span><span class="co">#&gt; 207 1.0927e-05    226 0.00037734 0.27176 0.044520</span></span>
+<span><span class="co">#&gt; 208 1.0118e-05    227 0.00036641 0.27189 0.044526</span></span>
+<span><span class="co">#&gt; 209 1.0118e-05    228 0.00035629 0.27189 0.044526</span></span>
+<span><span class="co">#&gt; 210 1.0000e-05    229 0.00034618 0.27189 0.044526</span></span></code></pre></div>
 <p>It is probably better and easier to find this
 optimal value <em>programatically</em> as follows:</p>
 <div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="va">b</span> <span class="op">&lt;-</span> <span class="va">bos.to</span><span class="op">$</span><span class="va">cptable</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">bos.to</span><span class="op">$</span><span class="va">cptable</span><span class="op">[</span>, <span class="st">"xerror"</span><span class="op">]</span><span class="op">)</span>, <span class="st">"CP"</span><span class="op">]</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.00214847</span></code></pre></div>
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">b</span> <span class="op">&lt;-</span> <span class="va">bos.to</span><span class="op">$</span><span class="va">cptable</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">bos.to</span><span class="op">$</span><span class="va">cptable</span><span class="op">[</span>, <span class="st">"xerror"</span><span class="op">]</span><span class="op">)</span>, <span class="st">"CP"</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.00214847</span></span></code></pre></div>
 <!-- > **R coding digression**: Note that above we could also have used the following: -->
 <!-- > ```{r prune4.alt, fig.width=6, fig.height=6, message=FALSE, warning=FALSE} -->
 <!-- > tmp <- bos.to$cptable[,"xerror"] -->
@@ -383,24 +408,24 @@ optimal value <em>programatically</em> as follows:</p>
 <code>prune</code> on the <code>rpart</code> object setting the complexity parameter
 to the estimated optimal value found above:</p>
 <div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">bos.t3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/prune.rpart.html">prune</a></span><span class="op">(</span><span class="va">bos.to</span>, cp <span class="op">=</span> <span class="va">b</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">bos.t3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/prune.rpart.html">prune</a></span><span class="op">(</span><span class="va">bos.to</span>, cp <span class="op">=</span> <span class="va">b</span><span class="op">)</span></span></code></pre></div>
 <p>This is how the optimally pruned tree looks:</p>
 <div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">bos.t3</span>, uniform <span class="op">=</span> <span class="cn">FALSE</span>, margin <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="va">bos.t3</span>, pretty <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">bos.t3</span>, uniform <span class="op">=</span> <span class="cn">FALSE</span>, margin <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="va">bos.t3</span>, pretty <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="25-more-trees_files/figure-html/prune4.5-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Finally, we can check the predictions of the pruned
 tree on the test set:</p>
 <div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># predictions are better</span>
-<span class="va">pr.t3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">bos.t3</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.t3</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 16.59113</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># predictions are better</span></span>
+<span><span class="va">pr.t3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">bos.t3</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.t3</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 16.59113</span></span></code></pre></div>
 <p>Again, it would be a <strong>very good exercise</strong> for you to
 compare the MSPE of the pruned tree with that of several
 of the alternative methods we have seen in class so far,
 <strong>without using a training / test split</strong>.</p>
-<div id="pruning-regression-trees-with-tree" class="section level2">
+<div id="pruning-regression-trees-with-tree" class="section level2" number="10.1">
 <h2>
 <span class="header-section-number">10.1</span> Pruning regression trees with <code>tree</code><a class="anchor" aria-label="anchor" href="#pruning-regression-trees-with-tree"><i class="fas fa-link"></i></a>
 </h2>
@@ -424,48 +449,48 @@ implementation of regression trees is different from the one in
 need to modify the default stopping criteria using the argument
 <code>control</code>:</p>
 <div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">tree</span><span class="op">)</span>
-<span class="va">bos.t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tree/man/tree.html">tree</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/tree/man/tree.control.html">tree.control</a></span><span class="op">(</span>nobs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">)</span>, mincut <span class="op">=</span> <span class="fl">6</span>, minsize <span class="op">=</span> <span class="fl">20</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">tree</span><span class="op">)</span></span>
+<span><span class="va">bos.t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tree/man/tree.html">tree</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/tree/man/tree.control.html">tree.control</a></span><span class="op">(</span>nobs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">)</span>, mincut <span class="op">=</span> <span class="fl">6</span>, minsize <span class="op">=</span> <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>We plot the resulting tree</p>
 <div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">bos.t2</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="va">bos.t2</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">bos.t2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="va">bos.t2</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="25-more-trees_files/figure-html/prunetree1-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>As discussed before, we now fit a very large tree, which will be
 pruned later:</p>
 <div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">bos.to2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tree/man/tree.html">tree</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>,
-  data <span class="op">=</span> <span class="va">dat.tr</span>,
-  control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/tree/man/tree.control.html">tree.control</a></span><span class="op">(</span>nobs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">)</span>, mincut <span class="op">=</span> <span class="fl">1</span>, minsize <span class="op">=</span> <span class="fl">2</span>, mindev <span class="op">=</span> <span class="fl">1e-5</span><span class="op">)</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">bos.to2</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">bos.to2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tree/man/tree.html">tree</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">dat.tr</span>,</span>
+<span>  control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/tree/man/tree.control.html">tree.control</a></span><span class="op">(</span>nobs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">)</span>, mincut <span class="op">=</span> <span class="fl">1</span>, minsize <span class="op">=</span> <span class="fl">2</span>, mindev <span class="op">=</span> <span class="fl">1e-5</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">bos.to2</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="25-more-trees_files/figure-html/prunetree2-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>We now use the function <code>tree:cv.tree()</code> to estimate the MSPE of
 the subtrees of <code>bos.to2</code>, using 5-fold CV, and plot the estimated
 MSPE (here labeled as “deviance”) as a function of the
 complexity parameter (or, equivalently, the size of the tree):</p>
 <div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">tt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tree/man/cv.tree.html">cv.tree</a></span><span class="op">(</span><span class="va">bos.to2</span>, K <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">tt</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">tt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tree/man/cv.tree.html">cv.tree</a></span><span class="op">(</span><span class="va">bos.to2</span>, K <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">tt</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="25-more-trees_files/figure-html/prunetree3-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Finally, we use the function <code>prune.tree</code> to prune the larger tree
 at the “optimal” size, as estimated by <code>cv.tree</code> above:</p>
 <div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">bos.pr2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tree/man/prune.tree.html">prune.tree</a></span><span class="op">(</span><span class="va">bos.to2</span>, k <span class="op">=</span> <span class="va">tt</span><span class="op">$</span><span class="va">k</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">tt</span><span class="op">$</span><span class="va">dev</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">tt</span><span class="op">$</span><span class="va">dev</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">bos.pr2</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="va">bos.pr2</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">bos.pr2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tree/man/prune.tree.html">prune.tree</a></span><span class="op">(</span><span class="va">bos.to2</span>, k <span class="op">=</span> <span class="va">tt</span><span class="op">$</span><span class="va">k</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">tt</span><span class="op">$</span><span class="va">dev</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">tt</span><span class="op">$</span><span class="va">dev</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">bos.pr2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="va">bos.pr2</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="25-more-trees_files/figure-html/prunetree3.2-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Compare this pruned tree with the one obtained with the regression trees
 implementation in <code>rpart</code>. In particular, we can compare the
 predictions of this other pruned
 tree on the test set:</p>
 <div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># predictions are worse than the rpart-pruned tree</span>
-<span class="va">pr.tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">bos.pr2</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.tree</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 15.7194</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># predictions are worse than the rpart-pruned tree</span></span>
+<span><span class="va">pr.tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">bos.pr2</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.tree</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 15.7194</span></span></code></pre></div>
 <p>Note that the predictions of the tree pruned with the <code>tree</code>
 package seem to be better than those of the tree pruned with
 the <code>rpart</code> package. <strong>Does this mean that <code>rpart</code> gives
@@ -477,7 +502,7 @@ Again, it would be a <strong>very good exercise</strong> for you to
 check which fit (<code>tree</code> or <code>rpart</code>) gives pruned
 trees with better prediction properties in this case.</p>
 </div>
-<div id="instability-of-regression-trees" class="section level2">
+<div id="instability-of-regression-trees" class="section level2" number="10.2">
 <h2>
 <span class="header-section-number">10.2</span> Instability of regression trees<a class="anchor" aria-label="anchor" href="#instability-of-regression-trees"><i class="fas fa-link"></i></a>
 </h2>
@@ -487,22 +512,22 @@ fitted trees. As a simple illustration we randomly split the
 <code>Boston</code> data used before into two halves and fit a regression
 tree to each portion. We then display both trees.</p>
 <div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Instability of trees...</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bethatkinson/rpart">rpart</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">Boston</span>, package <span class="op">=</span> <span class="st">"MASS"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span>
-<span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="va">dat.t1</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="op">-</span><span class="va">ii</span>, <span class="op">]</span>
-<span class="va">bos.t1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.t1</span>, method <span class="op">=</span> <span class="st">"anova"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">bos.t1</span>, uniform <span class="op">=</span> <span class="cn">FALSE</span>, margin <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="va">bos.t1</span>, pretty <span class="op">=</span> <span class="cn">TRUE</span>, cex <span class="op">=</span> <span class="fl">.8</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Instability of trees...</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bethatkinson/rpart">rpart</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">Boston</span>, package <span class="op">=</span> <span class="st">"MASS"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span></span>
+<span><span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">dat.t1</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="op">-</span><span class="va">ii</span>, <span class="op">]</span></span>
+<span><span class="va">bos.t1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.t1</span>, method <span class="op">=</span> <span class="st">"anova"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">bos.t1</span>, uniform <span class="op">=</span> <span class="cn">FALSE</span>, margin <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="va">bos.t1</span>, pretty <span class="op">=</span> <span class="cn">TRUE</span>, cex <span class="op">=</span> <span class="fl">.8</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="25-more-trees_files/figure-html/inst1-1.png" width="90%" style="display: block; margin: auto;"></div>
 <div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dat.t2</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>
-<span class="va">bos.t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.t2</span>, method <span class="op">=</span> <span class="st">"anova"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">bos.t2</span>, uniform <span class="op">=</span> <span class="cn">FALSE</span>, margin <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="va">bos.t2</span>, pretty <span class="op">=</span> <span class="cn">TRUE</span>, cex <span class="op">=</span> <span class="fl">.8</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">dat.t2</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span></span>
+<span><span class="va">bos.t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.t2</span>, method <span class="op">=</span> <span class="st">"anova"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">bos.t2</span>, uniform <span class="op">=</span> <span class="cn">FALSE</span>, margin <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="va">bos.t2</span>, pretty <span class="op">=</span> <span class="cn">TRUE</span>, cex <span class="op">=</span> <span class="fl">.8</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="25-more-trees_files/figure-html/inst2-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Although we would expect both random halves of the same (moderately large)
 training set to beat least qualitatively similar,
@@ -511,28 +536,28 @@ To compare with a more stable predictor, we fit a linear
 regression model to each half, and look at the two sets of estimated
 coefficients side by side:</p>
 <div class="sourceCode" id="cb140"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># bos.lmf &lt;- lm(medv ~ ., data=Boston)</span>
-<span class="va">bos.lm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.t1</span><span class="op">)</span>
-<span class="va">bos.lm2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.t2</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">bos.lm1</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,
-  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">bos.lm2</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>
-<span class="op">)</span>
-<span class="co">#&gt;               [,1]   [,2]</span>
-<span class="co">#&gt; (Intercept)  35.47  32.35</span>
-<span class="co">#&gt; crim         -0.12  -0.09</span>
-<span class="co">#&gt; zn            0.04   0.05</span>
-<span class="co">#&gt; indus         0.01   0.03</span>
-<span class="co">#&gt; chas          0.90   3.98</span>
-<span class="co">#&gt; nox         -23.90 -12.33</span>
-<span class="co">#&gt; rm            5.01   3.39</span>
-<span class="co">#&gt; age          -0.01   0.00</span>
-<span class="co">#&gt; dis          -1.59  -1.41</span>
-<span class="co">#&gt; rad           0.33   0.28</span>
-<span class="co">#&gt; tax          -0.01  -0.01</span>
-<span class="co">#&gt; ptratio      -1.12  -0.72</span>
-<span class="co">#&gt; black         0.01   0.01</span>
-<span class="co">#&gt; lstat        -0.31  -0.66</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># bos.lmf &lt;- lm(medv ~ ., data=Boston)</span></span>
+<span><span class="va">bos.lm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.t1</span><span class="op">)</span></span>
+<span><span class="va">bos.lm2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.t2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">bos.lm1</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">bos.lm2</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt;               [,1]   [,2]</span></span>
+<span><span class="co">#&gt; (Intercept)  35.47  32.35</span></span>
+<span><span class="co">#&gt; crim         -0.12  -0.09</span></span>
+<span><span class="co">#&gt; zn            0.04   0.05</span></span>
+<span><span class="co">#&gt; indus         0.01   0.03</span></span>
+<span><span class="co">#&gt; chas          0.90   3.98</span></span>
+<span><span class="co">#&gt; nox         -23.90 -12.33</span></span>
+<span><span class="co">#&gt; rm            5.01   3.39</span></span>
+<span><span class="co">#&gt; age          -0.01   0.00</span></span>
+<span><span class="co">#&gt; dis          -1.59  -1.41</span></span>
+<span><span class="co">#&gt; rad           0.33   0.28</span></span>
+<span><span class="co">#&gt; tax          -0.01  -0.01</span></span>
+<span><span class="co">#&gt; ptratio      -1.12  -0.72</span></span>
+<span><span class="co">#&gt; black         0.01   0.01</span></span>
+<span><span class="co">#&gt; lstat        -0.31  -0.66</span></span></code></pre></div>
 <p>Note that most of the estimated regression coefficients are
 similar, and all of them are at least qualitatively comparable.</p>
 
@@ -567,7 +592,7 @@ similar, and all of them are at least qualitatively comparable.</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-09-17.</p>
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibián-Barrera. It was last built on 2023-08-16.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
@@ -580,7 +605,7 @@ similar, and all of them are at least qualitatively comparable.</p>
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

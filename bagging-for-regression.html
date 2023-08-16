@@ -5,9 +5,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>14 Bagging for regression | UBC Stat 406 Worksheets</title>
-<meta name="author" content="Daniel J. McDonald and Matías Salibán-Barrera">
+<meta name="author" content="Daniel J. McDonald and Matías Salibián-Barrera">
 <meta name="description" content="One strategy to obtain more stable predictors is called Bootstrap AGGregatING (bagging). It can be applied to many predictors (not only trees), and it generally results in larger improvements in...">
-<meta name="generator" content="bookdown 0.24 with bs4_book()">
+<meta name="generator" content="bookdown 0.35 with bs4_book()">
 <meta property="og:title" content="14 Bagging for regression | UBC Stat 406 Worksheets">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://ubc-stat.github.io/stat-406-worksheets/bagging-for-regression.html">
@@ -17,8 +17,33 @@
 <meta name="twitter:description" content="One strategy to obtain more stable predictors is called Bootstrap AGGregatING (bagging). It can be applied to many predictors (not only trees), and it generally results in larger improvements in...">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.0/transition.js"></script><script src="libs/bs3compat-0.3.0/tabs.js"></script><script src="libs/bs3compat-0.3.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.5.1/transition.js"></script><script src="libs/bs3compat-0.5.1/tabs.js"></script><script src="libs/bs3compat-0.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -81,7 +106,7 @@
         </div>
       </nav>
 </div>
-  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="bagging-for-regression" class="section level1">
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="bagging-for-regression" class="section level1" number="14">
 <h1>
 <span class="header-section-number">14</span> Bagging for regression<a class="anchor" aria-label="anchor" href="#bagging-for-regression"><i class="fas fa-link"></i></a>
 </h1>
@@ -99,7 +124,7 @@ bagging for different predictors, with varying degrees of
 flexibility (the implementations) and user-friendliness.
 However, for pedagogical and illustrative purposes, in these notes I will
 <strong>bagg</strong> by hand.</p>
-<div id="bagging-by-hand" class="section level3">
+<div id="bagging-by-hand" class="section level3" number="14.0.1">
 <h3>
 <span class="header-section-number">14.0.1</span> Bagging by hand<a class="anchor" aria-label="anchor" href="#bagging-by-hand"><i class="fas fa-link"></i></a>
 </h3>
@@ -107,13 +132,13 @@ However, for pedagogical and illustrative purposes, in these notes I will
 prediction quality I will split the
 data (<code>Boston</code>) into a training and a test set. We do this now:</p>
 <div class="sourceCode" id="cb180"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bethatkinson/rpart">rpart</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">Boston</span>, package <span class="op">=</span> <span class="st">"MASS"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span>
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span>
-<span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span>
-<span class="va">dat.te</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>
-<span class="va">dat.tr</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="op">-</span><span class="va">ii</span>, <span class="op">]</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bethatkinson/rpart">rpart</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">Boston</span>, package <span class="op">=</span> <span class="st">"MASS"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span></span>
+<span><span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">dat.te</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span></span>
+<span><span class="va">dat.tr</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="op">-</span><span class="va">ii</span>, <span class="op">]</span></span></code></pre></div>
 <p>I will now train <span class="math inline">\(N = 5\)</span> trees and average their predictions.
 Note that, in order to illustrate the process more
 clearly, I will compute and store the <span class="math inline">\(n_e \times N\)</span>
@@ -129,99 +154,99 @@ illustrated below, but first we will use the
 the former (and hopefully clearer) strategy.</p>
 <p>First create an array where we will store all the predictions:</p>
 <div class="sourceCode" id="cb181"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">5</span>
-<span class="va">myps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span><span class="cn">NA</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.te</span><span class="op">)</span>, <span class="va">N</span><span class="op">)</span><span class="op">)</span>
-<span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.control.html">rpart.control</a></span><span class="op">(</span>minsplit <span class="op">=</span> <span class="fl">3</span>, cp <span class="op">=</span> <span class="fl">1e-3</span>, xval <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
+<span><span class="va">myps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span><span class="cn">NA</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.te</span><span class="op">)</span>, <span class="va">N</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.control.html">rpart.control</a></span><span class="op">(</span>minsplit <span class="op">=</span> <span class="fl">3</span>, cp <span class="op">=</span> <span class="fl">1e-3</span>, xval <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <p>The last object (<code>con</code>) contains my options to train large
 (potentially overfitting) trees.
 As discussed in class, we now generate <code>N</code> bootstrap samples
 by generating vectors of randomly sampled indices (with replacement), the
 relevant lines of code are:</p>
 <div class="sourceCode" id="cb182"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n.tr</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">...</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n.tr</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">...</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
 <p>where we train the trees on the data set <code>dat.tr[ii, ]</code>, which is the boostrap sample.
 Then, for each of these trees we compute the corresponding (vector of) predictions on the
-test set (<code><a href="https://rdrr.io/r/stats/predict.html">predict(tmp, newdata=dat.te, type='vector')</a></code>) and store them.
+test set (<code>predict(tmp, newdata=dat.te, type='vector')</code>) and store them.
 Putting all the pieces together we get:</p>
 <div class="sourceCode" id="cb183"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">n.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n.tr</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-  <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>, method <span class="op">=</span> <span class="st">"anova"</span>, control <span class="op">=</span> <span class="va">con</span><span class="op">)</span>
-  <span class="va">myps</span><span class="op">[</span>, <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">n.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n.tr</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>, method <span class="op">=</span> <span class="st">"anova"</span>, control <span class="op">=</span> <span class="va">con</span><span class="op">)</span></span>
+<span>  <span class="va">myps</span><span class="op">[</span>, <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>The bagged predictions are the average of the predictions obtained with each tree in the
 ensamble. In other words, for each point in <code>dat.te</code> we need to compute the average of the
 predictions obtained with the <code>N</code> different trees. Because of the way
 I stored the results in the matrix <code>myps</code>, the bagged prediction of each point in
 <code>dat.te</code> is the average of the corresponding row in the matrix <code>myps</code>. We can compute
-all these (<span class="math inline">\(n_e\)</span>) averages at once using <code><a href="https://rdrr.io/r/base/colSums.html">rowMeans()</a></code> as follows:</p>
+all these (<span class="math inline">\(n_e\)</span>) averages at once using <code><a href="https://rdrr.io/pkg/Matrix/man/colSums.html">rowMeans()</a></code> as follows:</p>
 <div class="sourceCode" id="cb184"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pr.bagg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span><span class="op">(</span><span class="va">myps</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pr.bagg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html">rowMeans</a></span><span class="op">(</span><span class="va">myps</span><span class="op">)</span></span></code></pre></div>
 <p>Finally, the estimated MSPE of the bagged ensemble of trees obtained with our specific
 test set is:</p>
 <div class="sourceCode" id="cb185"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.bagg</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 14.54751</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.bagg</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 14.54751</span></span></code></pre></div>
 <p>We can now compare this with the similarly estimated
 MSPE of the pruned tree:</p>
 <div class="sourceCode" id="cb186"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">myc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.control.html">rpart.control</a></span><span class="op">(</span>minsplit <span class="op">=</span> <span class="fl">2</span>, cp <span class="op">=</span> <span class="fl">1e-5</span>, xval <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span>
-<span class="va">bos.to</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>,
-  data <span class="op">=</span> <span class="va">dat.tr</span>, method <span class="op">=</span> <span class="st">"anova"</span>,
-  control <span class="op">=</span> <span class="va">myc</span>
-<span class="op">)</span>
-<span class="va">b</span> <span class="op">&lt;-</span> <span class="va">bos.to</span><span class="op">$</span><span class="va">cptable</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">bos.to</span><span class="op">$</span><span class="va">cptable</span><span class="op">[</span>, <span class="st">"xerror"</span><span class="op">]</span><span class="op">)</span>, <span class="st">"CP"</span><span class="op">]</span>
-<span class="va">bos.t3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/prune.rpart.html">prune</a></span><span class="op">(</span><span class="va">bos.to</span>, cp <span class="op">=</span> <span class="va">b</span><span class="op">)</span>
-<span class="va">pr.t3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">bos.t3</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.t3</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 16.59113</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">myc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.control.html">rpart.control</a></span><span class="op">(</span>minsplit <span class="op">=</span> <span class="fl">2</span>, cp <span class="op">=</span> <span class="fl">1e-5</span>, xval <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span></span>
+<span><span class="va">bos.to</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">dat.tr</span>, method <span class="op">=</span> <span class="st">"anova"</span>,</span>
+<span>  control <span class="op">=</span> <span class="va">myc</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="va">bos.to</span><span class="op">$</span><span class="va">cptable</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">bos.to</span><span class="op">$</span><span class="va">cptable</span><span class="op">[</span>, <span class="st">"xerror"</span><span class="op">]</span><span class="op">)</span>, <span class="st">"CP"</span><span class="op">]</span></span>
+<span><span class="va">bos.t3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/prune.rpart.html">prune</a></span><span class="op">(</span><span class="va">bos.to</span>, cp <span class="op">=</span> <span class="va">b</span><span class="op">)</span></span>
+<span><span class="va">pr.t3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">bos.t3</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.t3</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 16.59113</span></span></code></pre></div>
 <p>Would the quality of the bagged predictions improve if we use
 a larger ensemble? For example, what happens if we <strong>bagg</strong> <span class="math inline">\(N = 10\)</span> trees?</p>
 <div class="sourceCode" id="cb187"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">10</span>
-<span class="va">myps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span><span class="cn">NA</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.te</span><span class="op">)</span>, <span class="va">N</span><span class="op">)</span><span class="op">)</span>
-<span class="va">n.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n.tr</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-  <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>, method <span class="op">=</span> <span class="st">"anova"</span>, control <span class="op">=</span> <span class="va">con</span><span class="op">)</span>
-  <span class="va">myps</span><span class="op">[</span>, <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="va">pr.bagg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span><span class="op">(</span><span class="va">myps</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.bagg</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 13.97641</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
+<span><span class="va">myps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span><span class="cn">NA</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.te</span><span class="op">)</span>, <span class="va">N</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">n.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n.tr</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>, method <span class="op">=</span> <span class="st">"anova"</span>, control <span class="op">=</span> <span class="va">con</span><span class="op">)</span></span>
+<span>  <span class="va">myps</span><span class="op">[</span>, <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">pr.bagg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html">rowMeans</a></span><span class="op">(</span><span class="va">myps</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.bagg</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 13.97641</span></span></code></pre></div>
 <p>or <span class="math inline">\(N = 100\)</span> trees?</p>
 <div class="sourceCode" id="cb188"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100</span>
-<span class="va">myps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span><span class="cn">NA</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.te</span><span class="op">)</span>, <span class="va">N</span><span class="op">)</span><span class="op">)</span>
-<span class="va">n.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n.tr</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-  <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>, method <span class="op">=</span> <span class="st">"anova"</span>, control <span class="op">=</span> <span class="va">con</span><span class="op">)</span>
-  <span class="va">myps</span><span class="op">[</span>, <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="va">pr.bagg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span><span class="op">(</span><span class="va">myps</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.bagg</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 12.10982</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
+<span><span class="va">myps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span><span class="cn">NA</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.te</span><span class="op">)</span>, <span class="va">N</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">n.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n.tr</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>, method <span class="op">=</span> <span class="st">"anova"</span>, control <span class="op">=</span> <span class="va">con</span><span class="op">)</span></span>
+<span>  <span class="va">myps</span><span class="op">[</span>, <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">pr.bagg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html">rowMeans</a></span><span class="op">(</span><span class="va">myps</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.bagg</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 12.10982</span></span></code></pre></div>
 <p>or <span class="math inline">\(N = 1000\)</span> trees?</p>
 <div class="sourceCode" id="cb189"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">1000</span>
-<span class="va">myps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span><span class="cn">NA</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.te</span><span class="op">)</span>, <span class="va">N</span><span class="op">)</span><span class="op">)</span>
-<span class="va">n.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n.tr</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-  <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>, method <span class="op">=</span> <span class="st">"anova"</span>, control <span class="op">=</span> <span class="va">con</span><span class="op">)</span>
-  <span class="va">myps</span><span class="op">[</span>, <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="va">pr.bagg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span><span class="op">(</span><span class="va">myps</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.bagg</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 11.48381</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
+<span><span class="va">myps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span><span class="cn">NA</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.te</span><span class="op">)</span>, <span class="va">N</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">n.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n.tr</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>, method <span class="op">=</span> <span class="st">"anova"</span>, control <span class="op">=</span> <span class="va">con</span><span class="op">)</span></span>
+<span>  <span class="va">myps</span><span class="op">[</span>, <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">pr.bagg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html">rowMeans</a></span><span class="op">(</span><span class="va">myps</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.bagg</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 11.48381</span></span></code></pre></div>
 <p>Note that, at least for this test set, increasing the number of bagged trees
 seems to improve the MSPE. However, the gain appears to decrease, so it may
 not be worth the computational effort to use a larger <strong>bag</strong> / ensemble.
@@ -231,33 +256,33 @@ patterns of MSPE are observed for other random training / test splits.
 Below we try a different test/training split and repeat the
 bagging experiment above:</p>
 <div class="sourceCode" id="cb190"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span>
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span>
-<span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span>
-<span class="va">dat.te</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>
-<span class="va">dat.tr</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="op">-</span><span class="va">ii</span>, <span class="op">]</span>
-<span class="va">Ns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">100</span>, <span class="fl">1000</span><span class="op">)</span>
-<span class="va">all.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">Ns</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">all.results</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"N"</span>, <span class="st">"MSPE"</span><span class="op">)</span>
-<span class="va">n.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">)</span>
-<span class="kw">for</span> <span class="op">(</span><span class="va">hh</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">Ns</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">N</span> <span class="op">&lt;-</span> <span class="va">Ns</span><span class="op">[</span><span class="va">hh</span><span class="op">]</span>
-  <span class="va">myps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span><span class="cn">NA</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.te</span><span class="op">)</span>, <span class="va">N</span><span class="op">)</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-  <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n.tr</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-    <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>, method <span class="op">=</span> <span class="st">"anova"</span>, control <span class="op">=</span> <span class="va">con</span><span class="op">)</span>
-    <span class="va">myps</span><span class="op">[</span>, <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span>
-  <span class="op">}</span>
-  <span class="va">pr.bagg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span><span class="op">(</span><span class="va">myps</span><span class="op">)</span>
-  <span class="va">all.results</span><span class="op">[</span><span class="va">hh</span>, <span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">N</span>, <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.bagg</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">all.results</span><span class="op">)</span>
-<span class="co">#&gt;         N     MSPE</span>
-<span class="co">#&gt; [1,]    5 18.27651</span>
-<span class="co">#&gt; [2,]   10 17.50426</span>
-<span class="co">#&gt; [3,]  100 14.52966</span>
-<span class="co">#&gt; [4,] 1000 14.27511</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span></span>
+<span><span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">dat.te</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span></span>
+<span><span class="va">dat.tr</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="op">-</span><span class="va">ii</span>, <span class="op">]</span></span>
+<span><span class="va">Ns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">100</span>, <span class="fl">1000</span><span class="op">)</span></span>
+<span><span class="va">all.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">Ns</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">all.results</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"N"</span>, <span class="st">"MSPE"</span><span class="op">)</span></span>
+<span><span class="va">n.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.tr</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">hh</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">Ns</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">N</span> <span class="op">&lt;-</span> <span class="va">Ns</span><span class="op">[</span><span class="va">hh</span><span class="op">]</span></span>
+<span>  <span class="va">myps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span><span class="cn">NA</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.te</span><span class="op">)</span>, <span class="va">N</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n.tr</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>    <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>, method <span class="op">=</span> <span class="st">"anova"</span>, control <span class="op">=</span> <span class="va">con</span><span class="op">)</span></span>
+<span>    <span class="va">myps</span><span class="op">[</span>, <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">tmp</span>, newdata <span class="op">=</span> <span class="va">dat.te</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="va">pr.bagg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html">rowMeans</a></span><span class="op">(</span><span class="va">myps</span><span class="op">)</span></span>
+<span>  <span class="va">all.results</span><span class="op">[</span><span class="va">hh</span>, <span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">N</span>, <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.bagg</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">all.results</span><span class="op">)</span></span>
+<span><span class="co">#&gt;         N     MSPE</span></span>
+<span><span class="co">#&gt; [1,]    5 18.27651</span></span>
+<span><span class="co">#&gt; [2,]   10 17.50426</span></span>
+<span><span class="co">#&gt; [3,]  100 14.52966</span></span>
+<span><span class="co">#&gt; [4,] 1000 14.27511</span></span></code></pre></div>
 <p>The pattern is in fact similar to the one we observed before:
 increasing the size of the ensemble <span class="math inline">\(N\)</span> helps, but the improvements
 become smaller after a certain value of <span class="math inline">\(N\)</span>.
@@ -267,7 +292,7 @@ what happens with the MSPE of the bagged ensembles (for different values of <spa
 when the MSPE is estimated using cross-validation
 (instead of using a specific test set). Do it!</p>
 </div>
-<div id="more-efficient-useful-and-elegant-implementation" class="section level2">
+<div id="more-efficient-useful-and-elegant-implementation" class="section level2" number="14.1">
 <h2>
 <span class="header-section-number">14.1</span> More efficient, useful and elegant implementation<a class="anchor" aria-label="anchor" href="#more-efficient-useful-and-elegant-implementation"><i class="fas fa-link"></i></a>
 </h2>
@@ -280,24 +305,24 @@ To simplify the comparison between this implementation of
 bagging and the one used above, we first re-create
 the original training / test split</p>
 <div class="sourceCode" id="cb191"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span>
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span>
-<span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span>
-<span class="va">dat.te</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>
-<span class="va">dat.tr</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="op">-</span><span class="va">ii</span>, <span class="op">]</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span></span>
+<span><span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">dat.te</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span></span>
+<span><span class="va">dat.tr</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="op">-</span><span class="va">ii</span>, <span class="op">]</span></span></code></pre></div>
 <p>Now, let’s create a <code>list</code> of 100 (empty) elements, each element of this
 list will store a regression tree:</p>
 <div class="sourceCode" id="cb192"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100</span>
-<span class="va">mybag</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">vector</a></span><span class="op">(</span><span class="st">"list"</span>, <span class="va">N</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
+<span><span class="va">mybag</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">vector</a></span><span class="op">(</span><span class="st">"list"</span>, <span class="va">N</span><span class="op">)</span></span></code></pre></div>
 <p>Now, we train the <span class="math inline">\(N\)</span> trees as before, but store them in the <code>list</code> (without
 computing any predictions):</p>
 <div class="sourceCode" id="cb193"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n.tr</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-  <span class="va">mybag</span><span class="op">[[</span><span class="va">j</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>, method <span class="op">=</span> <span class="st">"anova"</span>, control <span class="op">=</span> <span class="va">con</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n.tr</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="va">mybag</span><span class="op">[[</span><span class="va">j</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat.tr</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>, method <span class="op">=</span> <span class="st">"anova"</span>, control <span class="op">=</span> <span class="va">con</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>Given a new data set, in order to obtain the corresponding predictions for
 each tree in the ensemble, one could either:</p>
 <ul>
@@ -310,20 +335,20 @@ and compact. Of course both give exactly the same results. Below
 we illustrate both strategies. If we use the <strong>first approach (loop)</strong>
 we obtain the following estimated MSPE using the test set:</p>
 <div class="sourceCode" id="cb194"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pr.bagg2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.te</span><span class="op">)</span><span class="op">)</span>
-<span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">pr.bagg2</span> <span class="op">&lt;-</span> <span class="va">pr.bagg2</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">mybag</span><span class="op">[[</span><span class="va">j</span><span class="op">]</span><span class="op">]</span>, newdata <span class="op">=</span> <span class="va">dat.te</span><span class="op">)</span> <span class="op">/</span> <span class="va">N</span>
-<span class="op">}</span>
-<span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.bagg2</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 12.10982</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pr.bagg2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">dat.te</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">pr.bagg2</span> <span class="op">&lt;-</span> <span class="va">pr.bagg2</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">mybag</span><span class="op">[[</span><span class="va">j</span><span class="op">]</span><span class="op">]</span>, newdata <span class="op">=</span> <span class="va">dat.te</span><span class="op">)</span> <span class="op">/</span> <span class="va">N</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.bagg2</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 12.10982</span></span></code></pre></div>
 <p>(compare it with the results we obtained before). Using the <strong>second approach (sapply)</strong>:</p>
 <div class="sourceCode" id="cb195"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pr.bagg3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">mybag</span>, <span class="va">predict</span>, newdata <span class="op">=</span> <span class="va">dat.te</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.bagg3</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] 12.10982</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pr.bagg3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html">rowMeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">mybag</span>, <span class="va">predict</span>, newdata <span class="op">=</span> <span class="va">dat.te</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">dat.te</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">medv</span> <span class="op">-</span> <span class="va">pr.bagg3</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 12.10982</span></span></code></pre></div>
 <p>Both results are of course identical.</p>
 </div>
-<div id="bagging-a-regression-spline" class="section level2">
+<div id="bagging-a-regression-spline" class="section level2" number="14.2">
 <h2>
 <span class="header-section-number">14.2</span> Bagging a regression spline<a class="anchor" aria-label="anchor" href="#bagging-a-regression-spline"><i class="fas fa-link"></i></a>
 </h2>
@@ -331,52 +356,52 @@ we obtain the following estimated MSPE using the test set:</p>
 predictors (can you explain why?) Nevertheless, let us try it on the <code>lidar</code> data,
 which, as we did before, we randomly split into a training and test set:</p>
 <div class="sourceCode" id="cb196"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">lidar</span>, package <span class="op">=</span> <span class="st">"SemiPar"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span>
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">lidar</span><span class="op">)</span>
-<span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span>
-<span class="va">lid.te</span> <span class="op">&lt;-</span> <span class="va">lidar</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span>
-<span class="va">lid.tr</span> <span class="op">&lt;-</span> <span class="va">lidar</span><span class="op">[</span><span class="op">-</span><span class="va">ii</span>, <span class="op">]</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">lidar</span>, package <span class="op">=</span> <span class="st">"SemiPar"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123456</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">lidar</span><span class="op">)</span></span>
+<span><span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">lid.te</span> <span class="op">&lt;-</span> <span class="va">lidar</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span></span>
+<span><span class="va">lid.tr</span> <span class="op">&lt;-</span> <span class="va">lidar</span><span class="op">[</span><span class="op">-</span><span class="va">ii</span>, <span class="op">]</span></span></code></pre></div>
 <p>Now fit a cubic spline, and estimate the MSPE using the test set:</p>
 <div class="sourceCode" id="cb197"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">splines</span><span class="op">)</span>
-<span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/splines/bs.html">bs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">range</span>, df <span class="op">=</span> <span class="fl">10</span>, degree <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">lid.tr</span><span class="op">)</span>
-<span class="va">oo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">lid.tr</span><span class="op">$</span><span class="va">range</span><span class="op">)</span>
-<span class="va">pr.of</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a</span>, newdata <span class="op">=</span> <span class="va">lid.te</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">lid.te</span><span class="op">$</span><span class="va">logratio</span> <span class="op">-</span> <span class="va">pr.of</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.007427559</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">splines</span><span class="op">)</span></span>
+<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/splines/bs.html">bs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">range</span>, df <span class="op">=</span> <span class="fl">10</span>, degree <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">lid.tr</span><span class="op">)</span></span>
+<span><span class="va">oo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">lid.tr</span><span class="op">$</span><span class="va">range</span><span class="op">)</span></span>
+<span><span class="va">pr.of</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a</span>, newdata <span class="op">=</span> <span class="va">lid.te</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">lid.te</span><span class="op">$</span><span class="va">logratio</span> <span class="op">-</span> <span class="va">pr.of</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.007427559</span></span></code></pre></div>
 <p>We build an ensemble of 10 fits and estimate the corresponding
 MSPE using the test set:</p>
 <div class="sourceCode" id="cb198"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">10</span>
-<span class="va">myps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">lid.te</span><span class="op">)</span>, <span class="va">N</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">n.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">lid.tr</span><span class="op">)</span>
-<span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n.tr</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-  <span class="va">a.b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/splines/bs.html">bs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">range</span>, df <span class="op">=</span> <span class="fl">10</span>, degree <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">lid.tr</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span><span class="op">)</span>
-  <span class="va">myps</span><span class="op">[</span>, <span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a.b</span>, newdata <span class="op">=</span> <span class="va">lid.te</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="va">pr.ba</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span><span class="op">(</span><span class="va">myps</span><span class="op">)</span> <span class="co"># , na.rm=TRUE)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">lid.te</span><span class="op">$</span><span class="va">logratio</span> <span class="op">-</span> <span class="va">pr.ba</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.007552562</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
+<span><span class="va">myps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">lid.te</span><span class="op">)</span>, <span class="va">N</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">n.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">lid.tr</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n.tr</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="va">a.b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/splines/bs.html">bs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">range</span>, df <span class="op">=</span> <span class="fl">10</span>, degree <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">lid.tr</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="va">myps</span><span class="op">[</span>, <span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a.b</span>, newdata <span class="op">=</span> <span class="va">lid.te</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">pr.ba</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html">rowMeans</a></span><span class="op">(</span><span class="va">myps</span><span class="op">)</span> <span class="co"># , na.rm=TRUE)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">lid.te</span><span class="op">$</span><span class="va">logratio</span> <span class="op">-</span> <span class="va">pr.ba</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.007552562</span></span></code></pre></div>
 <p>Note that the estimated MSPE is almost the same as the one of the
 original single spline.
 Furthermore, adding more elements to the ensemble does not seem to improve the
 estimated MSPEs:</p>
 <div class="sourceCode" id="cb199"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100</span>
-<span class="va">myps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">lid.te</span><span class="op">)</span>, <span class="va">N</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">n.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">lid.tr</span><span class="op">)</span>
-<span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n.tr</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-  <span class="va">a.b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/splines/bs.html">bs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">range</span>, df <span class="op">=</span> <span class="fl">10</span>, degree <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">lid.tr</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span><span class="op">)</span>
-  <span class="va">myps</span><span class="op">[</span>, <span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a.b</span>, newdata <span class="op">=</span> <span class="va">lid.te</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="va">pr.ba</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span><span class="op">(</span><span class="va">myps</span><span class="op">)</span> <span class="co"># , na.rm=TRUE)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">lid.te</span><span class="op">$</span><span class="va">logratio</span> <span class="op">-</span> <span class="va">pr.ba</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.0075887</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
+<span><span class="va">myps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">lid.te</span><span class="op">)</span>, <span class="va">N</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">n.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">lid.tr</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">ii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">n.tr</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="va">a.b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">logratio</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/splines/bs.html">bs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">range</span>, df <span class="op">=</span> <span class="fl">10</span>, degree <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">lid.tr</span><span class="op">[</span><span class="va">ii</span>, <span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="va">myps</span><span class="op">[</span>, <span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a.b</span>, newdata <span class="op">=</span> <span class="va">lid.te</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">pr.ba</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html">rowMeans</a></span><span class="op">(</span><span class="va">myps</span><span class="op">)</span> <span class="co"># , na.rm=TRUE)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">lid.te</span><span class="op">$</span><span class="va">logratio</span> <span class="op">-</span> <span class="va">pr.ba</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.0075887</span></span></code></pre></div>
 
 </div>
 </div>
@@ -408,7 +433,7 @@ estimated MSPEs:</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-09-17.</p>
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibián-Barrera. It was last built on 2023-08-16.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
@@ -421,7 +446,7 @@ estimated MSPEs:</p>
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

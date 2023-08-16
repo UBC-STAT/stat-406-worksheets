@@ -295,24 +295,28 @@ table(u1, xte$V618)
 #> u1    3 26
 #>   3  57  9
 #>   26  3 51
+
 u5 <- knn(train = xtr[, -618], test = xte[, -618], cl = xtr[, 618], k = 5)
 table(u5, xte$V618)
 #>     
 #> u5    3 26
 #>   3  58  5
 #>   26  2 55
+
 u10 <- knn(train = xtr[, -618], test = xte[, -618], cl = xtr[, 618], k = 10)
 table(u10, xte$V618)
 #>     
 #> u10   3 26
 #>   3  58  6
 #>   26  2 54
+
 u20 <- knn(train = xtr[, -618], test = xte[, -618], cl = xtr[, 618], k = 20)
 table(u20, xte$V618)
 #>     
 #> u20   3 26
 #>   3  58  5
 #>   26  2 55
+
 u50 <- knn(train = xtr[, -618], test = xte[, -618], cl = xtr[, 618], k = 50)
 table(u50, xte$V618)
 #>     

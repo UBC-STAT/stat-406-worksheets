@@ -372,7 +372,7 @@ first principal component (we also time it):
 ```r
 system.time(tmp <- alter.pca.k1(ac)$a)
 #>    user  system elapsed 
-#>   0.089   0.018   0.107
+#>   0.071   0.024   0.057
 ```
 and compare it with the one given by `svd`,
  which we also time. Note that the
@@ -383,7 +383,7 @@ same sign.
 ```r
 system.time(tmp2 <- svd(ac)$v[, 1])
 #>    user  system elapsed 
-#>   0.158   0.003   0.172
+#>   0.042   0.005   0.023
 tmp <- tmp * sign(tmp2[1] * tmp[1])
 summary(abs(tmp - tmp2))
 #>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
@@ -413,7 +413,7 @@ time it:
 ```r
 system.time(tmp <- alter.pca.k1(x))
 #>    user  system elapsed 
-#>   0.417   0.024   0.441
+#>   0.273   0.077   0.187
 a1 <- tmp$a
 ```
 Compute the first eigenvector using `svd`, and
@@ -422,7 +422,7 @@ time it:
 ```r
 system.time(e1 <- svd(cov(x))$u[, 1])
 #>    user  system elapsed 
-#>   4.475   0.033   4.706
+#>   1.871   0.080   1.633
 ```
 Asking `svd` to only compute one component does not
 seem to make the algorithm faster (the results are
@@ -431,7 +431,7 @@ identical):
 ```r
 system.time(e1.1 <- svd(cov(x), nu = 1, nv = 1)$u[, 1])
 #>    user  system elapsed 
-#>   4.441   0.008   4.456
+#>   1.863   0.075   1.624
 summary(abs(e1 - e1.1))
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #>       0       0       0       0       0       0
@@ -444,7 +444,7 @@ are practially identical:
 a1 <- a1 * sign(e1[1] * a1[1])
 summary(abs(e1 - a1))
 #>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#> 0.000e+00 9.401e-18 2.072e-17 5.858e-17 4.025e-17 2.232e-14
+#> 5.400e-20 9.004e-18 2.032e-17 5.703e-17 4.011e-17 2.232e-14
 ```
 
 

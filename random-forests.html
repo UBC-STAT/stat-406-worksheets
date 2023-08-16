@@ -5,9 +5,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>16 Random Forests | UBC Stat 406 Worksheets</title>
-<meta name="author" content="Daniel J. McDonald and Matías Salibán-Barrera">
+<meta name="author" content="Daniel J. McDonald and Matías Salibián-Barrera">
 <meta name="description" content="Even though using a bagged ensemble of trees usually results in a more stable predictor / classifier, a better ensemble can be improved by training each of its members in a careful way. The main...">
-<meta name="generator" content="bookdown 0.24 with bs4_book()">
+<meta name="generator" content="bookdown 0.35 with bs4_book()">
 <meta property="og:title" content="16 Random Forests | UBC Stat 406 Worksheets">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://ubc-stat.github.io/stat-406-worksheets/random-forests.html">
@@ -17,8 +17,33 @@
 <meta name="twitter:description" content="Even though using a bagged ensemble of trees usually results in a more stable predictor / classifier, a better ensemble can be improved by training each of its members in a careful way. The main...">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.0/transition.js"></script><script src="libs/bs3compat-0.3.0/tabs.js"></script><script src="libs/bs3compat-0.3.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.5.1/transition.js"></script><script src="libs/bs3compat-0.5.1/tabs.js"></script><script src="libs/bs3compat-0.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -81,7 +106,7 @@
         </div>
       </nav>
 </div>
-  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="random-forests" class="section level1">
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="random-forests" class="section level1" number="16">
 <h1>
 <span class="header-section-number">16</span> Random Forests<a class="anchor" aria-label="anchor" href="#random-forests"><i class="fas fa-link"></i></a>
 </h1>
@@ -101,13 +126,13 @@ for each of the <em>trees</em> in the <em>forest</em> are different from <code>r
 Refer to the help page if you need to modify them.</p>
 <p>We load and prepare the admissions data as before:</p>
 <div class="sourceCode" id="cb225"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/T11-6.DAT"</span>, header <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="va">mm</span><span class="op">$</span><span class="va">V3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">mm</span><span class="op">$</span><span class="va">V3</span><span class="op">)</span>
-<span class="va">mm</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">mm</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span> <span class="op">/</span> <span class="fl">150</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">mm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/T11-6.DAT"</span>, header <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">mm</span><span class="op">$</span><span class="va">V3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">mm</span><span class="op">$</span><span class="va">V3</span><span class="op">)</span></span>
+<span><span class="va">mm</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">mm</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span> <span class="op">/</span> <span class="fl">150</span></span></code></pre></div>
 <p>and train a Random Forest with 500 trees and using all the default tuning parameters:</p>
 <div class="sourceCode" id="cb226"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.stat.berkeley.edu/~breiman/RandomForests/">randomForest</a></span><span class="op">)</span>
-<span class="va">a.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html">randomForest</a></span><span class="op">(</span><span class="va">V3</span> <span class="op">~</span> <span class="va">V1</span> <span class="op">+</span> <span class="va">V2</span>, data <span class="op">=</span> <span class="va">mm</span>, ntree <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.stat.berkeley.edu/~breiman/RandomForests/">randomForest</a></span><span class="op">)</span></span>
+<span><span class="va">a.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html">randomForest</a></span><span class="op">(</span><span class="va">V3</span> <span class="op">~</span> <span class="va">V1</span> <span class="op">+</span> <span class="va">V2</span>, data <span class="op">=</span> <span class="va">mm</span>, ntree <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></code></pre></div>
 <p>Predictions can be obtained using the <code>predict</code> method, as usual, when
 you specify the <code>newdata</code> argument. Refer to the help page
 of <code>predict.randomForest</code> for details on the different
@@ -118,62 +143,62 @@ on our example data, we compute the corresponding
 predicted conditional class probabilities on the
 same grid used before:</p>
 <div class="sourceCode" id="cb227"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">aa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span>, length <span class="op">=</span> <span class="fl">200</span><span class="op">)</span>
-<span class="va">bb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span>, length <span class="op">=</span> <span class="fl">200</span><span class="op">)</span>
-<span class="va">dd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html">expand.grid</a></span><span class="op">(</span><span class="va">aa</span>, <span class="va">bb</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">dd</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">mm</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">aa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span>, length <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
+<span><span class="va">bb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span>, length <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
+<span><span class="va">dd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html">expand.grid</a></span><span class="op">(</span><span class="va">aa</span>, <span class="va">bb</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">dd</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">mm</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span></span></code></pre></div>
 <p>The estimated conditional probabilities for class <em>red</em>
 are shown in the plot below
 (how are these estimated conditional probabilities computed exactly?)</p>
 <div class="sourceCode" id="cb228"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pp.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a.rf</span>, newdata <span class="op">=</span> <span class="va">dd</span>, type <span class="op">=</span> <span class="st">"prob"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/filled.contour.html">filled.contour</a></span><span class="op">(</span><span class="va">aa</span>, <span class="va">bb</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">pp.rf</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, <span class="fl">200</span>, <span class="fl">200</span><span class="op">)</span>,
-  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">terrain.colors</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>,
-  xlab <span class="op">=</span> <span class="st">"GPA"</span>, ylab <span class="op">=</span> <span class="st">"GMAT"</span>,
-  plot.axes <span class="op">=</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/graphics/axis.html">axis</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/graphics/axis.html">axis</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>
-  <span class="op">}</span>,
-  panel.last <span class="op">=</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">mm</span><span class="op">[</span>, <span class="op">-</span><span class="fl">3</span><span class="op">]</span>,
-      pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">1.5</span>,
-      col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"green"</span><span class="op">)</span><span class="op">[</span><span class="va">mm</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span>
-    <span class="op">)</span>
-  <span class="op">}</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pp.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a.rf</span>, newdata <span class="op">=</span> <span class="va">dd</span>, type <span class="op">=</span> <span class="st">"prob"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/filled.contour.html">filled.contour</a></span><span class="op">(</span><span class="va">aa</span>, <span class="va">bb</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">pp.rf</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, <span class="fl">200</span>, <span class="fl">200</span><span class="op">)</span>,</span>
+<span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">terrain.colors</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>,</span>
+<span>  xlab <span class="op">=</span> <span class="st">"GPA"</span>, ylab <span class="op">=</span> <span class="st">"GMAT"</span>,</span>
+<span>  plot.axes <span class="op">=</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/axis.html">axis</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/axis.html">axis</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  panel.last <span class="op">=</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">mm</span><span class="op">[</span>, <span class="op">-</span><span class="fl">3</span><span class="op">]</span>,</span>
+<span>      pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">1.5</span>,</span>
+<span>      col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"green"</span><span class="op">)</span><span class="op">[</span><span class="va">mm</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="42-random-forests_files/figure-html/rf1.1-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>And the predicted conditional probabilities for the rest of the classes are:</p>
 <div class="sourceCode" id="cb229"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/filled.contour.html">filled.contour</a></span><span class="op">(</span><span class="va">aa</span>, <span class="va">bb</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">pp.rf</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>, <span class="fl">200</span>, <span class="fl">200</span><span class="op">)</span>,
-  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">terrain.colors</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>,
-  xlab <span class="op">=</span> <span class="st">"GPA"</span>, ylab <span class="op">=</span> <span class="st">"GMAT"</span>, plot.axes <span class="op">=</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/graphics/axis.html">axis</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/graphics/axis.html">axis</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>
-  <span class="op">}</span>,
-  panel.last <span class="op">=</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">mm</span><span class="op">[</span>, <span class="op">-</span><span class="fl">3</span><span class="op">]</span>,
-      pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">1.5</span>,
-      col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"green"</span><span class="op">)</span><span class="op">[</span><span class="va">mm</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span>
-    <span class="op">)</span>
-  <span class="op">}</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/filled.contour.html">filled.contour</a></span><span class="op">(</span><span class="va">aa</span>, <span class="va">bb</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">pp.rf</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>, <span class="fl">200</span>, <span class="fl">200</span><span class="op">)</span>,</span>
+<span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">terrain.colors</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>,</span>
+<span>  xlab <span class="op">=</span> <span class="st">"GPA"</span>, ylab <span class="op">=</span> <span class="st">"GMAT"</span>, plot.axes <span class="op">=</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/axis.html">axis</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/axis.html">axis</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  panel.last <span class="op">=</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">mm</span><span class="op">[</span>, <span class="op">-</span><span class="fl">3</span><span class="op">]</span>,</span>
+<span>      pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">1.5</span>,</span>
+<span>      col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"green"</span><span class="op">)</span><span class="op">[</span><span class="va">mm</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="42-random-forests_files/figure-html/rf2-1.png" width="90%" style="display: block; margin: auto;"></div>
 <div class="sourceCode" id="cb230"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/filled.contour.html">filled.contour</a></span><span class="op">(</span><span class="va">aa</span>, <span class="va">bb</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">pp.rf</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span>, <span class="fl">200</span>, <span class="fl">200</span><span class="op">)</span>,
-  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">terrain.colors</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>, xlab <span class="op">=</span> <span class="st">"GPA"</span>,
-  ylab <span class="op">=</span> <span class="st">"GMAT"</span>, plot.axes <span class="op">=</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/graphics/axis.html">axis</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/graphics/axis.html">axis</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>
-  <span class="op">}</span>,
-  panel.last <span class="op">=</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">mm</span><span class="op">[</span>, <span class="op">-</span><span class="fl">3</span><span class="op">]</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"green"</span><span class="op">)</span><span class="op">[</span><span class="va">mm</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
-  <span class="op">}</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/filled.contour.html">filled.contour</a></span><span class="op">(</span><span class="va">aa</span>, <span class="va">bb</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">pp.rf</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span>, <span class="fl">200</span>, <span class="fl">200</span><span class="op">)</span>,</span>
+<span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">terrain.colors</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>, xlab <span class="op">=</span> <span class="st">"GPA"</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="st">"GMAT"</span>, plot.axes <span class="op">=</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/axis.html">axis</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/axis.html">axis</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  panel.last <span class="op">=</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">mm</span><span class="op">[</span>, <span class="op">-</span><span class="fl">3</span><span class="op">]</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">1.5</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"green"</span><span class="op">)</span><span class="op">[</span><span class="va">mm</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="42-random-forests_files/figure-html/rf2-2.png" width="90%" style="display: block; margin: auto;"></div>
 <p>A very interesting exercise would be to train a Random Forest on the perturbed data
 (in <code>mm2</code>) and verify that the predicted conditional probabilities do not change much,
 as was the case for the bagged classifier.</p>
-<div id="another-example" class="section level2">
+<div id="another-example" class="section level2" number="16.1">
 <h2>
 <span class="header-section-number">16.1</span> Another example<a class="anchor" aria-label="anchor" href="#another-example"><i class="fas fa-link"></i></a>
 </h2>
@@ -190,44 +215,44 @@ variable to be categorical, so that the <code>R</code> implementations of the
 different predictors we will use below will build
 classifiers and not their regression counterparts:</p>
 <div class="sourceCode" id="cb231"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">xtr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/isolet-train-c-z.data"</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span>
-<span class="va">xte</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/isolet-test-c-z.data"</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span>
-<span class="va">xtr</span><span class="op">$</span><span class="va">V618</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">xtr</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span>
-<span class="va">xte</span><span class="op">$</span><span class="va">V618</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">xtr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/isolet-train-c-z.data"</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span></span>
+<span><span class="va">xte</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/isolet-test-c-z.data"</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span></span>
+<span><span class="va">xtr</span><span class="op">$</span><span class="va">V618</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">xtr</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span></span>
+<span><span class="va">xte</span><span class="op">$</span><span class="va">V618</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span></span></code></pre></div>
 <p>To train a Random Forest we use the function <code>randomForest</code> in the
 package of the same name. The code underlying this package was originally
 written by Leo Breiman. We first train a Random Forest, using all the default parameters</p>
 <div class="sourceCode" id="cb232"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.stat.berkeley.edu/~breiman/RandomForests/">randomForest</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="op">(</span><span class="va">a.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html">randomForest</a></span><span class="op">(</span><span class="va">V618</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">xtr</span>, ntree <span class="op">=</span> <span class="fl">500</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt;  randomForest(formula = V618 ~ ., data = xtr, ntree = 500) </span>
-<span class="co">#&gt;                Type of random forest: classification</span>
-<span class="co">#&gt;                      Number of trees: 500</span>
-<span class="co">#&gt; No. of variables tried at each split: 24</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;         OOB estimate of  error rate: 2.29%</span>
-<span class="co">#&gt; Confusion matrix:</span>
-<span class="co">#&gt;      3  26 class.error</span>
-<span class="co">#&gt; 3  234   6  0.02500000</span>
-<span class="co">#&gt; 26   5 235  0.02083333</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.stat.berkeley.edu/~breiman/RandomForests/">randomForest</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="op">(</span><span class="va">a.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html">randomForest</a></span><span class="op">(</span><span class="va">V618</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">xtr</span>, ntree <span class="op">=</span> <span class="fl">500</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt;  randomForest(formula = V618 ~ ., data = xtr, ntree = 500) </span></span>
+<span><span class="co">#&gt;                Type of random forest: classification</span></span>
+<span><span class="co">#&gt;                      Number of trees: 500</span></span>
+<span><span class="co">#&gt; No. of variables tried at each split: 24</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;         OOB estimate of  error rate: 2.29%</span></span>
+<span><span class="co">#&gt; Confusion matrix:</span></span>
+<span><span class="co">#&gt;      3  26 class.error</span></span>
+<span><span class="co">#&gt; 3  234   6  0.02500000</span></span>
+<span><span class="co">#&gt; 26   5 235  0.02083333</span></span></code></pre></div>
 <p>We now check its performance on the test set:</p>
 <div class="sourceCode" id="cb233"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">p.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a.rf</span>, newdata <span class="op">=</span> <span class="va">xte</span>, type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">p.rf</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span>
-<span class="co">#&gt;     </span>
-<span class="co">#&gt; p.rf  3 26</span>
-<span class="co">#&gt;   3  60  1</span>
-<span class="co">#&gt;   26  0 59</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">p.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a.rf</span>, newdata <span class="op">=</span> <span class="va">xte</span>, type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">p.rf</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     </span></span>
+<span><span class="co">#&gt; p.rf  3 26</span></span>
+<span><span class="co">#&gt;   3  60  1</span></span>
+<span><span class="co">#&gt;   26  0 59</span></span></code></pre></div>
 <p>Note that the Random Forest only makes one mistake out of 120 (approx 0.8%) observations
 in the test set. However, the OOB error rate estimate is slightly over 2%.
 The next plot shows the evolution of the OOB error rate estimate as a function of the
 number of classifiers in the ensemble (trees in the forest). Note that 500 trees
 appears to be a reasonable forest size, in the sense thate the OOB error rate estimate is stable.</p>
 <div class="sourceCode" id="cb234"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">a.rf</span>, lwd <span class="op">=</span> <span class="fl">3</span>, lty <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">a.rf</span>, lwd <span class="op">=</span> <span class="fl">3</span>, lty <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="42-random-forests_files/figure-html/rf0.oob-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>Consider again the ISOLET data, available
 here:
@@ -239,73 +264,73 @@ variable to be categorical, so that the <code>R</code> implementations of the
 different predictors we will use below will build
 classifiers and not their regression counterparts:</p>
 <div class="sourceCode" id="cb235"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">xtr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/isolet-train-c-z.data"</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span>
-<span class="va">xte</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/isolet-test-c-z.data"</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span>
-<span class="va">xtr</span><span class="op">$</span><span class="va">V618</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">xtr</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span>
-<span class="va">xte</span><span class="op">$</span><span class="va">V618</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">xtr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/isolet-train-c-z.data"</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span></span>
+<span><span class="va">xte</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"data/isolet-test-c-z.data"</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span></span>
+<span><span class="va">xtr</span><span class="op">$</span><span class="va">V618</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">xtr</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span></span>
+<span><span class="va">xte</span><span class="op">$</span><span class="va">V618</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span></span></code></pre></div>
 <p>To train a Random Forest we use the function <code>randomForest</code> in the
 package of the same name. The code underlying this package was originally
 written by Leo Breiman. We train a RF leaving all
 paramaters at their default values, and check
 its performance on the test set:</p>
 <div class="sourceCode" id="cb236"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.stat.berkeley.edu/~breiman/RandomForests/">randomForest</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">a.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html">randomForest</a></span><span class="op">(</span><span class="va">V618</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">xtr</span>, ntree <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>
-<span class="va">p.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a.rf</span>, newdata <span class="op">=</span> <span class="va">xte</span>, type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">p.rf</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span>
-<span class="co">#&gt;     </span>
-<span class="co">#&gt; p.rf  3 26</span>
-<span class="co">#&gt;   3  60  1</span>
-<span class="co">#&gt;   26  0 59</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.stat.berkeley.edu/~breiman/RandomForests/">randomForest</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">a.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html">randomForest</a></span><span class="op">(</span><span class="va">V618</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">xtr</span>, ntree <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
+<span><span class="va">p.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a.rf</span>, newdata <span class="op">=</span> <span class="va">xte</span>, type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">p.rf</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     </span></span>
+<span><span class="co">#&gt; p.rf  3 26</span></span>
+<span><span class="co">#&gt;   3  60  1</span></span>
+<span><span class="co">#&gt;   26  0 59</span></span></code></pre></div>
 <p>Note that the Random Forest only makes one mistake out of 120 observations
 in the test set. The OOB error rate estimate is slightly over 2%,
 and we see that 500 trees is a reasonable forest size:</p>
 <div class="sourceCode" id="cb237"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">a.rf</span>, lwd <span class="op">=</span> <span class="fl">3</span>, lty <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">a.rf</span>, lwd <span class="op">=</span> <span class="fl">3</span>, lty <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="42-random-forests_files/figure-html/rf.oob-1.png" width="90%" style="display: block; margin: auto;"></div>
 <div class="sourceCode" id="cb238"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">a.rf</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt;  randomForest(formula = V618 ~ ., data = xtr, ntree = 500) </span>
-<span class="co">#&gt;                Type of random forest: classification</span>
-<span class="co">#&gt;                      Number of trees: 500</span>
-<span class="co">#&gt; No. of variables tried at each split: 24</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;         OOB estimate of  error rate: 2.29%</span>
-<span class="co">#&gt; Confusion matrix:</span>
-<span class="co">#&gt;      3  26 class.error</span>
-<span class="co">#&gt; 3  234   6  0.02500000</span>
-<span class="co">#&gt; 26   5 235  0.02083333</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">a.rf</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt;  randomForest(formula = V618 ~ ., data = xtr, ntree = 500) </span></span>
+<span><span class="co">#&gt;                Type of random forest: classification</span></span>
+<span><span class="co">#&gt;                      Number of trees: 500</span></span>
+<span><span class="co">#&gt; No. of variables tried at each split: 24</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;         OOB estimate of  error rate: 2.29%</span></span>
+<span><span class="co">#&gt; Confusion matrix:</span></span>
+<span><span class="co">#&gt;      3  26 class.error</span></span>
+<span><span class="co">#&gt; 3  234   6  0.02500000</span></span>
+<span><span class="co">#&gt; 26   5 235  0.02083333</span></span></code></pre></div>
 </div>
-<div id="using-a-test-set-instead-of-obb" class="section level2">
+<div id="using-a-test-set-instead-of-obb" class="section level2" number="16.2">
 <h2>
 <span class="header-section-number">16.2</span> Using a test set instead of OBB<a class="anchor" aria-label="anchor" href="#using-a-test-set-instead-of-obb"><i class="fas fa-link"></i></a>
 </h2>
 <p>Given that in this case we do have a test set, we can use it
 to monitor the error rate (instead of using the OOB error estimates):</p>
 <div class="sourceCode" id="cb239"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">x.train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix</a></span><span class="op">(</span><span class="va">V618</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">xtr</span><span class="op">)</span>
-<span class="va">y.train</span> <span class="op">&lt;-</span> <span class="va">xtr</span><span class="op">$</span><span class="va">V618</span>
-<span class="va">x.test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix</a></span><span class="op">(</span><span class="va">V618</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">xte</span><span class="op">)</span>
-<span class="va">y.test</span> <span class="op">&lt;-</span> <span class="va">xte</span><span class="op">$</span><span class="va">V618</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">a.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html">randomForest</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x.train</span>, y <span class="op">=</span> <span class="va">y.train</span>, xtest <span class="op">=</span> <span class="va">x.test</span>, ytest <span class="op">=</span> <span class="va">y.test</span>, ntree <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>
-<span class="va">test.err</span> <span class="op">&lt;-</span> <span class="va">a.rf</span><span class="op">$</span><span class="va">test</span><span class="op">$</span><span class="va">err.rate</span>
-<span class="va">ma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">test.err</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">test.err</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>, lwd <span class="op">=</span> <span class="fl">2</span>, lty <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="st">"red"</span>, type <span class="op">=</span> <span class="st">"l"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ma</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">test.err</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span>, lwd <span class="op">=</span> <span class="fl">2</span>, lty <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="st">"green"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">test.err</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, lwd <span class="op">=</span> <span class="fl">2</span>, lty <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">x.train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix</a></span><span class="op">(</span><span class="va">V618</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">xtr</span><span class="op">)</span></span>
+<span><span class="va">y.train</span> <span class="op">&lt;-</span> <span class="va">xtr</span><span class="op">$</span><span class="va">V618</span></span>
+<span><span class="va">x.test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix</a></span><span class="op">(</span><span class="va">V618</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">xte</span><span class="op">)</span></span>
+<span><span class="va">y.test</span> <span class="op">&lt;-</span> <span class="va">xte</span><span class="op">$</span><span class="va">V618</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">a.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html">randomForest</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x.train</span>, y <span class="op">=</span> <span class="va">y.train</span>, xtest <span class="op">=</span> <span class="va">x.test</span>, ytest <span class="op">=</span> <span class="va">y.test</span>, ntree <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
+<span><span class="va">test.err</span> <span class="op">&lt;-</span> <span class="va">a.rf</span><span class="op">$</span><span class="va">test</span><span class="op">$</span><span class="va">err.rate</span></span>
+<span><span class="va">ma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">test.err</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">test.err</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>, lwd <span class="op">=</span> <span class="fl">2</span>, lty <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="st">"red"</span>, type <span class="op">=</span> <span class="st">"l"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ma</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">test.err</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span>, lwd <span class="op">=</span> <span class="fl">2</span>, lty <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="st">"green"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">test.err</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, lwd <span class="op">=</span> <span class="fl">2</span>, lty <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="42-random-forests_files/figure-html/rf.isolet.test-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>According to the help page for the <code>plot</code> method for objects of class
 <code>randomForest</code>, the following plot should show both error rates (OOB plus
 those on the test set):</p>
 <div class="sourceCode" id="cb240"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">a.rf</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">a.rf</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="42-random-forests_files/figure-html/rf.isolet.test.plot-1.png" width="90%" style="display: block; margin: auto;"></div>
 </div>
-<div id="feature-sequencing-variable-ranking" class="section level2">
+<div id="feature-sequencing-variable-ranking" class="section level2" number="16.3">
 <h2>
 <span class="header-section-number">16.3</span> Feature sequencing / Variable ranking<a class="anchor" aria-label="anchor" href="#feature-sequencing-variable-ranking"><i class="fas fa-link"></i></a>
 </h2>
@@ -313,10 +338,10 @@ those on the test set):</p>
 and also, their importance rank as discussed in
 class, we can use the function <code>varImpPlot</code>:</p>
 <div class="sourceCode" id="cb241"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/varImpPlot.html">varImpPlot</a></span><span class="op">(</span><span class="va">a.rf</span>, n.var <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/varImpPlot.html">varImpPlot</a></span><span class="op">(</span><span class="va">a.rf</span>, n.var <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="42-random-forests_files/figure-html/rf.isolet3-1.png" width="90%" style="display: block; margin: auto;"></div>
 </div>
-<div id="comparing-rf-with-other-classifiers" class="section level2">
+<div id="comparing-rf-with-other-classifiers" class="section level2" number="16.4">
 <h2>
 <span class="header-section-number">16.4</span> Comparing RF with other classifiers<a class="anchor" aria-label="anchor" href="#comparing-rf-with-other-classifiers"><i class="fas fa-link"></i></a>
 </h2>
@@ -324,90 +349,94 @@ class, we can use the function <code>varImpPlot</code>:</p>
 using their classification error rate on the test set as our comparison measure.
 We first start with K-NN:</p>
 <div class="sourceCode" id="cb242"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">class</a></span><span class="op">)</span>
-<span class="va">u1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/class/man/knn.html">knn</a></span><span class="op">(</span>train <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, test <span class="op">=</span> <span class="va">xte</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, cl <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="fl">618</span><span class="op">]</span>, k <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">u1</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span>
-<span class="co">#&gt;     </span>
-<span class="co">#&gt; u1    3 26</span>
-<span class="co">#&gt;   3  57  9</span>
-<span class="co">#&gt;   26  3 51</span>
-<span class="va">u5</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/class/man/knn.html">knn</a></span><span class="op">(</span>train <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, test <span class="op">=</span> <span class="va">xte</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, cl <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="fl">618</span><span class="op">]</span>, k <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">u5</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span>
-<span class="co">#&gt;     </span>
-<span class="co">#&gt; u5    3 26</span>
-<span class="co">#&gt;   3  58  5</span>
-<span class="co">#&gt;   26  2 55</span>
-<span class="va">u10</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/class/man/knn.html">knn</a></span><span class="op">(</span>train <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, test <span class="op">=</span> <span class="va">xte</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, cl <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="fl">618</span><span class="op">]</span>, k <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">u10</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span>
-<span class="co">#&gt;     </span>
-<span class="co">#&gt; u10   3 26</span>
-<span class="co">#&gt;   3  58  6</span>
-<span class="co">#&gt;   26  2 54</span>
-<span class="va">u20</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/class/man/knn.html">knn</a></span><span class="op">(</span>train <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, test <span class="op">=</span> <span class="va">xte</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, cl <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="fl">618</span><span class="op">]</span>, k <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">u20</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span>
-<span class="co">#&gt;     </span>
-<span class="co">#&gt; u20   3 26</span>
-<span class="co">#&gt;   3  58  5</span>
-<span class="co">#&gt;   26  2 55</span>
-<span class="va">u50</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/class/man/knn.html">knn</a></span><span class="op">(</span>train <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, test <span class="op">=</span> <span class="va">xte</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, cl <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="fl">618</span><span class="op">]</span>, k <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">u50</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span>
-<span class="co">#&gt;     </span>
-<span class="co">#&gt; u50   3 26</span>
-<span class="co">#&gt;   3  58  7</span>
-<span class="co">#&gt;   26  2 53</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">class</a></span><span class="op">)</span></span>
+<span><span class="va">u1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/class/man/knn.html">knn</a></span><span class="op">(</span>train <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, test <span class="op">=</span> <span class="va">xte</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, cl <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="fl">618</span><span class="op">]</span>, k <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">u1</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     </span></span>
+<span><span class="co">#&gt; u1    3 26</span></span>
+<span><span class="co">#&gt;   3  57  9</span></span>
+<span><span class="co">#&gt;   26  3 51</span></span>
+<span></span>
+<span><span class="va">u5</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/class/man/knn.html">knn</a></span><span class="op">(</span>train <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, test <span class="op">=</span> <span class="va">xte</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, cl <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="fl">618</span><span class="op">]</span>, k <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">u5</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     </span></span>
+<span><span class="co">#&gt; u5    3 26</span></span>
+<span><span class="co">#&gt;   3  58  5</span></span>
+<span><span class="co">#&gt;   26  2 55</span></span>
+<span></span>
+<span><span class="va">u10</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/class/man/knn.html">knn</a></span><span class="op">(</span>train <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, test <span class="op">=</span> <span class="va">xte</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, cl <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="fl">618</span><span class="op">]</span>, k <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">u10</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     </span></span>
+<span><span class="co">#&gt; u10   3 26</span></span>
+<span><span class="co">#&gt;   3  58  6</span></span>
+<span><span class="co">#&gt;   26  2 54</span></span>
+<span></span>
+<span><span class="va">u20</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/class/man/knn.html">knn</a></span><span class="op">(</span>train <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, test <span class="op">=</span> <span class="va">xte</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, cl <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="fl">618</span><span class="op">]</span>, k <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">u20</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     </span></span>
+<span><span class="co">#&gt; u20   3 26</span></span>
+<span><span class="co">#&gt;   3  58  5</span></span>
+<span><span class="co">#&gt;   26  2 55</span></span>
+<span></span>
+<span><span class="va">u50</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/class/man/knn.html">knn</a></span><span class="op">(</span>train <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, test <span class="op">=</span> <span class="va">xte</span><span class="op">[</span>, <span class="op">-</span><span class="fl">618</span><span class="op">]</span>, cl <span class="op">=</span> <span class="va">xtr</span><span class="op">[</span>, <span class="fl">618</span><span class="op">]</span>, k <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">u50</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     </span></span>
+<span><span class="co">#&gt; u50   3 26</span></span>
+<span><span class="co">#&gt;   3  58  7</span></span>
+<span><span class="co">#&gt;   26  2 53</span></span></code></pre></div>
 <p>To use logistic regression we first create a new variable that is 1
 for the letter <strong>C</strong> and 0 for the letter <strong>Z</strong>, and use it as
 our response variable.</p>
 <div class="sourceCode" id="cb243"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">xtr</span><span class="op">$</span><span class="va">V619</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">xtr</span><span class="op">$</span><span class="va">V618</span> <span class="op">==</span> <span class="fl">3</span><span class="op">)</span>
-<span class="va">d.glm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">V619</span> <span class="op">~</span> <span class="va">.</span> <span class="op">-</span> <span class="va">V618</span>, data <span class="op">=</span> <span class="va">xtr</span>, family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span>
-<span class="va">pr.glm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">d.glm</span>, newdata <span class="op">=</span> <span class="va">xte</span>, type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0.5</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">pr.glm</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span>
-<span class="co">#&gt;       </span>
-<span class="co">#&gt; pr.glm  3 26</span>
-<span class="co">#&gt;      0 25 33</span>
-<span class="co">#&gt;      1 35 27</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">xtr</span><span class="op">$</span><span class="va">V619</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">xtr</span><span class="op">$</span><span class="va">V618</span> <span class="op">==</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">d.glm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">V619</span> <span class="op">~</span> <span class="va">.</span> <span class="op">-</span> <span class="va">V618</span>, data <span class="op">=</span> <span class="va">xtr</span>, family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span></span>
+<span><span class="va">pr.glm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">d.glm</span>, newdata <span class="op">=</span> <span class="va">xte</span>, type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">pr.glm</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       </span></span>
+<span><span class="co">#&gt; pr.glm  3 26</span></span>
+<span><span class="co">#&gt;      0 25 33</span></span>
+<span><span class="co">#&gt;      1 35 27</span></span></code></pre></div>
 <p>Question for the reader: why do you think this classifier’s performance
 is so disappointing?</p>
 <p>It is interesting to see how a simple LDA classifier does:</p>
 <div class="sourceCode" id="cb244"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span>
-<span class="va">xtr</span><span class="op">$</span><span class="va">V619</span> <span class="op">&lt;-</span> <span class="cn">NULL</span>
-<span class="va">d.lda</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/lda.html">lda</a></span><span class="op">(</span><span class="va">V618</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">xtr</span><span class="op">)</span>
-<span class="va">pr.lda</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">d.lda</span>, newdata <span class="op">=</span> <span class="va">xte</span><span class="op">)</span><span class="op">$</span><span class="va">class</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">pr.lda</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span>
-<span class="co">#&gt;       </span>
-<span class="co">#&gt; pr.lda  3 26</span>
-<span class="co">#&gt;     3  58  3</span>
-<span class="co">#&gt;     26  2 57</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span></span>
+<span><span class="va">xtr</span><span class="op">$</span><span class="va">V619</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
+<span><span class="va">d.lda</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/lda.html">lda</a></span><span class="op">(</span><span class="va">V618</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">xtr</span><span class="op">)</span></span>
+<span><span class="va">pr.lda</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">d.lda</span>, newdata <span class="op">=</span> <span class="va">xte</span><span class="op">)</span><span class="op">$</span><span class="va">class</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">pr.lda</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       </span></span>
+<span><span class="co">#&gt; pr.lda  3 26</span></span>
+<span><span class="co">#&gt;     3  58  3</span></span>
+<span><span class="co">#&gt;     26  2 57</span></span></code></pre></div>
 <p>Finally, note that a carefully built classification tree
 performs remarkably well, only using 3 features:</p>
 <div class="sourceCode" id="cb245"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bethatkinson/rpart">rpart</a></span><span class="op">)</span>
-<span class="va">my.c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.control.html">rpart.control</a></span><span class="op">(</span>minsplit <span class="op">=</span> <span class="fl">5</span>, cp <span class="op">=</span> <span class="fl">1e-8</span>, xval <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">987</span><span class="op">)</span>
-<span class="va">a.tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">V618</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">xtr</span>, method <span class="op">=</span> <span class="st">"class"</span>, parms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>split <span class="op">=</span> <span class="st">"information"</span><span class="op">)</span>, control <span class="op">=</span> <span class="va">my.c</span><span class="op">)</span>
-<span class="va">cp</span> <span class="op">&lt;-</span> <span class="va">a.tree</span><span class="op">$</span><span class="va">cptable</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">a.tree</span><span class="op">$</span><span class="va">cptable</span><span class="op">[</span>, <span class="st">"xerror"</span><span class="op">]</span><span class="op">)</span>, <span class="st">"CP"</span><span class="op">]</span>
-<span class="va">a.tp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/prune.rpart.html">prune</a></span><span class="op">(</span><span class="va">a.tree</span>, cp <span class="op">=</span> <span class="va">cp</span><span class="op">)</span>
-<span class="va">p.t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a.tp</span>, newdata <span class="op">=</span> <span class="va">xte</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">p.t</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span>
-<span class="co">#&gt;    </span>
-<span class="co">#&gt; p.t  3 26</span>
-<span class="co">#&gt;   1 59  0</span>
-<span class="co">#&gt;   2  1 60</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bethatkinson/rpart">rpart</a></span><span class="op">)</span></span>
+<span><span class="va">my.c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.control.html">rpart.control</a></span><span class="op">(</span>minsplit <span class="op">=</span> <span class="fl">5</span>, cp <span class="op">=</span> <span class="fl">1e-8</span>, xval <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">987</span><span class="op">)</span></span>
+<span><span class="va">a.tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">V618</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">xtr</span>, method <span class="op">=</span> <span class="st">"class"</span>, parms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>split <span class="op">=</span> <span class="st">"information"</span><span class="op">)</span>, control <span class="op">=</span> <span class="va">my.c</span><span class="op">)</span></span>
+<span><span class="va">cp</span> <span class="op">&lt;-</span> <span class="va">a.tree</span><span class="op">$</span><span class="va">cptable</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">a.tree</span><span class="op">$</span><span class="va">cptable</span><span class="op">[</span>, <span class="st">"xerror"</span><span class="op">]</span><span class="op">)</span>, <span class="st">"CP"</span><span class="op">]</span></span>
+<span><span class="va">a.tp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/prune.rpart.html">prune</a></span><span class="op">(</span><span class="va">a.tree</span>, cp <span class="op">=</span> <span class="va">cp</span><span class="op">)</span></span>
+<span><span class="va">p.t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a.tp</span>, newdata <span class="op">=</span> <span class="va">xte</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">p.t</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    </span></span>
+<span><span class="co">#&gt; p.t  3 26</span></span>
+<span><span class="co">#&gt;   1 59  0</span></span>
+<span><span class="co">#&gt;   2  1 60</span></span></code></pre></div>
 <p>Finally, note that if you train a single classification tree with the
 default values for the stopping criterion tuning parameters, the
 tree also uses only 3 features, but its classification error rate
 on the test set is larger than that of the pruned one:</p>
 <div class="sourceCode" id="cb246"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">987</span><span class="op">)</span>
-<span class="va">a2.tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">V618</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">xtr</span>, method <span class="op">=</span> <span class="st">"class"</span>, parms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>split <span class="op">=</span> <span class="st">"information"</span><span class="op">)</span><span class="op">)</span>
-<span class="va">p2.t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a2.tree</span>, newdata <span class="op">=</span> <span class="va">xte</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">p2.t</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span>
-<span class="co">#&gt;     </span>
-<span class="co">#&gt; p2.t  3 26</span>
-<span class="co">#&gt;    1 57  2</span>
-<span class="co">#&gt;    2  3 58</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">987</span><span class="op">)</span></span>
+<span><span class="va">a2.tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rpart/man/rpart.html">rpart</a></span><span class="op">(</span><span class="va">V618</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">xtr</span>, method <span class="op">=</span> <span class="st">"class"</span>, parms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>split <span class="op">=</span> <span class="st">"information"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">p2.t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">a2.tree</span>, newdata <span class="op">=</span> <span class="va">xte</span>, type <span class="op">=</span> <span class="st">"vector"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">p2.t</span>, <span class="va">xte</span><span class="op">$</span><span class="va">V618</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     </span></span>
+<span><span class="co">#&gt; p2.t  3 26</span></span>
+<span><span class="co">#&gt;    1 57  2</span></span>
+<span><span class="co">#&gt;    2  3 58</span></span></code></pre></div>
 
 </div>
 </div>
@@ -439,7 +468,7 @@ on the test set is larger than that of the pruned one:</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibán-Barrera. It was last built on 2021-09-17.</p>
+    <p>"<strong>UBC Stat 406 Worksheets</strong>" was written by Daniel J. McDonald and Matías Salibián-Barrera. It was last built on 2023-08-16.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
@@ -452,7 +481,7 @@ on the test set is larger than that of the pruned one:</p>
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

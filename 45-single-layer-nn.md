@@ -57,28 +57,26 @@ a1 <- nnet(V618 ~ ., data = x.tr, size = 1, decay = 0, maxit = 1500, MaxNWts = 2
 #> iter  50 value 18.050036
 #> iter  60 value 18.048042
 #> iter  70 value 12.957465
-#> iter  80 value 6.911301
-#> iter  90 value 6.483378
-#> iter 100 value 6.482803
-#> iter 110 value 6.482259
-#> iter 120 value 6.438838
-#> iter 130 value 0.016676
-#> iter 140 value 0.000353
-#> final  value 0.000089 
+#> iter  80 value 6.911704
+#> iter  90 value 6.483384
+#> iter 100 value 6.482800
+#> iter 110 value 6.482764
+#> iter 120 value 6.482733
+#> final  value 6.482722 
 #> converged
 ```
 Note the slow convergence. The final value of the objective value was:
 
 ```r
 a1$value
-#> [1] 8.892923e-05
+#> [1] 6.482722
 ```
 The error rate on the training set ("goodness of fit") is
 
 ```r
 b1 <- predict(a1, type = "class") # , type='raw')
 mean(b1 != x.tr$V618)
-#> [1] 0
+#> [1] 0.002083333
 ```
 We see that this NN fits the training set perfectly. Is this desirable? 
 
@@ -91,31 +89,26 @@ a2 <- nnet(V618 ~ ., data = x.tr, size = 1, decay = 0, maxit = 1500, MaxNWts = 2
 #> initial  value 336.934868 
 #> iter  10 value 157.630462
 #> iter  20 value 61.525474
-#> iter  30 value 48.367802
-#> iter  40 value 42.968320
-#> iter  50 value 37.599621
-#> iter  60 value 36.482005
-#> iter  70 value 28.084106
-#> iter  80 value 26.862814
-#> iter  90 value 26.860026
-#> iter 100 value 20.648648
-#> iter 110 value 20.412129
-#> iter 120 value 20.410641
-#> iter 130 value 20.410571
-#> iter 140 value 20.410534
-#> final  value 20.410528 
+#> iter  30 value 48.367801
+#> iter  40 value 42.822797
+#> iter  50 value 36.541767
+#> iter  60 value 36.476799
+#> iter  70 value 33.120685
+#> iter  80 value 26.860343
+#> iter  90 value 26.859999
+#> final  value 26.859999 
 #> converged
 ```
 Compare
 the attained value of the objective and the error rate on the training set
-with those above (8.9\times 10^{-5} and 0, respectively):
+with those above (6.482722 and 0, respectively):
 
 ```r
 a2$value
-#> [1] 20.41053
+#> [1] 26.86
 b2 <- predict(a2, type = "class") # , type='raw')
 mean(b2 != x.tr$V618)
-#> [1] 0.008333333
+#> [1] 0.01041667
 ```
 So, we see that the second run of NN produces a much worse solution.
 How are their performances on the test set?
@@ -123,7 +116,7 @@ How are their performances on the test set?
 ```r
 b1 <- predict(a1, newdata = x.te, type = "class") # , type='raw')
 mean(b1 != x.te$V618)
-#> [1] 0.025
+#> [1] 0.03333333
 b2 <- predict(a2, newdata = x.te, type = "class") # , type='raw')
 mean(b2 != x.te$V618)
 #> [1] 0.04166667
@@ -156,6 +149,7 @@ mean(b1 != x.tr$V618)
 b2 <- predict(a2, type = "class") # , type='raw')
 mean(b2 != x.tr$V618)
 #> [1] 0
+
 b1 <- predict(a1, newdata = x.te, type = "class") # , type='raw')
 mean(b1 != x.te$V618)
 #> [1] 0.03333333
@@ -218,12 +212,15 @@ a2$value
 b1 <- predict(a1, type = "class") # , type='raw')
 mean(b1 != x.tr$V618)
 #> [1] 0
+
 b2 <- predict(a2, type = "class") # , type='raw')
 mean(b2 != x.tr$V618)
 #> [1] 0
+
 b1 <- predict(a1, newdata = x.te, type = "class") # , type='raw')
 mean(b1 != x.te$V618)
 #> [1] 0.008333333
+
 b2 <- predict(a2, newdata = x.te, type = "class") # , type='raw')
 mean(b2 != x.te$V618)
 #> [1] 0.008333333
@@ -259,7 +256,7 @@ their error rates on the training and test sets.
 set.seed(123)
 a1 <- nnet(V618 ~ ., data = x.tr, size = 1, decay = 0, maxit = 1500, MaxNWts = 2000, trace = FALSE)
 a1$value
-#> [1] 9.851054e-05
+#> [1] 9.711177e-05
 set.seed(456)
 a2 <- nnet(V618 ~ ., data = x.tr, size = 1, decay = 0, maxit = 1500, MaxNWts = 2000, trace = FALSE)
 a2$value
@@ -272,14 +269,14 @@ mean(b2 != x.tr$V618)
 #> [1] 0.4875
 b1 <- predict(a1, newdata = x.te, type = "class") # , type='raw')
 mean(b1 != x.te$V618)
-#> [1] 0.4458333
+#> [1] 0.4625
 b2 <- predict(a2, newdata = x.te, type = "class") # , type='raw')
 mean(b2 != x.te$V618)
-#> [1] 0.5041667
+#> [1] 0.5375
 ```
 Note that the error rates on the test set are
-0.446 and 
-0.504, which are
+0.462 and 
+0.537, which are
 very high.
 Better results are obtained with 6 units on the hidden layer
 and a slightly regularized solution. As before, 
@@ -357,7 +354,7 @@ mean(b2 != x.te$V618)
 #> [1] 0.01193317
 ```
 Note that in this case the NN with a better objective
-function (100.5938058 versus 102.1805371) achieves a better performance on 
+function (100.5937916 versus 102.1805383) achieves a better performance on 
 the test set (0.012 
 versus 0.019), although the
 difference is rather small. Conclusions based on a 
