@@ -1,0 +1,71 @@
+project:
+  type: book
+  output-dir: _book
+
+execute:
+  freeze: auto
+
+book:
+  title: "UBC Stat 406 Worksheets"
+  author: "Daniel J. McDonald and Matías Salibián-Barrera"
+  date: last-modified
+  description: "These notes accompany the lectures for UBC's Stat 406."
+  search: true
+  page-footer:
+    background: primary
+    center: "This work by [Daniel J. McDonald](https://dajmcdon.github.io) and [Matías Salibián-Barrera](https://www.stat.ubc.ca/users/matias-salibian-barrera) is licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0)<img style='height:22px!important;margin-left:3px;vertical-align:text-bottom;' src='https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1'><img style='height:22px!important;margin-left:3px;vertical-align:text-bottom;' src='https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1' /><img style='height:22px!important;margin-left:3px;vertical-align:text-bottom;' src='https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1' />"
+  site-url: https://ubc-stat.github.io/stat-406-worksheets
+  repo-url: https://github.com/ubc-stat/stat-406-worksheets
+  repo-actions: [source, edit, issue]
+  date-format: DD MMMM YYYY
+  sidebar:
+    style: docked
+  chapters:
+    - index.qmd
+    - part: "Module 0 - Review"
+      chapters:
+        - 02-lm-diagnostics-review.qmd
+    - part: "Module 1 - Model selection"
+      chapters:
+        - 10-test-set-and-cv.qmd
+        - 11-cv-concerns.qmd
+        - 12-model-selection-aic.qmd
+    - part: "Module 2 - Regression"
+      chapters:
+        - 20-ridge-regression.qmd
+        - 21-lasso-elnet.qmd
+        - 22-nonpar-splines-poly.qmd
+        - 23-kernel-regression.qmd
+        - 24-trees.qmd
+        - 25-more-trees.qmd
+    - part: "Module 3 - Classification"
+      chapters:
+        - 30-lda-logit.qmd
+        - 31-qda-knn.qmd
+        - 32-class-trees.qmd
+    - part: "Module 4 - Modern techniques"
+      chapters:
+        - 40-bagging.qmd
+        - 41-bagging-classifiers.qmd
+        - 42-random-forests.qmd
+        - 43-boosting.qmd
+        - 44-adaboost.qmd
+        - 45-single-layer-nn.qmd
+    - part: "Module 5 - Unsupervised learning"
+      chapters:
+        - 51-pca.qmd
+        - 52-kmeans.qmd
+        - 53-model-based-clustering.qmd
+        - 54-hclust.qmd
+    - 80-references.qmd
+  appendices:
+    - 90-pca-alternating-regression.qmd
+
+bibliography: [packages.bib, book.bib]
+
+format:
+  html:
+    grid:
+      sidebar-width: 400px
+      body-width: 600px
+    theme: [cosmo, stat406-theme.scss]

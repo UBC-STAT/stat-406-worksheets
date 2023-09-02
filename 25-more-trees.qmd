@@ -1,0 +1,245 @@
+# Pruning regression trees with `rpart`
+
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
+
+
+_**Important note**: As discussed in class, the K-fold CV methodology
+implemented in the package `rpart` seems to consider 
+a sequence of trees (or, equivalently, of complexity parameters)
+based on the full training set. For more details
+refer to the corresponding documentation: pages 12 and ff of the
+package vignette, which can be accessed from `R` using the
+command `vignette('longintro', package='rpart')`. 
+For an alternative implementation of CV-based pruning, 
+please see also the Section **"Pruning regression trees with `tree`"** below._ 
+
+The stopping criteria generally used when fitting regression trees do not
+take into account explicitly the complexity of the tree. Hence, we 
+may end up with either an overfitting tree, or a very simple one, 
+which typically results in a decline in the quality of the corresponding predictions. 
+As discussed in class, one solution is to purposedly grow / train a very large overfitting
+tree, and then prune it. One can also estimate the corresponding MSPE
+of each tree in the prunning sequence and choose an optimal one. 
+The function `rpart` implements this approach, and we illustrate it
+below. 
+
+We force `rpart` to build a very large tree via the arguments
+of the function `rpart.control`. At the same time, to obtain a good
+picture of the evolution of MSPE for different subtrees, we set the smallest 
+complexity parameter to be considered by the cross-validation
+experiment to a very low value (here we use `1e-8`).
+```{r prune, fig.width=6, fig.height=6, message=FALSE, warning=FALSE}
+library(rpart)
+data(Boston, package = "MASS")
+# split data into a training and
+# a test set
+set.seed(123456)
+n <- nrow(Boston)
+ii <- sample(n, floor(n / 4))
+dat.te <- Boston[ii, ]
+dat.tr <- Boston[-ii, ]
+
+myc <- rpart.control(minsplit = 2, cp = 1e-5, xval = 10)
+set.seed(123456)
+bos.to <- rpart(medv ~ .,
+  data = dat.tr, method = "anova",
+  control = myc
+)
+plot(bos.to, compress = TRUE) # type='proportional')
+```
+
+Not surprisingly, the predictions of this large tree are 
+not very good:
+```{r prune2, fig.width=6, fig.height=6, message=FALSE, warning=FALSE}
+# predictions are poor, unsurprisingly
+pr.to <- predict(bos.to, newdata = dat.te, type = "vector")
+with(dat.te, mean((medv - pr.to)^2))
+```
+
+To prune we explore the *CP table* returned in the
+`rpart` object to find the value of the complexity
+parameter with optimal estimated prediction error. The estimated
+prediction error of each subtree (corresponding to each value of `CP`)
+is contained in the column `xerror`, and the associated 
+standard deviation is in column `xstd`. We would like to find
+the value of `CP` that yields a corresponding pruned tree with smallest
+estimated prediction error. The function `printcp` shows the
+CP table corresponding to an `rpart` object:
+```{r prune3, fig.width=6, fig.height=6, message=FALSE, warning=FALSE}
+printcp(bos.to)
+```
+It is probably better and easier to find this 
+optimal value *programatically* as follows: 
+```{r prune4.2, fig.width=6, fig.height=6, message=FALSE, warning=FALSE}
+(b <- bos.to$cptable[which.min(bos.to$cptable[, "xerror"]), "CP"])
+```
+<!-- > **R coding digression**: Note that above we could also have used the following: -->
+<!-- > ```{r prune4.alt, fig.width=6, fig.height=6, message=FALSE, warning=FALSE} -->
+<!-- > tmp <- bos.to$cptable[,"xerror"] -->
+<!-- > (b <- bos.to$cptable[ max( which(tmp == min(tmp)) ), "CP"] ) -->
+<!-- > ``` -->
+<!-- > What is the difference between `which.min(a)` and `max( which( a == min(a) ) )`? -->
+
+We can now use the function 
+`prune` on the `rpart` object setting the complexity parameter
+to the estimated optimal value found above:
+```{r prune4, fig.width=6, fig.height=6, message=FALSE, warning=FALSE}
+bos.t3 <- prune(bos.to, cp = b)
+```
+
+This is how the optimally pruned tree looks:
+```{r prune4.5, fig.width=8, fig.height=8, message=FALSE, warning=FALSE}
+plot(bos.t3, uniform = FALSE, margin = 0.01)
+text(bos.t3, pretty = FALSE)
+```
+
+Finally, we can check the predictions of the pruned 
+tree on the test set:
+```{r prune5, fig.width=6, fig.height=6, message=FALSE, warning=FALSE}
+# predictions are better
+pr.t3 <- predict(bos.t3, newdata = dat.te, type = "vector")
+with(dat.te, mean((medv - pr.t3)^2))
+```
+
+Again, it would be a **very good exercise** for you to 
+compare the MSPE of the pruned tree with that of several
+of the alternative methods we have seen in class so far,
+**without using a training / test split**. 
+
+
+
+## Pruning regression trees with `tree`
+
+The implementation of trees in the `R` package `tree` follows
+the original CV-based pruning strategy, as discussed in 
+Section 3.4 of the book
+
+> Breiman, L., Friedman, J.H., Olshen, R.A. and Stone, C.J. (1984). Classification and regression trees. Chapman & Hall.
+
+or Section 7.2 of:
+
+> Ripley, Brian D. (1996). Pattern recognition and neural networks. Cambridge University Press
+
+Both books are available in electronic form from the UBC Library:
+[Breiman et al.](http://tinyurl.com/y3g2femt) and 
+[Ripley, B.D.](http://tinyurl.com/yylchlys).
+
+We now use the function `tree::tree()` to fit the same regression
+tree as above. Note that the default stopping criteria in this
+implementation of regression trees is different from the one in
+`rpart::rpart()`, hence to obtain the same results as above we
+need to modify the default stopping criteria using the argument
+`control`: 
+```{r prunetree0, fig.width=6, fig.height=6, message=FALSE, warning=FALSE}
+library(tree)
+bos.t2 <- tree(medv ~ ., data = dat.tr, control = tree.control(nobs = nrow(dat.tr), mincut = 6, minsize = 20))
+```
+
+We plot the resulting tree
+
+```{r prunetree1, fig.width=6, fig.height=6, message=FALSE, warning=FALSE}
+plot(bos.t2)
+text(bos.t2)
+```
+
+As discussed before, we now fit a very large tree, which will be 
+pruned later:
+
+```{r prunetree2, fig.width=6, fig.height=6, message=FALSE, warning=FALSE, pretty=TRUE}
+set.seed(123)
+bos.to2 <- tree(medv ~ .,
+  data = dat.tr,
+  control = tree.control(nobs = nrow(dat.tr), mincut = 1, minsize = 2, mindev = 1e-5)
+)
+plot(bos.to2)
+```
+
+We now use the function `tree:cv.tree()` to estimate the MSPE of 
+the subtrees of `bos.to2`, using 5-fold CV, and plot the estimated
+MSPE (here labeled as "deviance") as a function of the 
+complexity parameter (or, equivalently, the size of the tree): 
+```{r prunetree3, fig.width=6, fig.height=6, message=FALSE, warning=FALSE}
+set.seed(123)
+tt <- cv.tree(bos.to2, K = 5)
+plot(tt)
+```
+
+Finally, we use the function `prune.tree` to prune the larger tree
+at the "optimal" size, as estimated by `cv.tree` above:
+```{r prunetree3.2, fig.width=6, fig.height=6, message=FALSE, warning=FALSE}
+bos.pr2 <- prune.tree(bos.to2, k = tt$k[max(which(tt$dev == min(tt$dev)))])
+plot(bos.pr2)
+text(bos.pr2)
+```
+
+Compare this pruned tree with the one obtained with the regression trees
+implementation in `rpart`. In particular, we can compare the
+predictions of this other pruned 
+tree on the test set:
+```{r prune.tree.pred, fig.width=6, fig.height=6, message=FALSE, warning=FALSE}
+# predictions are worse than the rpart-pruned tree
+pr.tree <- predict(bos.pr2, newdata = dat.te, type = "vector")
+with(dat.te, mean((medv - pr.tree)^2))
+```
+Note that the predictions of the tree pruned with the `tree` 
+package seem to be better than those of the tree pruned with 
+the `rpart` package. **Does this mean that `rpart` gives
+trees with worse predictions than `tree` for data coming
+from the process than generated our training set?** 
+**Or could it all be an artifact of the specific test set we used?**
+**Can you think of an experiment to check this?**
+Again, it would be a **very good exercise** for you to 
+check which fit (`tree` or `rpart`) gives pruned 
+trees with better prediction properties in this case. 
+
+
+## Instability of regression trees 
+
+Trees can be rather unstable, in the sense that small changes in the
+training data set may result in relatively large differences in the
+fitted trees. As a simple illustration we randomly split the 
+`Boston` data used before into two halves and fit a regression
+tree to each portion. We then display both trees.
+
+```{r inst1, fig.width=6, fig.height=6, message=FALSE, warning=FALSE}
+# Instability of trees...
+library(rpart)
+data(Boston, package = "MASS")
+set.seed(123)
+n <- nrow(Boston)
+ii <- sample(n, floor(n / 2))
+dat.t1 <- Boston[-ii, ]
+bos.t1 <- rpart(medv ~ ., data = dat.t1, method = "anova")
+plot(bos.t1, uniform = FALSE, margin = 0.01)
+text(bos.t1, pretty = TRUE, cex = .8)
+```
+
+```{r inst2, fig.width=6, fig.height=6, message=FALSE, warning=FALSE}
+dat.t2 <- Boston[ii, ]
+bos.t2 <- rpart(medv ~ ., data = dat.t2, method = "anova")
+plot(bos.t2, uniform = FALSE, margin = 0.01)
+text(bos.t2, pretty = TRUE, cex = .8)
+```
+
+Although we would expect both random halves of the same (moderately large) 
+training set to beat least qualitatively similar, 
+Note that the two trees are rather different. 
+To compare with a more stable predictor, we fit a linear
+regression model to each half, and look at the two sets of estimated
+coefficients side by side:
+```{r inst3, fig.width=5, fig.height=5, message=FALSE, warning=FALSE}
+# bos.lmf <- lm(medv ~ ., data=Boston)
+bos.lm1 <- lm(medv ~ ., data = dat.t1)
+bos.lm2 <- lm(medv ~ ., data = dat.t2)
+cbind(
+  round(coef(bos.lm1), 2),
+  round(coef(bos.lm2), 2)
+)
+```
+Note that most of the estimated regression coefficients are 
+similar, and all of them are at least qualitatively comparable. 
+
