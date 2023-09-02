@@ -1,5 +1,12 @@
 # Pruning regression trees with `rpart`
 
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
+
+
 _**Important note**: As discussed in class, the K-fold CV methodology
 implemented in the package `rpart` seems to consider 
 a sequence of trees (or, equivalently, of complexity parameters)

@@ -1,5 +1,11 @@
 # Model based clustering
 
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
+
 Model-based clustering methods depend on a probabilistic 
 model that specifies the distribution of the observed features
 (over the whole population). This distribution is 

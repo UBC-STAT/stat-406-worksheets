@@ -1,5 +1,11 @@
 # Bagging for classification
 
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
+
 
 ## Instability of trees (motivation)
 

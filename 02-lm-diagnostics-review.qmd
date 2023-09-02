@@ -1,7 +1,10 @@
-# (PART) Module 0 -- Review {-}
-
-
 # Predictions using a linear model
+
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
 
 
 In this document we will explore (rather superficially)

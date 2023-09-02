@@ -1,5 +1,11 @@
 # Single layer neural network
 
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
+
 This example using the ISOLET data illustrates the use of simple
 neural networks (NNs), and also highlights some issues of which it may 
 be important to be aware. As we discussed in class, NNs typically have 

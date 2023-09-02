@@ -1,5 +1,12 @@
 # Regression trees 
 
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
+
+
 Trees provide a non-parametric regression estimator that is
 able to overcome a serious limitation of "classical non-parametric"
 estimators (like those based on splines, or kernels) 

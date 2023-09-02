@@ -1,5 +1,11 @@
 # QDA
 
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
+
 Similarly to the way we derived the LDA classifier in class, if one relaxes the assumption
 that the conditional distribution of the vector of features **X** in each class has
 the same covariance matrix (*shape*) (but still assumes that these distributions are

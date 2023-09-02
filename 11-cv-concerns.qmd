@@ -1,5 +1,11 @@
 # Cross-validation concerns
 
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
+
 In this document we study how to perform cross-validation 
 when the model was selected or determined using the 
 training data. Consider the following synthetic data 

@@ -1,6 +1,10 @@
-# (PART) Module 3 -- Classification {-}
-
 # Parametric classifiers
+
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
 
 As we discussed in class, what is commonly referred to as *classification* 
 can be thought of as prediction, when the responses are classes and we

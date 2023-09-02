@@ -1,6 +1,11 @@
-# (PART) Module 1 -- Model Selection {-}
 
 # Predictions using a linear model (continued)
+
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
 
 In these notes we continue looking at the problem of 
 comparing different models based on their 

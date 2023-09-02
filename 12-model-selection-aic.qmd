@@ -1,5 +1,12 @@
 # Comparing models
 
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
+
+
 ## General strategy
 
 Suppose we have a set of competing models from which we want to choose the

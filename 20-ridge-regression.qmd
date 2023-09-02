@@ -1,6 +1,11 @@
-# (PART) Module 2 -- Regression {-}
 
 # Ridge regression 
+
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
 
 Variable selection methods like stepwise can be highly variable. To illustrate this
 issue consider the following simple experiment. As before, 

@@ -1,5 +1,11 @@
 # Boosting (a Statistical Learning perspective)
 
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
+
 In these notes we will discuss boosting. Our starting point is one its first
 incarnations (the Adaboost.M1 algorithm). Our goal here is two-fold: introduce boosting
 as a **different** way of building an **ensemble** of *weak classifiers*, and 

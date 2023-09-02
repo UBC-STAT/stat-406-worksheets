@@ -1,8 +1,12 @@
 
 
-# (PART) Module 5 -- Unsupervised learning {-}
-
 # Introduction
+
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
 
 Unsupervised learning methods differ from the 
 supervised ones we have studied so far in that 

@@ -1,6 +1,10 @@
-# (PART) Module 4 -- Modern techniques {-}
-
 # Bagging for regression
+
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
 
 One strategy to obtain more stable predictors is called
 **Bootstrap AGGregatING** (bagging). It can be applied to

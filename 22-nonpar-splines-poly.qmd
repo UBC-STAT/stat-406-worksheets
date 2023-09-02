@@ -1,6 +1,12 @@
 
 # Non-parametric regression
 
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
+
 We now turn our attention to the situation where the 
 regression function E(Y|X) is not necessarily linear.
 Furthermore, we will assume that its *form* is

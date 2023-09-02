@@ -1,5 +1,11 @@
 # Hierarchical clustering
 
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
+
 Hierarchical clustering refers to a class of algorithms that work in a 
 different way from the ones we have seen so far. Both k-means and model-based
 clustering try to find a pre-specified number of clusters *simultaneously*. 

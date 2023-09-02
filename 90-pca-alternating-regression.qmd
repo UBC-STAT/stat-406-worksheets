@@ -1,6 +1,12 @@
-# (APPENDIX) Appendix {.unnumbered}
+
 
 # PCA and alternating regression {#alt-pca}
+
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
 
 Let $X_1, \ldots, X_n \in \mathbb{R}^p$ be the observations for which we
 want to compute the corresponding PCA. Without loss of generality we can

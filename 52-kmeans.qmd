@@ -1,6 +1,12 @@
 
 # Clustering
 
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
+
 A large class of unsupervised learning methods is
 collectively called *clustering*. The objective 
 can be described as identifying different groups 

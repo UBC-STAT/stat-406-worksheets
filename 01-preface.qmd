@@ -1,5 +1,11 @@
 # Preface {-}
 
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
+
 This worksheet collection was originally created by [Prof. Salibián-Barrera](https://www.stat.ubc.ca/users/matias-salibian-barrera) when he taught this course in 2019 and previous iterations. For the 2021 version, Prof. McDonald made some revisions and turned them into a book for use during labs and as a supplement to the course readings.
 
 The expectation is that you will run through the worksheets on your own or during lab sections. This material is fair game for the final exam.

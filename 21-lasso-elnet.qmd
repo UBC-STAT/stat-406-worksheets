@@ -1,5 +1,11 @@
 # LASSO 
 
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
+
 A different approach to perform *some kind* of variable selection that may be
 more stable than stepwise methods is to use an L1 regularization term
 (instead of the L2 one used in ridge regression). Notwidthstanding the

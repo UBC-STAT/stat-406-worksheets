@@ -1,5 +1,11 @@
 # Kernel regression / local regression 
 
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
+
 A different approach to estimating a regression function is
 based on recalling that the  true regression function 
 is *f(a) = E(Y | X = a)*, the mean of the response variable *Y* **conditional**

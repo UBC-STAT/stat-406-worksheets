@@ -1,5 +1,11 @@
 # Random Forests
 
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
+
 Even though using a *bagged* ensemble of trees usually results in a more
 stable predictor / classifier, a better ensemble can be improved by training 
 each of its members in a careful way. The main idea is to try to reduce the 

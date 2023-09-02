@@ -1,5 +1,11 @@
 # What is Adaboost doing, *really*? 
 
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
+
 Following the work of [@FriedmanHastie2000] (see also
 Chapter 10 of [ESL]), we saw in class that Adaboost can be 
 interpreted as fitting an *additive model* in a stepwise (greedy) way,

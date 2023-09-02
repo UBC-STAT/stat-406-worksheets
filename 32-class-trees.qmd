@@ -1,5 +1,12 @@
 # Classification Trees
 
+```{r setup}
+#| include: false
+source("_common.R")
+```
+
+
+
 Just as in the continuous regression case, when the number of available
 explanatory variables is moderate or large, methods like nearest neighbours
 quickly become unfeasible, or their performance is not satisfactory. Classification
