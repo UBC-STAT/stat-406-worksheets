@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="These notes accompany the lectures for UBC’s Stat 406.">
+
+<title>UBC Stat 406 Worksheets - References</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./90-pca-alternating-regression.html" rel="next">
+<link href="./54-hclust.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./80-references.html">References</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">UBC Stat 406 Worksheets</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/ubc-stat/stat-406-worksheets" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Module 0 - Review</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-lm-diagnostics-review.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Predictions using a linear model</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Module 1 - Model selection</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-test-set-and-cv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Predictions using a linear model (continued)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-cv-concerns.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Cross-validation concerns</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-model-selection-aic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Comparing models</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Module 2 - Regression</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./20-ridge-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Ridge regression</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21-lasso-elnet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">LASSO</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22-nonpar-splines-poly.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Non-parametric regression</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./23-kernel-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Kernel regression / local regression</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./24-trees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Regression trees</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./25-more-trees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Pruning regression trees with <code>rpart</code></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Module 3 - Classification</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./30-lda-logit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Parametric classifiers</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./31-qda-knn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">QDA</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./32-class-trees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Classification Trees</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Module 4 - Modern techniques</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./40-bagging.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Bagging for regression</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./41-bagging-classifiers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Bagging for classification</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./42-random-forests.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Random Forests</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./43-boosting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Boosting (a Statistical Learning perspective)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./44-adaboost.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">What is Adaboost doing, <em>really</em>?</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./45-single-layer-nn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Single layer neural network</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">Module 5 - Unsupervised learning</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./51-pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./52-kmeans.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Clustering</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./53-model-based-clustering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Model based clustering</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./54-hclust.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Hierarchical clustering</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./80-references.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./90-pca-alternating-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">PCA and alternating regression</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">References</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-adabag2013" class="csl-entry" role="listitem">
+Alfaro, Esteban, Matías Gámez, and Noelia García. 2013. <span>“<span class="nocase">adabag</span>: An <span>R</span> Package for
+Classification with Boosting and Bagging.”</span> <em>Journal of
+Statistical Software</em> 54 (2): 1–35. <a href="https://doi.org/10.18637/jss.v054.i02">https://doi.org/10.18637/jss.v054.i02</a>.
+</div>
+<div id="ref-R-adabag" class="csl-entry" role="listitem">
+Alfaro, Esteban; Gamez, Matias, Garcia, Noelia; with contributions from
+L. Guo, A. Albano, M. Sciandra, and A. Plaia. 2023. <em>Adabag: Applies
+Multiclass AdaBoost.M1, SAMME and Bagging</em>. <a href="https://CRAN.R-project.org/package=adabag">https://CRAN.R-project.org/package=adabag</a>.
+</div>
+<div id="ref-R-rmarkdown" class="csl-entry" role="listitem">
+Allaire, JJ, Yihui Xie, Christophe Dervieux, Jonathan McPherson, Javier
+Luraschi, Kevin Ushey, Aron Atkins, et al. 2023. <em>Rmarkdown: Dynamic
+Documents for r</em>. <a href="https://CRAN.R-project.org/package=rmarkdown">https://CRAN.R-project.org/package=rmarkdown</a>.
+</div>
+<div id="ref-Ambroise6562" class="csl-entry" role="listitem">
+Ambroise, Christophe, and Geoffrey J. McLachlan. 2002. <span>“Selection
+Bias in Gene Extraction on the Basis of Microarray Gene-Expression
+Data.”</span> <em>Proceedings of the National Academy of Sciences</em>
+99 (10): 6562–66. <a href="https://doi.org/10.1073/pnas.102102699">https://doi.org/10.1073/pnas.102102699</a>.
+</div>
+<div id="ref-R-countrycode" class="csl-entry" role="listitem">
+Arel-Bundock, Vincent. 2023. <em>Countrycode: Convert Country Names and
+Country Codes</em>. <a href="https://vincentarelbundock.github.io/countrycode/">https://vincentarelbundock.github.io/countrycode/</a>.
+</div>
+<div id="ref-countrycode2018" class="csl-entry" role="listitem">
+Arel-Bundock, Vincent, Nils Enevoldsen, and CJ Yetman. 2018.
+<span>“Countrycode: An r Package to Convert Country Names and Country
+Codes.”</span> <em>Journal of Open Source Software</em> 3 (28): 848. <a href="https://doi.org/10.21105/joss.00848">https://doi.org/10.21105/joss.00848</a>.
+</div>
+<div id="ref-BoenteMartinez2017" class="csl-entry" role="listitem">
+Boente, Graciela, Alejandra Martínez, and Matías Salibián-Barrera. 2017.
+<span>“Robust Estimators for Additive Models Using Backfitting.”</span>
+<em>Journal of Nonparametric Statistics</em> 29 (4): 744–67. <a href="https://doi.org/10.1080/10485252.2017.1369077">https://doi.org/10.1080/10485252.2017.1369077</a>.
+</div>
+<div id="ref-R-randomForest" class="csl-entry" role="listitem">
+Breiman, Leo, Adele Cutler, Andy Liaw, and Matthew Wiener. 2022.
+<em>randomForest: Breiman and Cutler’s Random Forests for Classification
+and Regression</em>. <a href="https://www.stat.berkeley.edu/~breiman/RandomForests/">https://www.stat.berkeley.edu/~breiman/RandomForests/</a>.
+</div>
+<div id="ref-R-desc" class="csl-entry" role="listitem">
+Csárdi, Gábor, Kirill Müller, and Jim Hester. 2022. <em>Desc: Manipulate
+DESCRIPTION Files</em>. <a href="https://CRAN.R-project.org/package=desc">https://CRAN.R-project.org/package=desc</a>.
+</div>
+<div id="ref-flexclust2018a" class="csl-entry" role="listitem">
+Dolnicar, Sara, Bettina Gruen, and Friedrich Leisch. 2018. <em>Market
+Segmentation Analysis — Understanding It, Doing It, and Making It
+Useful</em>. Singapore: Springer. <a href="https://doi.org/10.1007/978-981-10-8818-6">https://doi.org/10.1007/978-981-10-8818-6</a>.
+</div>
+<div id="ref-Efron1986" class="csl-entry" role="listitem">
+Efron, Bradley. 1986. <span>“How Biased Is the Apparent Error Rate of a
+Prediction Rule?”</span> <em>Journal of the American Statistical
+Association</em> 81 (394): 461–70.
+</div>
+<div id="ref-R-mclust" class="csl-entry" role="listitem">
+Fraley, Chris, Adrian E. Raftery, and Luca Scrucca. 2022. <em>Mclust:
+Gaussian Mixture Modelling for Model-Based Clustering, Classification,
+and Density Estimation</em>. <a href="https://mclust-org.github.io/mclust/">https://mclust-org.github.io/mclust/</a>.
+</div>
+<div id="ref-FriedmanHastie2000" class="csl-entry" role="listitem">
+Friedman, Jerome, Trevor Hastie, and Robert Tibshirani. 2000.
+<span>“<span class="nocase">Additive logistic regression: a statistical
+view of boosting (With discussion and a rejoinder by the
+authors)</span>.”</span> <em>The Annals of Statistics</em> 28 (2):
+337–407. <a href="https://doi.org/10.1214/aos/1016218223">https://doi.org/10.1214/aos/1016218223</a>.
+</div>
+<div id="ref-R-glmnet" class="csl-entry" role="listitem">
+Friedman, Jerome, Trevor Hastie, Rob Tibshirani, Balasubramanian
+Narasimhan, Kenneth Tay, Noah Simon, and James Yang. 2023. <em>Glmnet:
+Lasso and Elastic-Net Regularized Generalized Linear Models</em>. <a href="https://glmnet.stanford.edu">https://glmnet.stanford.edu</a>.
+</div>
+<div id="ref-glmnet2010" class="csl-entry" role="listitem">
+Friedman, Jerome, Robert Tibshirani, and Trevor Hastie. 2010.
+<span>“Regularization Paths for Generalized Linear Models via Coordinate
+Descent.”</span> <em>Journal of Statistical Software</em> 33 (1): 1–22.
+<a href="https://doi.org/10.18637/jss.v033.i01">https://doi.org/10.18637/jss.v033.i01</a>.
+</div>
+<div id="ref-mvtnorm2009" class="csl-entry" role="listitem">
+Genz, Alan, and Frank Bretz. 2009. <em>Computation of Multivariate
+Normal and t Probabilities</em>. Lecture Notes in Statistics.
+Heidelberg: Springer-Verlag.
+</div>
+<div id="ref-R-mvtnorm" class="csl-entry" role="listitem">
+Genz, Alan, Frank Bretz, Tetsuhisa Miwa, Xuefei Mi, and Torsten Hothorn.
+2023. <em>Mvtnorm: Multivariate Normal and t Distributions</em>. <a href="http://mvtnorm.R-forge.R-project.org">http://mvtnorm.R-forge.R-project.org</a>.
+</div>
+<div id="ref-R-ElemStatLearn" class="csl-entry" role="listitem">
+Halvorsen, Kjetil. 2019. <em>ElemStatLearn: Data Sets, Functions and
+Examples from the Book: "The Elements of Statistical Learning, Data
+Mining, Inference, and Prediction" by Trevor Hastie, Robert Tibshirani
+and Jerome Friedman</em>. <a href="http://www-stat.stanford.edu/~tibs/ElemStatLearn/">http://www-stat.stanford.edu/~tibs/ElemStatLearn/</a>.
+</div>
+<div id="ref-R-lars" class="csl-entry" role="listitem">
+Hastie, Trevor, and Brad Efron. 2022. <em>Lars: Least Angle Regression,
+Lasso and Forward Stagewise</em>. <a href="https://doi.org/10.1214/009053604000000067">https://doi.org/10.1214/009053604000000067</a>.
+</div>
+<div id="ref-R-ISLR2" class="csl-entry" role="listitem">
+James, Gareth, Daniela Witten, Trevor Hastie, and Rob Tibshirani. 2022.
+<em>ISLR2: Introduction to Statistical Learning, Second Edition</em>. <a href="https://www.statlearning.com">https://www.statlearning.com</a>.
+</div>
+<div id="ref-R-ggcorrplot" class="csl-entry" role="listitem">
+Kassambara, Alboukadel. 2022. <em>Ggcorrplot: Visualization of a
+Correlation Matrix Using Ggplot2</em>. <a href="http://www.sthda.com/english/wiki/ggcorrplot-visualization-of-a-correlation-matrix-using-ggplot2">http://www.sthda.com/english/wiki/ggcorrplot-visualization-of-a-correlation-matrix-using-ggplot2</a>.
+</div>
+<div id="ref-flexclust2006a" class="csl-entry" role="listitem">
+Leisch, Friedrich. 2006. <span>“A Toolbox for k-Centroids Cluster
+Analysis.”</span> <em>Computational Statistics and Data Analysis</em> 51
+(2): 526–44.
+</div>
+<div id="ref-flexclust2010a" class="csl-entry" role="listitem">
+———. 2010. <span>“Neighborhood Graphs, Stripes and Shadow Plots for
+Cluster Visualization.”</span> <em>Statistics and Computing</em> 20:
+457–69. <a href="https://doi.org/10.1007/s11222-009-9137-8">https://doi.org/10.1007/s11222-009-9137-8</a>.
+</div>
+<div id="ref-R-flexclust" class="csl-entry" role="listitem">
+———. 2022. <em>Flexclust: Flexible Cluster Algorithms</em>. <a href="https://CRAN.R-project.org/package=flexclust">https://CRAN.R-project.org/package=flexclust</a>.
+</div>
+<div id="ref-flexclust2006b" class="csl-entry" role="listitem">
+Leisch, Friedrich, and Bettina Gruen. 2006. <span>“Extending Standard
+Cluster Algorithms to Allow for Group Constraints.”</span> In
+<em>Compstat 2006—Proceedings in Computational Statistics</em>, edited
+by Alfredo Rizzi and Maurizio Vichi, 885–92. Physica Verlag, Heidelberg,
+Germany.
+</div>
+<div id="ref-randomForest2002" class="csl-entry" role="listitem">
+Liaw, Andy, and Matthew Wiener. 2002. <span>“Classification and
+Regression by randomForest.”</span> <em>R News</em> 2 (3): 18–22. <a href="https://CRAN.R-project.org/doc/Rnews/">https://CRAN.R-project.org/doc/Rnews/</a>.
+</div>
+<div id="ref-R-leaps" class="csl-entry" role="listitem">
+Lumley, Thomas. 2020. <em>Leaps: Regression Subset Selection</em>. <a href="https://CRAN.R-project.org/package=leaps">https://CRAN.R-project.org/package=leaps</a>.
+</div>
+<div id="ref-R-cluster" class="csl-entry" role="listitem">
+Maechler, Martin, Peter Rousseeuw, Anja Struyf, and Mia Hubert. 2022.
+<em>Cluster: "Finding Groups in Data": Cluster Analysis Extended
+Rousseeuw Et Al.</em> <a href="https://svn.r-project.org/R-packages/trunk/cluster/">https://svn.r-project.org/R-packages/trunk/cluster/</a>.
+</div>
+<div id="ref-R-tibble" class="csl-entry" role="listitem">
+Müller, Kirill, and Hadley Wickham. 2023. <em>Tibble: Simple Data
+Frames</em>. <a href="https://CRAN.R-project.org/package=tibble">https://CRAN.R-project.org/package=tibble</a>.
+</div>
+<div id="ref-R-class" class="csl-entry" role="listitem">
+Ripley, Brian. 2023a. <em>Class: Functions for Classification</em>. <a href="http://www.stats.ox.ac.uk/pub/MASS4/">http://www.stats.ox.ac.uk/pub/MASS4/</a>.
+</div>
+<div id="ref-R-MASS" class="csl-entry" role="listitem">
+———. 2023b. <em>MASS: Support Functions and Datasets for Venables and
+Ripley’s MASS</em>. <a href="http://www.stats.ox.ac.uk/pub/MASS4/">http://www.stats.ox.ac.uk/pub/MASS4/</a>.
+</div>
+<div id="ref-R-nnet" class="csl-entry" role="listitem">
+———. 2023c. <em>Nnet: Feed-Forward Neural Networks and Multinomial
+Log-Linear Models</em>. <a href="http://www.stats.ox.ac.uk/pub/MASS4/">http://www.stats.ox.ac.uk/pub/MASS4/</a>.
+</div>
+<div id="ref-R-tree" class="csl-entry" role="listitem">
+———. 2023d. <em>Tree: Classification and Regression Trees</em>. <a href="https://CRAN.R-project.org/package=tree">https://CRAN.R-project.org/package=tree</a>.
+</div>
+<div id="ref-flexclust2006c" class="csl-entry" role="listitem">
+Scharl, Theresa, and Friedrich Leisch. 2006. <span>“The Stochastic
+QT–Clust Algorithm: Evaluation of Stability and Variance on Time–Course
+Microarray Data.”</span> In <em>Compstat 2006—Proceedings in
+Computational Statistics</em>, edited by Alfredo Rizzi and Maurizio
+Vichi, 1015–22. Physica Verlag, Heidelberg, Germany.
+</div>
+<div id="ref-mclust2016" class="csl-entry" role="listitem">
+Scrucca, Luca, Michael Fop, T. Brendan Murphy, and Adrian E. Raftery.
+2016. <span>“<span class="nocase">mclust</span> 5: Clustering,
+Classification and Density Estimation Using <span>G</span>aussian Finite
+Mixture Models.”</span> <em>The <span>R</span> Journal</em> 8 (1):
+289–317. <a href="https://doi.org/10.32614/RJ-2016-021">https://doi.org/10.32614/RJ-2016-021</a>.
+</div>
+<div id="ref-R-bslib" class="csl-entry" role="listitem">
+Sievert, Carson, Joe Cheng, and Garrick Aden-Buie. 2023. <em>Bslib:
+Custom Bootstrap ’Sass’ Themes for Shiny and Rmarkdown</em>. <a href="https://CRAN.R-project.org/package=bslib">https://CRAN.R-project.org/package=bslib</a>.
+</div>
+<div id="ref-glmnet2011" class="csl-entry" role="listitem">
+Simon, Noah, Jerome Friedman, Robert Tibshirani, and Trevor Hastie.
+2011. <span>“Regularization Paths for Cox’s Proportional Hazards Model
+via Coordinate Descent.”</span> <em>Journal of Statistical Software</em>
+39 (5): 1–13. <a href="https://doi.org/10.18637/jss.v039.i05">https://doi.org/10.18637/jss.v039.i05</a>.
+</div>
+<div id="ref-rworldmap2011" class="csl-entry" role="listitem">
+South, Andy. 2011. <span>“Rworldmap: A New r Package for Mapping Global
+Data.”</span> <em>The R Journal</em> 3 (1): 35–43. <a href="http://journal.r-project.org/archive/2011-1/RJournal_2011-1_South.pdf">http://journal.r-project.org/archive/2011-1/RJournal_2011-1_South.pdf</a>.
+</div>
+<div id="ref-R-rworldmap" class="csl-entry" role="listitem">
+———. 2016. <em>Rworldmap: Mapping Global Data</em>. <a href="https://CRAN.R-project.org/package=rworldmap">https://CRAN.R-project.org/package=rworldmap</a>.
+</div>
+<div id="ref-glmnet2023" class="csl-entry" role="listitem">
+Tay, J. Kenneth, Balasubramanian Narasimhan, and Trevor Hastie. 2023.
+<span>“Elastic Net Regularization Paths for All Generalized Linear
+Models.”</span> <em>Journal of Statistical Software</em> 106 (1): 1–31.
+<a href="https://doi.org/10.18637/jss.v106.i01">https://doi.org/10.18637/jss.v106.i01</a>.
+</div>
+<div id="ref-TharmaratnamClaeskens2010" class="csl-entry" role="listitem">
+Tharmaratnam, Kukatharmini, Gerda Claeskens, Christophe Croux, and
+Matias Salibián-Barrera. 2010. <span>“S-Estimation for Penalized
+Regression Splines.”</span> <em>Journal of Computational and Graphical
+Statistics</em> 19 (3): 609–25. <a href="https://doi.org/10.1198/jcgs.2010.08149">https://doi.org/10.1198/jcgs.2010.08149</a>.
+</div>
+<div id="ref-R-rpart" class="csl-entry" role="listitem">
+Therneau, Terry, and Beth Atkinson. 2022. <em>Rpart: Recursive
+Partitioning and Regression Trees</em>. <a href="https://CRAN.R-project.org/package=rpart">https://CRAN.R-project.org/package=rpart</a>.
+</div>
+<div id="ref-robustbase2009" class="csl-entry" role="listitem">
+Todorov, Valentin, and Peter Filzmoser. 2009. <span>“An Object-Oriented
+Framework for Robust Multivariate Analysis.”</span> <em>Journal of
+Statistical Software</em> 32 (3): 1–47. <a href="https://www.jstatsoft.org/article/view/v032i03/">https://www.jstatsoft.org/article/view/v032i03/</a>.
+</div>
+<div id="ref-R-robustbase" class="csl-entry" role="listitem">
+Todorov, Valentin, Andreas Ruckstuhl, Matias Salibian-Barrera, Tobias
+Verbeke, Manuel Koller, and Martin Maechler. 2023. <em>Robustbase: Basic
+Robust Statistics</em>. <a href="https://robustbase.R-forge.R-project.org/">https://robustbase.R-forge.R-project.org/</a>.
+</div>
+<div id="ref-class2002" class="csl-entry" role="listitem">
+Venables, W. N., and B. D. Ripley. 2002b. <em>Modern Applied Statistics
+with s</em>. Fourth. New York: Springer. <a href="https://www.stats.ox.ac.uk/pub/MASS4/">https://www.stats.ox.ac.uk/pub/MASS4/</a>.
+</div>
+<div id="ref-MASS2002" class="csl-entry" role="listitem">
+———. 2002a. <em>Modern Applied Statistics with s</em>. Fourth. New York:
+Springer. <a href="https://www.stats.ox.ac.uk/pub/MASS4/">https://www.stats.ox.ac.uk/pub/MASS4/</a>.
+</div>
+<div id="ref-nnet2002" class="csl-entry" role="listitem">
+———. 2002c. <em>Modern Applied Statistics with s</em>. Fourth. New York:
+Springer. <a href="https://www.stats.ox.ac.uk/pub/MASS4/">https://www.stats.ox.ac.uk/pub/MASS4/</a>.
+</div>
+<div id="ref-DVN/LEJUQZ_2009" class="csl-entry" role="listitem">
+Voeten, Erik, Anton Strezhnev, and Michael Bailey. 2009.
+<span>“<span>United Nations General Assembly Voting Data</span>.”</span>
+Harvard Dataverse. <a href="https://doi.org/10.7910/DVN/LEJUQZ">https://doi.org/10.7910/DVN/LEJUQZ</a>.
+</div>
+<div id="ref-R-SemiPar" class="csl-entry" role="listitem">
+Wand, Matt. 2018. <em>SemiPar: Semiparametic Regression</em>. <a href="http://matt-wand.utsacademics.info/SPmanu.pdf">http://matt-wand.utsacademics.info/SPmanu.pdf</a>.
+</div>
+<div id="ref-R-KernSmooth" class="csl-entry" role="listitem">
+———. 2023. <em>KernSmooth: Functions for Kernel Smoothing Supporting
+Wand &amp; Jones (1995)</em>. <a href="https://CRAN.R-project.org/package=KernSmooth">https://CRAN.R-project.org/package=KernSmooth</a>.
+</div>
+<div id="ref-ggplot22016" class="csl-entry" role="listitem">
+Wickham, Hadley. 2016. <em>Ggplot2: Elegant Graphics for Data
+Analysis</em>. Springer-Verlag New York. <a href="https://ggplot2.tidyverse.org">https://ggplot2.tidyverse.org</a>.
+</div>
+<div id="ref-R-downlit" class="csl-entry" role="listitem">
+———. 2023a. <em>Downlit: Syntax Highlighting and Automatic Linking</em>.
+<a href="https://CRAN.R-project.org/package=downlit">https://CRAN.R-project.org/package=downlit</a>.
+</div>
+<div id="ref-R-tidyverse" class="csl-entry" role="listitem">
+———. 2023b. <em>Tidyverse: Easily Install and Load the Tidyverse</em>.
+<a href="https://CRAN.R-project.org/package=tidyverse">https://CRAN.R-project.org/package=tidyverse</a>.
+</div>
+<div id="ref-tidyverse2019" class="csl-entry" role="listitem">
+Wickham, Hadley, Mara Averick, Jennifer Bryan, Winston Chang, Lucy
+D’Agostino McGowan, Romain François, Garrett Grolemund, et al. 2019.
+<span>“Welcome to the <span class="nocase">tidyverse</span>.”</span>
+<em>Journal of Open Source Software</em> 4 (43): 1686. <a href="https://doi.org/10.21105/joss.01686">https://doi.org/10.21105/joss.01686</a>.
+</div>
+<div id="ref-R-sessioninfo" class="csl-entry" role="listitem">
+Wickham, Hadley, Winston Chang, Robert Flight, Kirill Müller, and Jim
+Hester. 2021. <em>Sessioninfo: R Session Information</em>. <a href="https://CRAN.R-project.org/package=sessioninfo">https://CRAN.R-project.org/package=sessioninfo</a>.
+</div>
+<div id="ref-R-ggplot2" class="csl-entry" role="listitem">
+Wickham, Hadley, Winston Chang, Lionel Henry, Thomas Lin Pedersen,
+Kohske Takahashi, Claus Wilke, Kara Woo, Hiroaki Yutani, and Dewey
+Dunnington. 2023. <em>Ggplot2: Create Elegant Data Visualisations Using
+the Grammar of Graphics</em>. <a href="https://CRAN.R-project.org/package=ggplot2">https://CRAN.R-project.org/package=ggplot2</a>.
+</div>
+<div id="ref-R-scales" class="csl-entry" role="listitem">
+Wickham, Hadley, and Dana Seidel. 2022. <em>Scales: Scale Functions for
+Visualization</em>. <a href="https://CRAN.R-project.org/package=scales">https://CRAN.R-project.org/package=scales</a>.
+</div>
+<div id="ref-wood2017generalized" class="csl-entry" role="listitem">
+Wood, Simon N. 2017. <em>Generalized Additive Models: An Introduction
+with r</em>. CRC press.
+</div>
+<div id="ref-knitr2014" class="csl-entry" role="listitem">
+Xie, Yihui. 2014. <span>“Knitr: A Comprehensive Tool for Reproducible
+Research in <span>R</span>.”</span> In <em>Implementing Reproducible
+Computational Research</em>, edited by Victoria Stodden, Friedrich
+Leisch, and Roger D. Peng. Chapman; Hall/CRC.
+</div>
+<div id="ref-knitr2015" class="csl-entry" role="listitem">
+———. 2015. <em>Dynamic Documents with <span>R</span> and Knitr</em>. 2nd
+ed. Boca Raton, Florida: Chapman; Hall/CRC. <a href="https://yihui.org/knitr/">https://yihui.org/knitr/</a>.
+</div>
+<div id="ref-bookdown2016" class="csl-entry" role="listitem">
+———. 2016. <em>Bookdown: Authoring Books and Technical Documents with
+<span>R</span> Markdown</em>. Boca Raton, Florida: Chapman; Hall/CRC. <a href="https://bookdown.org/yihui/bookdown">https://bookdown.org/yihui/bookdown</a>.
+</div>
+<div id="ref-R-bookdown" class="csl-entry" role="listitem">
+———. 2023a. <em>Bookdown: Authoring Books and Technical Documents with r
+Markdown</em>. <a href="https://CRAN.R-project.org/package=bookdown">https://CRAN.R-project.org/package=bookdown</a>.
+</div>
+<div id="ref-R-formatR" class="csl-entry" role="listitem">
+———. 2023b. <em>formatR: Format r Code Automatically</em>. <a href="https://github.com/yihui/formatR">https://github.com/yihui/formatR</a>.
+</div>
+<div id="ref-R-knitr" class="csl-entry" role="listitem">
+———. 2023c. <em>Knitr: A General-Purpose Package for Dynamic Report
+Generation in r</em>. <a href="https://yihui.org/knitr/">https://yihui.org/knitr/</a>.
+</div>
+<div id="ref-rmarkdown2018" class="csl-entry" role="listitem">
+Xie, Yihui, J. J. Allaire, and Garrett Grolemund. 2018. <em>R Markdown:
+The Definitive Guide</em>. Boca Raton, Florida: Chapman; Hall/CRC. <a href="https://bookdown.org/yihui/rmarkdown">https://bookdown.org/yihui/rmarkdown</a>.
+</div>
+<div id="ref-rmarkdown2020" class="csl-entry" role="listitem">
+Xie, Yihui, Christophe Dervieux, and Emily Riederer. 2020. <em>R
+Markdown Cookbook</em>. Boca Raton, Florida: Chapman; Hall/CRC. <a href="https://bookdown.org/yihui/rmarkdown-cookbook">https://bookdown.org/yihui/rmarkdown-cookbook</a>.
+</div>
+<div id="ref-Zou2006" class="csl-entry" role="listitem">
+Zou, Hui. 2006. <span>“The Adaptive Lasso and Its Oracle
+Properties.”</span> <em>Journal of the American Statistical
+Association</em> 101 (476): 1418–29.
+</div>
+<div id="ref-ZouHastie2005" class="csl-entry" role="listitem">
+Zou, Hui, and Trevor Hastie. 2005. <span>“Regularization and Variable
+Selection via the Elastic Net.”</span> <em>Journal of the Royal
+Statistical Society: Series B (Statistical Methodology)</em> 67 (2):
+301–20.
+</div>
+</div>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./54-hclust.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Hierarchical clustering</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./90-pca-alternating-regression.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">PCA and alternating regression</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">This work by <a href="https://dajmcdon.github.io">Daniel J. McDonald</a> and <a href="https://www.stat.ubc.ca/users/matias-salibian-barrera">Matías Salibián-Barrera</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0">CC BY-NC 4.0</a><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/ubc-stat/stat-406-worksheets/blob/main/80-references.qmd" class="toc-action">View source</a></p><p><a href="https://github.com/ubc-stat/stat-406-worksheets/edit/main/80-references.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/ubc-stat/stat-406-worksheets/issues/new" class="toc-action">Report an issue</a></p></div></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+</body></html>
