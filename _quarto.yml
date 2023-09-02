@@ -2,6 +2,9 @@ project:
   type: book
   output-dir: _book
 
+execute:
+  freeze: auto
+
 book:
   title: "UBC Stat 406 Worksheets"
   author: "Daniel J. McDonald and Matías Salibián-Barrera"
