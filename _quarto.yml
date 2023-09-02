@@ -1,21 +1,24 @@
 project:
   type: book
+  output-dir: _book
 
 book:
   title: "UBC Stat 406 Worksheets"
   author: "Daniel J. McDonald and Matías Salibián-Barrera"
   date: last-modified
   description: "These notes accompany the lectures for UBC's Stat 406."
-  cover-image: cover.png
+  search: true
   page-footer:
     background: primary
     center: "This work by [Daniel J. McDonald](https://dajmcdon.github.io) and [Matías Salibián-Barrera](https://www.stat.ubc.ca/users/matias-salibian-barrera) is licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0)<img style='height:22px!important;margin-left:3px;vertical-align:text-bottom;' src='https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1'><img style='height:22px!important;margin-left:3px;vertical-align:text-bottom;' src='https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1' /><img style='height:22px!important;margin-left:3px;vertical-align:text-bottom;' src='https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1' />"
   site-url: https://ubc-stat.github.io/stat-406-worksheets
   repo-url: https://github.com/ubc-stat/stat-406-worksheets
-  repo-actions: [edit, issue]
+  repo-actions: [source, edit, issue]
+  date-format: DD MMMM YYYY
+  sidebar:
+    style: docked
   chapters:
     - index.qmd
-    - 01-preface.qmd
     - part: "Module 0 - Review"
       chapters:
         - 02-lm-diagnostics-review.qmd
@@ -56,3 +59,10 @@ book:
     - 90-pca-alternating-regression.qmd
 
 bibliography: [packages.bib, book.bib]
+
+format:
+  html:
+    grid:
+      sidebar-width: 400px
+      body-width: 600px
+    theme: [cosmo, stat406-theme.scss]
